@@ -29,17 +29,30 @@
   </delete>
   <insert id="insert" parameterType="cn.xmu.edu.legaldocument.entity.LegalDoc" useGeneratedKeys="true" keyProperty="id" >
     insert into legal_doc ( path, is_enrich,
-      author, bookname)
+      author, bookname,is_public)
     values ( #{path,jdbcType=VARCHAR}, #{isEnrich,jdbcType=TINYINT},
-      #{author,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR})
+      #{author,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},#{isPublic,jdbcType=TINYINT})
   </insert>
-
+  <insert id="insertPersonalLegalDoc" parameterType="cn.xmu.edu.legaldocument.entity.PersonalLegaldocStack" useGeneratedKeys="true" keyProperty="id" >
+    insert into personal_legaldoc_stack (user_id,book_id)
+    values ( #{userId,jdbcType=BIGINT}, #{bookId,jdbcType=BIGINT})
+  </insert>
+  <select id="getLastBookId" resultType="java.lang.Long">
+    select id
+    from legal_doc
+    order by id DESC limit 1
+  </select>
   <update id="updateByPrimaryKey" parameterType="cn.xmu.edu.legaldocument.entity.LegalDoc" >
     update legal_doc
     set path = #{path,jdbcType=VARCHAR},
       is_enrich = #{isEnrich,jdbcType=TINYINT},
       author = #{author,jdbcType=VARCHAR},
       name = #{name,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="setLegalDocEnriched" parameterType="java.lang.Long" >
+    update legal_doc
+    set is_enrich = 1
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

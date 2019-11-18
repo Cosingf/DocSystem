@@ -4,15 +4,14 @@ import cn.xmu.edu.legaldocument.entity.LegalDoc;
 import cn.xmu.edu.legaldocument.entity.Page;
 import cn.xmu.edu.legaldocument.entity.PersonalLegaldocStack;
 import cn.xmu.edu.legaldocument.service.PdfService;
-import com.google.common.util.concurrent.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
+import com.google.common.util.concurrent.*;
 
 @RestController
 public class PdfController {

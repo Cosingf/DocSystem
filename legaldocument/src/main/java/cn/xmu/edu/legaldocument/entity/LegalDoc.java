@@ -5,11 +5,21 @@ public class LegalDoc {
 
     private String path;
 
-    private Byte isEnrich;
+    private int isEnrich;
 
     private String author;
 
     private String name;
+
+    private int isPublic;
+
+    public int getIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(int isPublic) {
+        this.isPublic = isPublic;
+    }
 
     public Long getId() {
         return id;
@@ -27,11 +37,11 @@ public class LegalDoc {
         this.path = path == null ? null : path.trim();
     }
 
-    public Byte getIsEnrich() {
+    public int getIsEnrich() {
         return isEnrich;
     }
 
-    public void setIsEnrich(Byte isEnrich) {
+    public void setIsEnrich(int isEnrich) {
         this.isEnrich = isEnrich;
     }
 

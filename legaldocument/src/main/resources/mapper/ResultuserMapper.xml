@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.xmu.edu.legaldocument.mapper.ResultuserMapper" >
+  <resultMap id="BaseResultMap" type="cn.xmu.edu.legaldocument.entity.Resultuser" >
+    <result column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="likes" property="likes" jdbcType="TINYINT" />
+  </resultMap>
+  <insert id="insert" parameterType="cn.xmu.edu.legaldocument.entity.Resultuser" >
+    insert into resultuser (id, user_id, likes
+      )
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{likes,jdbcType=TINYINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.xmu.edu.legaldocument.entity.Resultuser" >
+    insert into resultuser
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="likes != null" >
+        likes,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="likes != null" >
+        #{likes,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+</mapper>

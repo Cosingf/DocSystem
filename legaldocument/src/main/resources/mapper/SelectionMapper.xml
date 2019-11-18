@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.xmu.edu.legaldocument.mapper.SelectionMapper" >
+  <resultMap id="BaseResultMap" type="cn.xmu.edu.legaldocument.entity.Selection" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="selection" property="selection" jdbcType="VARCHAR" />
+    <result column="keywords" property="keywords" jdbcType="VARCHAR" />
+    <result column="book_id" property="bookId" jdbcType="BIGINT" />
+    <result column="page_id" property="pageId" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, selection, keywords, book_id, page_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from selection
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from selection
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.xmu.edu.legaldocument.entity.Selection" useGeneratedKeys="true" keyProperty="id" >
+    insert into selection ( selection, keywords,
+      book_id, page_id)
+    values (#{selection,jdbcType=VARCHAR}, #{keywords,jdbcType=VARCHAR},
+      #{bookId,jdbcType=BIGINT}, #{pageId,jdbcType=BIGINT})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="cn.xmu.edu.legaldocument.entity.Selection" >
+    update selection
+    set selection = #{selection,jdbcType=VARCHAR},
+      keywords = #{keywords,jdbcType=VARCHAR},
+      book_id = #{bookId,jdbcType=BIGINT},
+      page_id = #{pageId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

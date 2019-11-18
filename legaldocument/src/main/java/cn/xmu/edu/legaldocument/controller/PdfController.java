@@ -2,68 +2,95 @@ package cn.xmu.edu.legaldocument.controller;
 
 import cn.xmu.edu.legaldocument.entity.LegalDoc;
 import cn.xmu.edu.legaldocument.entity.Page;
+import cn.xmu.edu.legaldocument.entity.PersonalLegaldocStack;
 import cn.xmu.edu.legaldocument.service.PdfService;
-import cn.xmu.edu.legaldocument.service.serviceImpl.PDFSplit;
+import com.google.common.util.concurrent.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.math.BigInteger;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
 
 @RestController
 public class PdfController {
 
     @Autowired
     PdfService pdfService;
-    @Autowired
-    public PDFSplit pdfSplit;
-
 
     //private static final Logger log = LoggerFactory.getLogger(FileController.class);
 
+    /**
+     * 用户上传pdf文件
+     * isEnrich：文章是否增强过
+     * 1:已增强
+     * 0:未增强(用户上传后的初始状态)
+     * isPublic：文章是否放入公有书库
+     * 1：是
+     * 0：否
+     **/
     @RequestMapping(value = "/upload/{userId}",method = RequestMethod.POST)
-    public LegalDoc upload(HttpServletRequest httpServletRequest,HttpServletResponse httpServletResponse,@PathVariable("userId")BigInteger userId,
-                           @RequestParam("file") MultipartFile file, @RequestParam("author")String author) throws Exception{
-        httpServletResponse.setContentType("application/json;charset=utf-8");
-        Byte a=1;
-        Byte b=0;
+    public LegalDoc upload(HttpServletRequest httpServletRequest,HttpServletResponse httpServletResponse,
+                           @PathVariable("userId")Long userId, @RequestParam("file") MultipartFile file,
+                           @RequestParam("author")String author,@RequestParam("isPublic")Integer isPublic) throws Exception{
         LegalDoc legalDoc=new LegalDoc();
+        PersonalLegaldocStack personalLegaldocStack=new PersonalLegaldocStack();
         String path=pdfService.upload(file);
 //        System.out.println("文件路径："+path);
-
         int page=pdfService.getPages(path);
-        int[] arg=new int[page+1];
-        for(int i=0;i<page+1;i++)
-        {
-            arg[i]=i+1;
-        }
+
+        //更新总书库
         legalDoc.setAuthor(author);
         legalDoc.setName(file.getOriginalFilename());
         legalDoc.setPath(path);
-        legalDoc.setIsEnrich(a);
+        legalDoc.setIsEnrich(0);//0代表未增强
+        legalDoc.setIsPublic(isPublic);
         pdfService.insertLegalDoc(legalDoc);
-        pdfSplit=new PDFSplit(arg,file);
-//        System.out.println(legalDoc.getId());
 
+        //更新关系书库
+        personalLegaldocStack.setUserId(userId);
+        Long bookId=pdfService.getLastBookId();
 
-        for(int i=0;i<arg.length-1;i++)
-        {
-            String   myPath="F:/";
-            String fileName = myPath+arg[i]+".pdf";
-            String txtfilePath = myPath+arg[i]+".txt";
-            Page page1=new Page();
-            page1=pdfService.readPdfToTxt(fileName,txtfilePath,legalDoc.getId(),i+1);
-            pdfService.cut(txtfilePath,page1);
-        }
-        if(legalDoc!=null)
-        {
-            httpServletResponse.setStatus(200);
-            //httpServletResponse.getWriter().write(toJSONString(ld));
-        }else{
-            httpServletResponse.setStatus(404);
-        }
+        personalLegaldocStack.setBookId(bookId);
+        pdfService.insertPersonalLegalDoc(personalLegaldocStack);
+
+        //另起一个线程处理文本增强
+        long t1 = System.currentTimeMillis();
+        final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
+        ListenableFuture<Boolean> booleanTask = service.submit(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                String sysPath = System.getProperty("user.dir");
+                String myPath = sysPath+"\\file\\";
+                int[] pages=pdfService.split(myPath,page,file);
+                System.out.println(pages.length);
+
+                for(int i=0;i<pages.length-1;i++)
+                {
+                    String pdfFilePath = myPath+pages[i]+".pdf";
+                    String txtFilePath = myPath+pages[i]+".txt";
+                    Page page=pdfService.readPdfToTxt(pdfFilePath,txtFilePath,legalDoc.getId(),i+1);
+                    pdfService.cut(txtFilePath,page);
+                }
+                pdfService.setLegalDocEnriched(bookId);
+                return true;
+            }
+        });
+
+        Futures.addCallback(booleanTask, new FutureCallback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean result) {
+                System.out.println("enrichTime："+ (System.currentTimeMillis() - t1));
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                t.printStackTrace();
+            }
+        });
+//        System.out.println("responseTime: " + (System.currentTimeMillis() - t1));
         return legalDoc;
     }
 

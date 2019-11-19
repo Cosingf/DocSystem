@@ -2,6 +2,16 @@ package cn.xmu.edu.legaldocument.entity;
 
 public class QASection {
     private QA qa;
+    private Section section;
+    private int rank;
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
 
     public QASection(QA qa, Section section) {
         this.qa = qa;
@@ -26,6 +36,4 @@ public class QASection {
     public void setSection(Section section) {
         this.section = section;
     }
-
-    private Section section;
 }

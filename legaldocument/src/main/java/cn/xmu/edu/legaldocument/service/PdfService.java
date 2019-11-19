@@ -3,6 +3,7 @@ package cn.xmu.edu.legaldocument.service;
 import cn.xmu.edu.legaldocument.entity.*;
 import cn.xmu.edu.legaldocument.mapper.LegalDocMapper;
 import cn.xmu.edu.legaldocument.mapper.PageMapper;
+import cn.xmu.edu.legaldocument.mapper.QAMapper;
 import cn.xmu.edu.legaldocument.mapper.SectionMapper;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfTextExtractor;
@@ -12,24 +13,27 @@ import org.pdfbox.exceptions.InvalidPasswordException;
 import org.pdfbox.pdfparser.PDFParser;
 import org.pdfbox.pdfwriter.COSWriter;
 import org.pdfbox.util.Splitter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class PdfService {
 
+    private static final Logger logger = LoggerFactory.getLogger(PdfService.class);
     @Autowired
-    public LegalDocMapper legalDocMapper;
+    LegalDocMapper legalDocMapper;
     @Autowired
-    public PageMapper pageMapper;
+    PageMapper pageMapper;
     @Autowired
-    public SectionMapper sectionMapper;
+    SectionMapper sectionMapper;
+    @Autowired
+    QAMapper qaMapper;
 
     /**
      * 文件存储到file_path目录
@@ -62,7 +66,7 @@ public class PdfService {
     public int getPages(String filePath) throws IOException {
         PDDocument doc = PDDocument.load(new File(filePath));
         //PDDocument doc = PDDocument.load(filePath);
-        System.out.println(doc.getNumberOfPages());
+        logger.info(String.valueOf(doc.getNumberOfPages()));
         int pages=doc.getNumberOfPages();
         doc.close();
         return pages;
@@ -106,14 +110,97 @@ public class PdfService {
         //删除中间pdf文件
         System.gc();
         File pdfTmp=new File(pdfPath);
-//        System.out.println("pdf路径："+pdfPath);
         pdfTmp.delete();
         return page;
     }
 
     /**
-     * Enrich API
+     * 增强文本
      **/
+    public String enrichSection(List<Section> sectionList) throws IOException {
+        //获取待增强文本内容
+        String[] queryText=new String[sectionList.size()];
+        for(int i=0;i<sectionList.size();i++){
+            queryText[i]=sectionList.get(i).getSectionContent();
+            logger.info("段落"+i+"内容："+queryText[i]);
+        }
+        //获取QA内容
+        Map<Integer,Long> answerIdMap=new HashMap<>();//存数组索引和对应的answerId关系，因为算法只返回数组索引对应的rank
+        List<QA> qaList= getAllQA();//存所有QA内容,主键为answerId(answer:question,多：1）
+        String[] docText=new String[qaList.size()];
+        for(int i=0;i<qaList.size();i++){
+            QA currQA=qaList.get(i);
+            answerIdMap.put(i,currQA.getAnswerId());
+            String question=currQA.getQuestion();
+            String answer=currQA.getAnswer();
+            docText[i]=question+" "+answer;
+            logger.info("QA"+i+"内容："+queryText[i]);
+        }
+        //调用增强算法
+        List<String> command = new ArrayList<String>();
+        command.add("python");
+        command.add("main.py");
+        for(int i=0;i<queryText.length;i++){
+            command.add("\""+queryText[i]+"\"");
+        }
+        command.add("and");
+        for(int i=0;i<docText.length;i++){
+            command.add("\""+docText[i]+"\"");
+        }
+        ProcessBuilder builder = new ProcessBuilder(command);
+        String sysPath = System.getProperty("user.dir");
+        String filePath = sysPath+"\\file\\";
+        File dir = new File(filePath);
+        builder.directory(dir);
+        Process proc = builder.start();
+
+        BufferedReader in = new BufferedReader((new InputStreamReader((proc.getInputStream()))));
+        String result = in.readLine();
+        in.close();
+        logger.info("文本增强结果"+result);
+        //TODO 文本增强结果处理，result格式未处理
+        List<List<Integer>> resultLists=new ArrayList<>();
+        List<Integer> test=new ArrayList<>();
+        test.add(1);
+        test.add(4);
+        resultLists.add(test);
+        List<QASection> qaSectionList=new ArrayList<>();
+        for(int i=0;i<resultLists.size();i++){
+            List<Integer> list=resultLists.get(i);
+            //获取当前section
+            Section section=sectionList.get(i);
+            //遍历rank后的QA
+            for (int j=1;j<list.size();j++) {
+                Integer num=list.get(j);//获取QA数组索引
+                Long answerId=answerIdMap.get(num);//根据数组索引获得对应的answerId
+
+                //根据answerId取当前rank所属QA
+                QA currQA = new QA();
+                for(QA qa:qaList){
+                    if(qa.getAnswerId().equals(answerId)){
+                        currQA=qa;
+                    }
+                }
+                //更新数据到QASection
+                QASection qaSection=new QASection();
+                qaSection.setSection(section);
+                qaSection.setRank(j);//QA的权重
+                qaSection.setQa(currQA);
+                qaSectionList.add(qaSection);
+            }
+        }
+        updateQASection(qaSectionList);
+        return result;
+    }
+    //更新文本增强结果
+    private void updateQASection(List<QASection> qaSectionList) {
+        qaMapper.updateQASection(qaSectionList);
+    }
+
+    private List<QA> getAllQA() {
+        return qaMapper.getAllQA();
+    }
+
     public String rank_idx(String[] query_text,String[] doc_text) throws IOException {
         List<String> command = new ArrayList<String>();
         command.add("python");
@@ -139,17 +226,14 @@ public class PdfService {
         return result;
     }
 
-    private String[] getSelectionByBookId(Long bookId){
-
-        return null;
-    }
 
     private void insertSection(Section section)
     {
         sectionMapper.insert(section);
     }
+
     //cut file
-    public void cut(String filePath, Page page){
+    public List<Section> cut(String filePath, Page page){
         ArrayList<String> res = new ArrayList<>();// 段落切分结果
         StringBuilder sb = new StringBuilder();// 拼接读取的内容(while循环中不到断尾时,将字符一个个加入拼接)
         String temp = null;// 临时变量，存储sb去除空格的内容
@@ -191,6 +275,7 @@ public class PdfService {
         }
         Iterator<String> iterator = res.iterator();
         int i=0;
+        List<Section> sectionList=new ArrayList<>(); //用于文本增强
         Section section=new Section();
         while (iterator.hasNext()) {
             i++;
@@ -199,13 +284,14 @@ public class PdfService {
             section.setSectionContent(next);
             section.setOrderNum(i);
             insertSection(section);
+            sectionList.add(section);
 //                System.out.println("段落开始：");
 //                System.out.println(next);
         }
-        System.out.println("The number of paragraphs is:" + res.size());
+        logger.info("The number of paragraphs is:" + res.size());
         //删除中间txt文件
-//        System.out.println("txt路径："+filePath);
         txtFile.delete();
+        return sectionList;
     }
 
     public int[] split(String myPath, int page, MultipartFile file) throws Exception

@@ -3,12 +3,14 @@ package cn.xmu.edu.legaldocument.controller;
 import cn.xmu.edu.legaldocument.entity.LegalDoc;
 import cn.xmu.edu.legaldocument.entity.Page;
 import cn.xmu.edu.legaldocument.entity.PersonalLegaldocStack;
+import cn.xmu.edu.legaldocument.entity.Section;
 import cn.xmu.edu.legaldocument.service.PdfService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import com.google.common.util.concurrent.*;
@@ -71,7 +73,8 @@ public class PdfController {
                     String pdfFilePath = myPath+pages[i]+".pdf";
                     String txtFilePath = myPath+pages[i]+".txt";
                     Page page=pdfService.readPdfToTxt(pdfFilePath,txtFilePath,legalDoc.getId(),i+1);
-                    pdfService.cut(txtFilePath,page);
+                    List<Section> sectionList=pdfService.cut(txtFilePath,page);
+                    pdfService.enrichSection(sectionList);
                 }
                 pdfService.setLegalDocEnriched(bookId);
                 return true;

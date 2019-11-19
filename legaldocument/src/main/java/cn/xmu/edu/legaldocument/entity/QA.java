@@ -1,15 +1,41 @@
 package cn.xmu.edu.legaldocument.entity;
 
-public class QA {
-    String question;
-    String answer;
-    String link;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-    public  QA(String que,String ans,String link){
-        question=que;
-        answer=ans;
-        this.link=link;
+public class QA {
+    private Long questionId;
+    private Long answerId;
+    private String question;
+    private String answer;
+    private String link;
+
+    //生成QA结合
+    public String getJointQA() {
+        StringBuilder sb=new StringBuilder();
+        sb.append(question);
+        sb.append(" "+answer);
+        return sb.toString();
     }
+
+    public Long getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(Long questionId) {
+        this.questionId = questionId;
+    }
+
+    public Long getAnswerId() {
+        return answerId;
+    }
+
+    public void setAnswerId(Long answerId) {
+        this.answerId = answerId;
+    }
+
     public String getQuestion() {
         return question;
     }

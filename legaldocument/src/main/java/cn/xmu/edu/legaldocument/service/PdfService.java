@@ -6,6 +6,8 @@ import cn.xmu.edu.legaldocument.mapper.PageMapper;
 import cn.xmu.edu.legaldocument.mapper.QAMapper;
 import cn.xmu.edu.legaldocument.mapper.SectionMapper;
 import cn.xmu.edu.legaldocument.entity.QA;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -163,22 +165,10 @@ public class PdfService {
         }
         logger.info("文本增强结果"+result);
         //store enrich result
-        List<List<Integer>> resultLists=new ArrayList<>();
 
-        String[] results=result.split("], \\[");
-        for(int i=0;i<results.length;i++){
-            int num=0;
-            List<Integer> resultList=new ArrayList<>();
-            for(char a:results[i].toCharArray()){
-                if(Character.isDigit(a)){
-                    num=num*10+ ((int) a-48);
-                }else if(a==','){
-                    resultList.add(num);
-                    num=0;
-                }
-            }
-            resultLists.add(resultList);
-        }
+        List<List<Integer>> resultLists=new ArrayList<>();
+        resultLists = JSON.parseObject(result,new TypeReference<List<List<Integer>>>(){});
+        System.out.println(resultLists);
         List<QASection> qaSectionList=new ArrayList<>();
 //        Long qaSectionId=getLastQASectionId();
 //        logger.info("last qa_section id is:"+qaSectionId);
@@ -190,13 +180,13 @@ public class PdfService {
             for (int j=0;j<list.size();j++) {
                 Integer num=list.get(j);//获取QA数组索引
                 Long answerId=answerIdMap.get(num);//根据数组索引获得对应的answerId
-                logger.info("num:"+num+" answerId:"+answerId);
+//                logger.info("num:"+num+" answerId:"+answerId);
                 //根据answerId取当前rank所属QA
                 QA currQA = new QA();
                 for(QA qa:qaList){
                     if(qa.getAnswerId().equals(answerId)){
                         currQA=qa;
-                        logger.info("answerId:"+qa.getAnswerId()+" questionId:"+ qa.getQuestionId());
+//                        logger.info("answerId:"+qa.getAnswerId()+" questionId:"+ qa.getQuestionId());
                     }
                 }
                 //更新数据到QASection

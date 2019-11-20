@@ -1,43 +1,42 @@
 package cn.xmu.edu.legaldocument.util;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.lang.ref.Reference;
+import java.sql.SQLOutput;
+import java.util.ArrayList;
+import java.util.List;
+
 public class CutTest {
-    static File dir=new File("E:\\pic\\");//目录路径!
     public static void main(String[] args) {
-        File file=new File(dir,"2.txt");//文件!
-        long size=file.length();//文件大小!
-        //创建随机流!
-        RandomAccessFile raf1=null,raf2=null;
-        byte[] bytes=new byte[1024];//缓冲区!
-        try {
-            raf1=new RandomAccessFile(file,"r");
-            for(int i=0,len=0;i<=size/1024;i++) {
-                len=raf1.read(bytes);//读入数据!
-                raf2=new RandomAccessFile(new File(dir,"片段"+(i+1)+".txt"),"rw");
-                raf2.write(bytes, 0, len);//写出数据!
-                raf2.close();//关闭!
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }catch(IOException e) {
-            e.printStackTrace();
-        }finally {//关流!
-            if(raf1!=null) {
-                try {
-                    raf1.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if(raf2!=null) {
-                try {
-                    raf2.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        String result="[[1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0]]";
+        List<List<Integer>> resultLists=new ArrayList<>();
+
+//        String[] results=result.split(", \\[");
+//        for(int i=0;i<results.length;i++){
+//            int num=0;
+//            List<Integer> resultList=new ArrayList<>();
+//            System.out.println(results[i]);
+//            for(char a:results[i].toCharArray()){
+//                if(Character.isDigit(a)){
+//                    num=num*10+ (int) a-(int)'0';
+//                    System.out.println(a+" "+num);
+//                }else if(a==',') {
+//                    resultList.add(num);
+//                    num = 0;
+//                }else if(a==']'){
+//                    resultList.add(num);
+//                    break;
+//                }
+//            }
+//            resultLists.add(resultList);
+//        }
+
+        resultLists = JSON.parseObject(result,new TypeReference<List<List<Integer>>>(){});
+        System.out.println(resultLists);
     }
 }

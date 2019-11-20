@@ -1,15 +1,13 @@
 package cn.xmu.edu.legaldocument.controller;
 
-import cn.xmu.edu.legaldocument.entity.LegalDoc;
-import cn.xmu.edu.legaldocument.entity.Page;
-import cn.xmu.edu.legaldocument.entity.PersonalLegaldocStack;
-import cn.xmu.edu.legaldocument.entity.Section;
+import cn.xmu.edu.legaldocument.entity.*;
 import cn.xmu.edu.legaldocument.service.PdfService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
@@ -64,7 +62,7 @@ public class PdfController {
             @Override
             public Boolean call() throws Exception {
                 String sysPath = System.getProperty("user.dir");
-                String myPath = sysPath+"\\file\\";
+                String myPath = sysPath+"/file/";
                 int[] pages=pdfService.split(myPath,page,file);
                 System.out.println(pages.length);
 
@@ -173,4 +171,7 @@ public class PdfController {
         return "下载失败";
     }
     */
+
+
 }
+

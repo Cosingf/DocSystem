@@ -1,6 +1,6 @@
 package cn.xmu.edu.legaldocument.controller;
 
-import cn.xmu.edu.legaldocument.vo.QA;
+import cn.xmu.edu.legaldocument.entity.QA;
 import cn.xmu.edu.legaldocument.entity.QASection;
 import cn.xmu.edu.legaldocument.service.ReadService;
 import com.alibaba.fastjson.JSON;

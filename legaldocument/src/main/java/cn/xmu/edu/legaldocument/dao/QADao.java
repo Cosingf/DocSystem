@@ -1,6 +1,6 @@
 package cn.xmu.edu.legaldocument.dao;
 
-import cn.xmu.edu.legaldocument.vo.QA;
+import cn.xmu.edu.legaldocument.entity.QA;
 import com.alibaba.fastjson.JSON;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
@@ -64,8 +64,9 @@ public class QADao {
             String question = document.get("question");
             String answer = document.get("answer");
             String link = document.get("link");
-
-            QA qa = new QA(question, answer, link);
+            //TODO
+            //QA qa = new QA(question, answer, link);
+            QA qa=new QA();
             qas.add(qa);
             System.out.println(JSON.toJSONString(qa));
         }

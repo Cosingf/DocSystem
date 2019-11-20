@@ -5,7 +5,7 @@ import cn.xmu.edu.legaldocument.mapper.LegalDocMapper;
 import cn.xmu.edu.legaldocument.mapper.PageMapper;
 import cn.xmu.edu.legaldocument.mapper.QAMapper;
 import cn.xmu.edu.legaldocument.mapper.SectionMapper;
-import cn.xmu.edu.legaldocument.vo.QA;
+import cn.xmu.edu.legaldocument.entity.QA;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -51,12 +51,12 @@ public class PdfService {
         // 设置文件存储路径
 
         String sysPath = System.getProperty("user.dir");
-        String filePath = sysPath+"\\file\\";
+        String filePath = sysPath+"/file/";
 
         assert fileName != null;
         File dest = new File(filePath, fileName);
             // 检测是否存在目录
-        System.out.println("file directory:"+dest.getParentFile());
+        logger.info("file directory:"+dest.getParentFile());
         if (!dest.getParentFile().exists()) {
             dest.getParentFile().mkdirs();// 新建文件夹
         }
@@ -118,12 +118,12 @@ public class PdfService {
     /**
      * 增强文本
      **/
-    public String enrichSection(List<Section> sectionList) throws IOException {
+    public void enrichSection(List<Section> sectionList) throws IOException {
         //获取待增强文本内容
         String[] queryText=new String[sectionList.size()];
         for(int i=0;i<sectionList.size();i++){
             queryText[i]=sectionList.get(i).getSectionContent();
-            logger.info("段落"+i+"内容："+queryText[i]);
+//            logger.info("段落"+i+"内容："+queryText[i]);
         }
         //获取QA内容
         Map<Integer,Long> answerIdMap=new HashMap<>();//存数组索引和对应的answerId关系，因为算法只返回数组索引对应的rank
@@ -135,7 +135,7 @@ public class PdfService {
             String question=currQA.getQuestion();
             String answer=currQA.getAnswer();
             docText[i]=question+" "+answer;
-            logger.info("QA"+i+"内容："+queryText[i]);
+//            logger.info("QA"+i+"内容："+docText[i]);
         }
         //调用增强算法
         List<String> command = new ArrayList<String>();
@@ -150,35 +150,38 @@ public class PdfService {
         }
         ProcessBuilder builder = new ProcessBuilder(command);
         String sysPath = System.getProperty("user.dir");
-        String filePath = sysPath+"\\file\\";
-        File dir = new File(filePath);
+        File dir = new File("/home/lf/桌面/qa_project/");
         builder.directory(dir);
         Process proc = builder.start();
 
         BufferedReader in = new BufferedReader((new InputStreamReader((proc.getInputStream()))));
         String result = in.readLine();
         in.close();
+        if (result==null||result.length()==0){
+            logger.info("no available result");
+            return;
+        }
         logger.info("文本增强结果"+result);
-        //TODO 文本增强结果处理，result格式未处理
+        //store enrich result
+        List<List<Integer>> resultLists=new ArrayList<>();
+
         String[] results=result.split("], \\[");
         for(int i=0;i<results.length;i++){
             int num=0;
+            List<Integer> resultList=new ArrayList<>();
             for(char a:results[i].toCharArray()){
                 if(Character.isDigit(a)){
-                    num=num*10+ (int) a;
-                }else if(){
+                    num=num*10+ ((int) a-48);
+                }else if(a==','){
+                    resultList.add(num);
                     num=0;
-                }else{
-                    continue;
                 }
             }
+            resultLists.add(resultList);
         }
-        List<List<Integer>> resultLists=new ArrayList<>();
-        List<Integer> test=new ArrayList<>();
-        test.add(1);
-        test.add(4);
-        resultLists.add(test);
         List<QASection> qaSectionList=new ArrayList<>();
+//        Long qaSectionId=getLastQASectionId();
+//        logger.info("last qa_section id is:"+qaSectionId);
         for(int i=0;i<resultLists.size();i++){
             List<Integer> list=resultLists.get(i);
             //获取当前section
@@ -187,26 +190,36 @@ public class PdfService {
             for (int j=0;j<list.size();j++) {
                 Integer num=list.get(j);//获取QA数组索引
                 Long answerId=answerIdMap.get(num);//根据数组索引获得对应的answerId
-
+                logger.info("num:"+num+" answerId:"+answerId);
                 //根据answerId取当前rank所属QA
                 QA currQA = new QA();
                 for(QA qa:qaList){
                     if(qa.getAnswerId().equals(answerId)){
                         currQA=qa;
+                        logger.info("answerId:"+qa.getAnswerId()+" questionId:"+ qa.getQuestionId());
                     }
                 }
                 //更新数据到QASection
                 QASection qaSection=new QASection();
+//                qaSection.setId(++qaSectionId);
                 qaSection.setQuestionId(currQA.getQuestionId());
                 qaSection.setAnswerId(currQA.getAnswerId());
                 qaSection.setSectionId(section.getId());
-                qaSection.setRank(j+1);//QA的权重
+                qaSection.setRankScore(j+1);//QA的权重
                 qaSectionList.add(qaSection);
             }
         }
         insertQASection(qaSectionList);
-        return result;
     }
+
+//    private Long getLastQASectionId() {
+//        Long qaSectionId=qaMapper.getLastQASectionId();
+//        if(qaSectionId==null){
+//            qaSectionId=1L;
+//        }
+//        return qaSectionId;
+//    }
+
     //将文本增强结果插入数据库
     private void insertQASection(List<QASection> qaSectionList) {
         qaMapper.insertQASection(qaSectionList);
@@ -215,32 +228,6 @@ public class PdfService {
     private List<QA> getAllQA() {
         return qaMapper.getAllQA();
     }
-
-    public String rank_idx(String[] query_text,String[] doc_text) throws IOException {
-        List<String> command = new ArrayList<String>();
-        command.add("python");
-        command.add("main.py");
-        for(int i=0;i<query_text.length;i++){
-            command.add("\""+query_text[i]+"\"");
-        }
-        command.add("and");
-        for(int i=0;i<doc_text.length;i++){
-            command.add("\""+doc_text[i]+"\"");
-        }
-        ProcessBuilder builder = new ProcessBuilder(command);
-        String sysPath = System.getProperty("user.dir");
-        String filePath = sysPath+"\\file\\";
-        File dir = new File(filePath);
-        builder.directory(dir);
-        Process proc = builder.start();
-
-        BufferedReader in = new BufferedReader((new InputStreamReader((proc.getInputStream()))));
-        String result = in.readLine();
-        in.close();
-
-        return result;
-    }
-
 
     private void insertSection(Section section)
     {
@@ -291,8 +278,8 @@ public class PdfService {
         Iterator<String> iterator = res.iterator();
         int i=0;
         List<Section> sectionList=new ArrayList<>(); //用于文本增强
-        Section section=new Section();
         while (iterator.hasNext()) {
+            Section section=new Section();
             i++;
             String next = iterator.next();
             section.setPageId(page.getId());
@@ -300,8 +287,8 @@ public class PdfService {
             section.setOrderNum(i);
             insertSection(section);
             sectionList.add(section);
-//                System.out.println("段落开始：");
-//                System.out.println(next);
+//            System.out.println("段落开始：");
+//            System.out.println(next);
         }
         logger.info("The number of paragraphs is:" + res.size());
         //删除中间txt文件

@@ -2,7 +2,7 @@ package cn.xmu.edu.legaldocument.service;
 
 
 import cn.xmu.edu.legaldocument.entity.Page;
-import cn.xmu.edu.legaldocument.vo.QA;
+import cn.xmu.edu.legaldocument.entity.QA;
 import cn.xmu.edu.legaldocument.dao.QADao;
 import cn.xmu.edu.legaldocument.entity.QASection;
 import cn.xmu.edu.legaldocument.entity.Section;
@@ -48,8 +48,9 @@ public class ReadService {
                 }
                 else {keyWords =section.getKeywords().split(" ");}
                 List<QA> qas=qaDao.findIndexDB(keyWords,1);
-                result.setQa(qas.get(0));
-                result.setSection(section);
+                //TODO
+//                result.setQa(qas.get(0));
+//                result.setSection(section);
                results.add(result);
             }
             return results;

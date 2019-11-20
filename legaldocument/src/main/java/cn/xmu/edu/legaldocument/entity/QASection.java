@@ -1,13 +1,15 @@
 package cn.xmu.edu.legaldocument.entity;
 
-import cn.xmu.edu.legaldocument.vo.QA;
+
+
 
 public class QASection {
+
     private Long id;
     private Long questionId;
     private Long answerId;
     private Long sectionId;
-    private int rank;
+    private int rankScore;
 
     public Long getId() {
         return id;
@@ -41,11 +43,11 @@ public class QASection {
         this.sectionId = sectionId;
     }
 
-    public int getRank() {
-        return rank;
+    public int getRankScore() {
+        return rankScore;
     }
 
-    public void setRank(int rank) {
-        this.rank = rank;
+    public void setRankScore(int rankScore) {
+        this.rankScore = rankScore;
     }
 }

@@ -1,7 +1,10 @@
 package cn.xmu.edu.legaldocument.util;
 
+import cn.xmu.edu.legaldocument.entity.QASection;
+import cn.xmu.edu.legaldocument.mapper.QAMapper;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
@@ -15,6 +18,8 @@ public class WordUtil {
 
     private final  static  Integer NUM=4;
 
+    @Autowired
+    QAMapper qaMapper;
 
     public String[] getKeywords(String string,int n) throws IOException {
 
@@ -55,4 +60,8 @@ public class WordUtil {
 
          return  keyWords;
     }
+
+
+
+
 }

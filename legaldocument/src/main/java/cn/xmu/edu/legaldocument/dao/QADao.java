@@ -1,17 +1,15 @@
 package cn.xmu.edu.legaldocument.dao;
 
-import cn.xmu.edu.legaldocument.entity.QA;
+import cn.xmu.edu.legaldocument.vo.QA;
 import com.alibaba.fastjson.JSON;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
-import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.springframework.stereotype.Component;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
 import java.nio.file.Path;

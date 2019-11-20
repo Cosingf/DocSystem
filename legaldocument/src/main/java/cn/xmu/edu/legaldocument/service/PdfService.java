@@ -5,6 +5,7 @@ import cn.xmu.edu.legaldocument.mapper.LegalDocMapper;
 import cn.xmu.edu.legaldocument.mapper.PageMapper;
 import cn.xmu.edu.legaldocument.mapper.QAMapper;
 import cn.xmu.edu.legaldocument.mapper.SectionMapper;
+import cn.xmu.edu.legaldocument.vo.QA;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -159,6 +160,19 @@ public class PdfService {
         in.close();
         logger.info("文本增强结果"+result);
         //TODO 文本增强结果处理，result格式未处理
+        String[] results=result.split("], \\[");
+        for(int i=0;i<results.length;i++){
+            int num=0;
+            for(char a:results[i].toCharArray()){
+                if(Character.isDigit(a)){
+                    num=num*10+ (int) a;
+                }else if(){
+                    num=0;
+                }else{
+                    continue;
+                }
+            }
+        }
         List<List<Integer>> resultLists=new ArrayList<>();
         List<Integer> test=new ArrayList<>();
         test.add(1);
@@ -170,7 +184,7 @@ public class PdfService {
             //获取当前section
             Section section=sectionList.get(i);
             //遍历rank后的QA
-            for (int j=1;j<list.size();j++) {
+            for (int j=0;j<list.size();j++) {
                 Integer num=list.get(j);//获取QA数组索引
                 Long answerId=answerIdMap.get(num);//根据数组索引获得对应的answerId
 
@@ -183,18 +197,19 @@ public class PdfService {
                 }
                 //更新数据到QASection
                 QASection qaSection=new QASection();
-                qaSection.setSection(section);
-                qaSection.setRank(j);//QA的权重
-                qaSection.setQa(currQA);
+                qaSection.setQuestionId(currQA.getQuestionId());
+                qaSection.setAnswerId(currQA.getAnswerId());
+                qaSection.setSectionId(section.getId());
+                qaSection.setRank(j+1);//QA的权重
                 qaSectionList.add(qaSection);
             }
         }
-        updateQASection(qaSectionList);
+        insertQASection(qaSectionList);
         return result;
     }
-    //更新文本增强结果
-    private void updateQASection(List<QASection> qaSectionList) {
-        qaMapper.updateQASection(qaSectionList);
+    //将文本增强结果插入数据库
+    private void insertQASection(List<QASection> qaSectionList) {
+        qaMapper.insertQASection(qaSectionList);
     }
 
     private List<QA> getAllQA() {

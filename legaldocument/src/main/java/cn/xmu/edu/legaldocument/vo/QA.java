@@ -1,4 +1,4 @@
-package cn.xmu.edu.legaldocument.entity;
+package cn.xmu.edu.legaldocument.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -2,7 +2,7 @@ package cn.xmu.edu.legaldocument.service;
 
 
 import cn.xmu.edu.legaldocument.entity.Page;
-import cn.xmu.edu.legaldocument.entity.QA;
+import cn.xmu.edu.legaldocument.vo.QA;
 import cn.xmu.edu.legaldocument.dao.QADao;
 import cn.xmu.edu.legaldocument.entity.QASection;
 import cn.xmu.edu.legaldocument.entity.Section;
@@ -12,12 +12,8 @@ import cn.xmu.edu.legaldocument.util.WordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.Segment;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ReadService {

@@ -3,11 +3,11 @@
 
     <div  class="top">
       <img class="photo" src="../assets/头像.jpg" >
-      <p id="welcome">欢迎您 zzz</p>
+      <p id="welcome">welcome</p>
       <div class="menu">
         <ul class="button-list">
-          <li><a href='/' class='choosed_button' onclick="return false;">公共书库</a></li>
-          <li><a href='#' class='button'v-on:click="goToMyLibrary()">我的书库</a></li>
+          <li><a href='/' class='choosed_button' onclick="return false;">public library</a></li>
+          <li><a href='#' class='button'v-on:click="goToMyLibrary()">my library</a></li>
         </ul>
       </div>
       <p id="back">退出</p>
@@ -18,13 +18,13 @@
 
       <div class="container">
         <form action="" class="parent">
-          <input type="text" name="searchContent" id="searchContent"class="search" placeholder="请输入关键词">
+          <input type="text" name="searchContent" id="searchContent"class="search" placeholder="keyword">
           <input type="button" v-on:click="searchBooks()" name="sub" id="sub" class="btn">
         </form>
       </div>
 
       <div class="add_button">
-        <button type="button" v-on:click="addToMyLibrary()" style="width: 220px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;">添加至我的书库</button>
+        <button type="button" v-on:click="addToMyLibrary()" style="width: 220px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;">add to my library</button>
       </div>
 
       <div class="sku-box store-content">
@@ -47,71 +47,7 @@
 
 
 
-         <div class="last">
-          <div class="lastinfo">
-            <div class="network">
-              <img class="tip" src="../assets/network.png">
-              <ul style="list-style-type:none">
-                <br />
-                <li><a href="#">中国裁判文书网</a></li><br />
-                <li><a href="#">中国法律文书网</a></li><br />
-                <li><a href="#">中国庭审公开网</a></li><br />
-                <li><a href="#">中国知识产权网</a></li>
-              </ul>
-            </div>
-            <div class="tag">
-              <img class="tip" src="../assets/tag.png">
-              <ul style="list-style-type:none">
-                <br />
-                <li><a href="#">行政案件</a></li><br />
-                <li><a href="#">刑事案件</a></li><br />
-                <li><a href="#">民事案件</a></li><br />
-                <li><a href="#">赔偿纠纷</a></li>
-              </ul>
-            </div>
-            <div class="stats">
-              <img class="tip" src="../assets/stats.png">
-              <ul style="list-style-type:none">
-                <br />
-                <li><a href="#">婚姻方面</a></li><br />
-                <li><a href="#">财产方面</a></li><br />
-                <li><a href="#">合同方面</a></li><br />
-                <li><a href="#">教育方面</a></li>
-              </ul>
-            </div>
-            <div class="locate">
-              <img class="tip" src="../assets/location.png">
-              <ul style="list-style-type:none">
-                <br />
-                <li><a href="#">广东法院网</a></li><br />
-                <li><a href="#">福建法院网</a></li><br />
-                <li><a href="#">西藏法院网</a></li><br />
-                <li><a href="#">宁夏法院网</a></li>
-              </ul>
-            </div>
-            <div class="bookstore">
-              <img class="tip" src="../assets/star.png">
-              <ul style="list-style-type:none">
-                <br />
-                <li><a href="#">新华书店</a></li><br />
-                <li><a href="#">当当购书网</a></li><br />
-                <li><a href="#">京东书城</a></li><br />
-                <li><a href="#">晓学堂书屋</a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="bottom">
-            <ul style="list-style-type:none">
-              <li><a href="#">联系我们</a></li>
-              <li><a href="#">使用说明</a></li>
-              <li><a href="#">可访问性</a></li>
-              <li><a href="#">内容举报</a></li>
-              <li><a href="#">商业合作</a></li>
-              <li><a href="#">广告宣传</a></li>
-              <li><a href="#">退出系统</a></li>
-            </ul>
-          </div>
-         </div>
+
     </div>
   </div>
 
@@ -148,7 +84,7 @@
 
       that.$axios({
         method:'POST',
-        url:'/apis/publicbooks/sixbooks',
+        url:'/apis/publicbooks/sixbooks/'+this.currentPage,
       })
         .then(response=>{
          that.books=response.data;

@@ -7,22 +7,21 @@
       <div class="back">
         <a  href="#" v-on:click="back" style="float: left;"><img src="../assets/back.png" border="0"></a>
       </div>
-      <span class="back_word" >返回</span>
+      <span class="back_word" >back</span>
       <img class="photo" src="../assets/头像.jpg">
       <div class="button1">
 
-        <button v-on:click="gotoPublicBook" style="width: 200px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;"><strong>进入系统</strong></button>
+        <button v-on:click="gotoPublicBook" style="width: 200px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;"><strong>enter system</strong></button>
 
 
       </div>
       <div class="button2">
-        <button @click="gotoRePass" style="width: 200px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;"><strong>修改密码</strong></button>
+        <button @click="gotoRePass" style="width: 250px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;"><strong>change password</strong></button>
       </div>
 
       <div class="info" style="float: left;" >
-        <p  >用户名：{{user.account}}</p><p></p>
-        <p v-if="ok">邮箱：{{user.email}}</p>
-        <p>最近常看书籍：</p>
+        <p  >account: {{user.account}}</p><p></p>
+        <p v-if="ok">email: {{user.email}}</p>
 
       </div>
 
@@ -45,7 +44,7 @@
       name: "UserPage",
       data()
       {
-        console.log(2)
+
         return{
           user:{
             id:'',
@@ -83,13 +82,7 @@
           this.$router.go(-1);//返回上一层
         },
         gotoPublicBook(){
-      /*    this.$axios.get("/publicbooks/sixbooks/"+this.$data.pageNum)
-            .then(response=>{
-              this.$data.bookInfo.pop()
-              this.$data.bookInfo.push(response.data)
-            }).catch(error=>{
-            console.log(error)
-          })*/
+
           this.$router.push({name: 'PublicBooks'});
         },
 

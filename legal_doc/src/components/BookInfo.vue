@@ -6,12 +6,12 @@
     <div>
         <!--<div id="bookInfo.id" class="content1" style="background-color: rgba(255,255,255,0.8);">-->
           <div class="item-img">
-          <img v-on:click="gotoBook(item.path,item.id)" :src="item.imgpath" height="300" width="300" style="cursor: pointer;">
+          <img v-on:click="gotoBook(item.path,item.id,item.name,item.author)" :src="item.imgpath" height="300" width="300" style="cursor: pointer;">
 
           </div>
 
           <input style="position: absolute;left: 90%;top: 3%;width: 30px;height: 30px;"  type="checkbox" name="check" :value=item.id />
-          <div class="intro" v-on:click="gotoBook(item.path,item.id)">
+          <div class="intro" v-on:click="gotoBook(item.path,item.id,item.name,item.author)">
             <div class="text">
               <h2 style="text-align: center; cursor: pointer;">{{item.name}}</h2>
               <h6 style="text-align: center;margin-top: 20px">{{item.author}}</h6>
@@ -36,9 +36,11 @@
 
       }),
       methods:{
-        gotoBook(path,id){
+        gotoBook(path,id,name,author){
           localStorage.setItem('bookId',path)
           localStorage.setItem('id',id)
+          localStorage.setItem('bookname',name)
+          localStorage.setItem('author',author)
           this.$router.push({name: 'ReadBook'});
         }
       },

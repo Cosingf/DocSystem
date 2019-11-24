@@ -3,11 +3,11 @@
 
     <div  class="top">
       <img class="photo" src="../assets/头像.jpg" v-on:click="gotoUserPage()">
-      <p id="welcome">欢迎您 zzz</p>
+      <p id="welcome">welcome</p>
       <div class="menu">
         <ul class="button-list">
-          <li><a href='/' class='choosed_button' v-on:click="goToPublicLibrary()">公共书库</a></li>
-          <li><a href='#' class='button'v-on:click="goToMyLibrary()">我的书库</a></li>
+          <li><a href='/' class='choosed_button' v-on:click="goToPublicLibrary()">public library</a></li>
+          <li><a href='#' class='button'v-on:click="goToMyLibrary()">my library</a></li>
         </ul>
       </div>
       <p id="back">退出</p>
@@ -18,14 +18,14 @@
     <div class="main">
       <div class="container-fluid" >
       <div class="row">
-        <div class="bookname"><h1 style="margin-right:0px;width: 150px;margin-left:60px;margin-top:90px;">刑法学</h1></div>
-        <div class="bookauthor"><p style="font-size:20px;padding-top:10px;margin-left:0px;width: 400px;margin-top:90px;">高铭暄、马克昌</p></div>
+        <div class="bookname"><h1 style="margin-right:20px;width: 300px;margin-left:60px;margin-top:90px;">{{this.bookname}}</h1></div>
+        <div class="bookauthor"><p style="font-size:20px;padding-top:10px;margin-left:0px;width: 300px;margin-top:90px;">{{this.author}}</p></div>
         <div class="addmybook">
           <button type="button" v-on:click="addToMyLibrary()" class="btn btn-light"style="font-size:20px;margin-top:90px;background-color: #ed757a;color:white;border-radius: 10px;" data-toggle="modal" data-target="#myModal">
-            添加到My Book
+            add to My Book
           </button>
           <button type="button" v-on:click="enhance()" class="btn btn-light"style="font-size:20px;margin-top:90px;margin-left:50px;background-color: #ed757a;color:white;border-radius: 10px;" data-toggle="modal" data-target="#myModal">
-            全文增强
+            enhance
           </button>
         </div>
        <!-- <button class="btn col-1 offset-3" style="background-color:rgba(255,255,255,0.5);margin-top:10px;margin-left: 800px;"><img src="../assets/add.png"></button>-->
@@ -33,16 +33,15 @@
     </div>
 
 
-
     <div style="margin-top:30px;">
       <div style="width:60%">
 
-        <button type="button" v-on:click="last()" style="margin-left: 300px;margin-bottom: 10px"> 上一页</button>
-        <button type="button" v-on:click="next()" style="margin-left: 50px;margin-bottom: 10px"> 下一页</button>
-          <div class="drag-box" id="dragBox" @scroll="scrollfun($event)">
+        <button type="button" v-on:click="last()" style="margin-left: 300px;margin-bottom: 10px"> prev</button>
+        <button type="button" v-on:click="next()" style="margin-left: 50px;margin-bottom: 10px"> next</button>
+          <div class="drag-box" id="dragBox" >
             <el-scrollbar style="height: 200% ">
               <div class="wrapper" id="pdf-container" @mouseup="tooltip($event)" >
-                <div :id="`page-${i}`" :key="i" class="pdf-box" >
+                <div  v-for="i in totals" :id="`page-${i}`" :key="i" class="pdf-box" >
                   <canvas :id="'canvas-pdf-' + i" class="canvas-pdf" ></canvas>
                 </div>
               </div>
@@ -52,99 +51,37 @@
     </div>
 
 
-  <div class="last">
-    <div class="lastinfo">
-      <div class="network">
-        <img class="tip" src="../assets/network.png">
-        <ul style="list-style-type:none">
-          <br />
-          <li><a href="#">中国裁判文书网</a></li><br />
-          <li><a href="#">中国法律文书网</a></li><br />
-          <li><a href="#">中国庭审公开网</a></li><br />
-          <li><a href="#">中国知识产权网</a></li>
-        </ul>
-      </div>
-      <div class="tag">
-        <img class="tip" src="../assets/tag.png">
-        <ul style="list-style-type:none">
-          <br />
-          <li><a href="#">行政案件</a></li><br />
-          <li><a href="#">刑事案件</a></li><br />
-          <li><a href="#">民事案件</a></li><br />
-          <li><a href="#">赔偿纠纷</a></li>
-        </ul>
-      </div>
-      <div class="stats">
-        <img class="tip" src="../assets/stats.png">
-        <ul style="list-style-type:none">
-          <br />
-          <li><a href="#">婚姻方面</a></li><br />
-          <li><a href="#">财产方面</a></li><br />
-          <li><a href="#">合同方面</a></li><br />
-          <li><a href="#">教育方面</a></li>
-        </ul>
-      </div>
-      <div class="locate">
-        <img class="tip" src="../assets/location.png">
-        <ul style="list-style-type:none">
-          <br />
-          <li><a href="#">广东法院网</a></li><br />
-          <li><a href="#">福建法院网</a></li><br />
-          <li><a href="#">西藏法院网</a></li><br />
-          <li><a href="#">宁夏法院网</a></li>
-        </ul>
-      </div>
-      <div class="bookstore">
-        <img class="tip" src="../assets/star.png">
-        <ul style="list-style-type:none">
-          <br />
-          <li><a href="#">新华书店</a></li><br />
-          <li><a href="#">当当购书网</a></li><br />
-          <li><a href="#">京东书城</a></li><br />
-          <li><a href="#">晓学堂书屋</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="bottom">
-      <ul style="list-style-type:none">
-        <li><a href="#">联系我们</a></li>
-        <li><a href="#">使用说明</a></li>
-        <li><a href="#">可访问性</a></li>
-        <li><a href="#">内容举报</a></li>
-        <li><a href="#">商业合作</a></li>
-        <li><a href="#">广告宣传</a></li>
-        <li><a href="#">退出系统</a></li>
-      </ul>
-    </div>
-  </div>
+
   </div>
 
+    <!--划词搜索的弹出框-->
     <div id="tooltip"  ref="tip">
-      <el-button @click="openDrawer()" type="primary">
-      点我打开
+      <el-button @click="selectSearch()" type="primary">
+      click
     </el-button>
     </div>
+
+
+
     <el-drawer
-      title="结果"
+      title=""
       :visible.sync="drawer"
       :direction="direction"
       :modal="modal"
       size="40%"
       >
-
-
          <div class="sku-box store-content">
-           <el-scrollbar style="height: 50% ">
+           <el-scrollbar style="height: 47% ">
         <div class="gray-box" >
-          <SearchResult  v-for="item , index in results" :item="item" :key="index" v-if="selectShown===true"></SearchResult>
-          <EnhanceResult  v-for="item , index in enhancedResults" :item="item" :key="index" v-if="enhancedShown===true"></EnhanceResult>
+          <!--Q&A折叠面板-->
+          <el-collapse v-model="activeName"  :accordion="accordion" >
+          <SearchResult  v-for="item , index in results" :item="item" :index="index"  v-if="selectShown===true"></SearchResult>
+          <EnhanceResult  v-for="item , index in enhancedResults" :item="item"  :index="index" v-if="enhancedShown===true"></EnhanceResult>
+          </el-collapse>
         </div>
            </el-scrollbar>
 
         </div>
-
-
-
     </el-drawer>
 
   </div>
@@ -172,15 +109,19 @@
       props: ['pdfUrl'],
         data () {
         return {
+          activeName: '0',
+          accordion:true,
           pdf: localStorage.getItem('bookId'),
           bookId: localStorage.getItem('id'),
-          totalPage: null,
+          bookname:localStorage.getItem('bookname'),
+          author:localStorage.getItem('author'),
+          totalPage: '',
           i: 1,
           content: "",
           idName : 'canvas-pdf-',
           scale: 1.5,
           totals: [],
-          pageNo: 1,
+          isCreatedPage:[],
           currentPageNo :1,
           viewHeight: 0,
           drawer: false,
@@ -213,6 +154,8 @@
       mounted () {
         this.renderPdf(this.scale);
         this.$refs.tip.style.display="none";
+        this.enhance();
+
       },
       watch: {
         scale (val) {
@@ -269,21 +212,32 @@
         },
 
 
-
+       //上一页
         last(){
           var p= this.currentPageNo
-          if(p-1>0){p = p-1}
+          if(p-1>0){
+            let pageDiv = document.getElementById(`page-${p}`);
+            pageDiv.style.display="none";
+            p = p-1;}
           this.currentPageNo=p
+          if(this.isCreatedPage[p]==0){ this.createPage(p,this.scale);this.isCreatedPage[p]=1;}
 
-          this.createPage(p,this.scale)
+          let curPageDiv = document.getElementById(`page-${p}`);
+          curPageDiv.style.display="block";
 
         },
+        //下一页
         next(){
           var p= this.currentPageNo
-          if(p+1<=this.totalPage){p = p+1}
-
+          if(p+1<=this.totalPage){
+            let pageDiv = document.getElementById(`page-${p}`);
+            pageDiv.style.display="none";
+            p = p+1;
+          }
           this.currentPageNo=p
-          this.createPage(p,this.scale)
+          if(this.isCreatedPage[p]==0){ this.createPage(p,this.scale);this.isCreatedPage[p]=1;}
+          let curPageDiv = document.getElementById(`page-${p}`);
+          curPageDiv.style.display="block";
 
         },
 
@@ -295,15 +249,18 @@
               withCredentials : true,
               dataType : 'jsonp'
             }}).then(pdf => {
-              this.pdf=pdf
+            this.pdf = pdf
             // 得到PDF的总的页数
             this.totalPage = pdf.numPages
-            let idName = 'canvas-pdf-'
             // 根据总的页数创建相同数量的canvas
             this.createCanvas(this.totalPage, this.idName)
-            for (let i = 1; i <= this.totalPage; i++) {
-            this.createPage(i,scale)
+              this.createPage(1,scale);
+            this.isCreatedPage[1]=1;
+            for(let j=2;j<=this.totalPage;j++)
+            {
+              this.isCreatedPage[j]=0;
             }
+
           })
         },
         createCanvas (totalPages) {
@@ -346,16 +303,10 @@
             })
           })
         },
-        // 分页
-        scrollfun (e) {
-          let scrollTop = e.target.scrollTop
-          if (scrollTop === 0) {
-            this.pageNo = 1
-          } else {
-            this.pageNo = Math.ceil(scrollTop / this.viewHeight)
-          }
-        },
-        openDrawer(){
+
+
+
+        selectSearch(){
           this.drawer = true;
           this.$refs.tip.style.display="none";
           this.selectShown = true;
@@ -374,9 +325,10 @@
             console.log(error)
           })
         },
-        enhance(){
 
-          this.$refs.tip.style.display="none";
+
+        enhance(){
+          this.$refs.tip.style.display="none";//隐藏弹框
           this.enhancedShown = true;
           this.selectShown = false;
           this.$axios({
@@ -385,12 +337,12 @@
           })
             .then(response=>{
               this.enhancedResults=response.data
-              console.log(this.enhancedResults)
+
 
             }).catch(error=>{
             console.log(error)
           })
-          this.drawer = true;
+          this.drawer = true;//弹出抽屉
         }
 
 
@@ -432,7 +384,7 @@
   }
 
   .gray-box{
-    overflow: hidden;
+    overflow: visible;
     background: #fff;
     border-radius: 8px;
     border: 1px solid #dcdcdc;
@@ -594,17 +546,7 @@
     left: 2%;
     position: relative;
   }
-  .sku-box .item {
-    position: relative;
-    float: left;
-    border-right: 1px solid #efefef;
-    border-bottom: 1px solid #efefef;
-    top: 2%;
-    width: 100%;
-    height: 250px;
-    background: #fff;
-    box-sizing: border-box;
-  }
+
   .body{
     height: 1400px;
     background: url("../assets/bg2.jpg") ;

@@ -3,7 +3,7 @@
     <div class="back">
       <a  href="#" v-on:click="back" style="float: left;"><img src="../assets/back.png" border="0"></a>
     </div>
-    <span class="back_word" >返回</span>
+    <span class="back_word" >return</span>
     <div class="main">
       <div class="name" style="display: flex;justify-content: center;">
         <span class="info-order-text"><strong>用 户 名</strong></span>

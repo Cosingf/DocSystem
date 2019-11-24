@@ -1,33 +1,28 @@
 <template>
   <div id="login"  class="body">
-    <div class="back" >
-      <a  href="javascript :;" onClick="alert('确认退出系统？')" style="float: left;">
-        <img src="../assets/back.png" >
-      </a>
-    </div>
-    <span class="back_word">返回</span>
+
     <div class="main">
       <img class="logo" src="../assets/logo.png"/>
       <div class="name" style="display: flex;justify-content: center;">
-        <span class="info-order-text"><strong>用 户 名</strong></span>
+        <span class="info-order-text"><strong>username:</strong></span>
         <div class="input-box">
-          <input type="text"  placeholder="请输入用户名"  name="name"  v-model="user.username" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
+          <input type="text"  placeholder="username"  name="name"  v-model="user.username" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
         </div>
       </div>
       <div class="password" style="display: flex;justify-content: center;">
-        <span class="info-order-text"><strong>密&nbsp;&nbsp;&nbsp;码</strong></span>
+        <span class="info-order-text"><strong>password:</strong></span>
         <div class="input-box">
-          <input type="password"  placeholder="请输入密码" name="password" v-model="user.password" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
+          <input type="password"  placeholder="password" name="password" v-model="user.password" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
         </div>
       </div>
       <div class="forget">
-        <a href="#"  v-on:click="goToForgetPassword()"  >忘记密码</a>
+        <a href="#"  v-on:click="goToForgetPassword()"  >forget password</a>
       </div>
       <div class="button1">
-        <button type="submit" v-on:click="userLogin()" style="width: 130px;height: 45px;font-size: 26px;">登    录</button>
+        <button type="submit" v-on:click="userLogin()" style="width: 130px;height: 45px;font-size: 26px;">login</button>
       </div>
       <div class="button">
-        <button type="submit" v-on:click="goToRegister()" style="width: 130px;height: 45px;font-size: 26px;">注   册</button>
+        <button type="submit" v-on:click="goToRegister()" style="width: 130px;height: 45px;font-size: 26px;">register</button>
 
       </div>
     </div>
@@ -62,17 +57,14 @@
                   this.$data.user=response.data
                     localStorage.setItem('user',response.data.account)
                   localStorage.setItem('userId',response.data.id)
-                 /* console.log('response')
-                  console.log(response.data)
-                  console.log('localStorage')
-                  console.log(localStorage.getItem('user'))*/
+
                         this.$router.push({name: 'UserPage'});
 
                 }
             }).catch(error => {
             this.$notify.error({
-              title: '登录失败！',
-              message: '密码错误！'
+              title: 'fail！',
+              message: 'password error！'
             });
           })
         },

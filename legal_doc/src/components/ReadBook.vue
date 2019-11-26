@@ -315,7 +315,9 @@
             method: 'POST',
             url: '/apis/read/highlight',
             data:{
-              content:this.content
+              content:this.content,
+              bookId:localStorage.getItem('bookId'),
+              pageNum:this.currentPageNo,
             }
           })
             .then(response=>{
@@ -333,7 +335,7 @@
           this.selectShown = false;
           this.$axios({
             method: 'POST',
-            url: '/apis/read/'+this.bookId+'/'+this.currentPageNo,
+            url: '/apis/read/'+this.bookId,
           })
             .then(response=>{
               this.enhancedResults=response.data

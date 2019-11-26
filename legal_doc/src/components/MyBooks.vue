@@ -19,25 +19,46 @@
         <input type="button" v-on:click="searchBooks()" name="sub" id="sub" class="btn">
       </form>
     </div>
-    <div class="upload_button">
+    <!--<div class="upload_button">
       <button type="button" v-on:click="uploadBookBox(1)" style="width: 150px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;">upload</button>
-    </div>
+    </div>-->
     <div class="delete_button">
-      <button type="button" v-on:click="deleteBooks()" style="width: 150px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;">delete</button>
+      <el-button type="button" v-on:click="deleteBooks()" style="width: 150px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;">delete</el-button>
     </div>
-    <div id='uploadBox' class="box">
-      <a class='x' href=''; onclick="uploadBookBox(0); return false;">×</a>
-      <div class="name" style="display: flex;justify-content: center;">
-        <span class="info-order-text">author</span>
-        <div class="input-box">
-          <input type="text" name="authorname"  v-model="uploadBookMsg.authorName" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
-        </div>
-      </div>
-      <input type="file"  accept=".pdf"  @change="inputFileChange">
-      <p>share book：</p>
-      <input type="checkbox" id="sharebox" v-model="uploadBookMsg.isPublic">
-      <button type="button" v-on:click="uploadBook" >OK</button>
-    </div>
+
+
+
+
+    <el-popover
+      placement="bottom"
+      width="400"
+      trigger="click">
+      <el-form  :model="uploadBookMsg" :inline="true">
+        <el-upload
+          action="https://jsonplaceholder.typicode.com/posts/"
+          class="upload-demo"
+          :before-upload="beforeupload"
+          :limit="1"
+          >
+          <el-button slot="trigger" size="medium" type="primary">选取文件</el-button>
+          <div slot="tip" class="el-upload__tip">只能上传pdf文件</div>
+
+        </el-upload>
+        <el-form-item :label=uploadBookMsg.file.name>
+        </el-form-item>
+        <el-form-item label="author name: ">
+          <el-input size="small" v-model="uploadBookMsg.authorName"></el-input>
+        </el-form-item>
+        <el-form-item label="share book: ">
+          <el-switch v-model="uploadBookMsg.isPublic"></el-switch>
+        </el-form-item>
+
+
+      </el-form>
+      <el-button size="medium" type="primary" @click="uploadBook">upload</el-button>
+      <el-button slot="reference" style=" position: absolute;top: 5%;left: 60%;width: 150px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;">
+        upload</el-button>
+    </el-popover>
 
 
     <div class="sku-box store-content">
@@ -115,7 +136,7 @@
         })
           .then(response=>{
            that.books=response.data
-            console.log(books)
+            console.log(that.books)
           }).catch(error=>{
           console.log(error)
         })
@@ -124,6 +145,10 @@
 
       methods:{
 
+        beforeupload(file){
+          this.uploadBookMsg.file=file;
+          return false;
+        },
         deleteBooks(){
           var checkedlist=$(":checkbox[name='check']:checked")
           var bookList=checkedlist.parentElement.id
@@ -149,12 +174,13 @@
             formData.append('isPublic',isPublic)
             formData.append('author', this.uploadBookMsg.authorName)
             formData.append('file', this.uploadBookMsg.file)
+          console.log(formData.get(""))
             let config = {
                 headers: {
-                    'Content-Type': 'multipart/form-data;boundary = ' + new Date().getTime()
+                    'Content-Type': 'multipart/form-data'
                 }
             }
-            this.$axios('/apis/upload/'+localStorage.getItem('userId'), formData, config).then(response => {
+            axios.post('/apis/upload/'+localStorage.getItem('userId'),formData,config).then(response => {
                 if (response.status===200){
                     this.$notify.success({
                         title: 'upload success！',
@@ -179,7 +205,7 @@
           var searchContent= document.getElementById("searchContent").value
           this.$axios({
             method: 'POST',
-            url: '/apis/mybooks/sixbooks/' +searchContent +'/'+localStorage.getItem('userId'),
+            url: '/apis/mybooks/' +searchContent +'/'+localStorage.getItem('userId'),
 
           })
             .then(response=>{

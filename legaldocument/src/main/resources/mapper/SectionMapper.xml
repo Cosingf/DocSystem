@@ -4,12 +4,11 @@
   <resultMap id="BaseResultMap" type="cn.xmu.edu.legaldocument.entity.Section" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="section_content" property="sectionContent" jdbcType="VARCHAR" />
-    <result column="keywords" property="keywords" jdbcType="VARCHAR" />
     <result column="page_id" property="pageId" jdbcType="BIGINT" />
     <result column="order_num" property="orderNum" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, section_content, keywords, page_id,order_num
+    id, section_content, page_id,order_num
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -23,21 +22,34 @@
     from section
     where page_id = #{pageId,jdbcType=BIGINT}
   </select>
+  <select id="selectByPageIdAndHighLightAndNum" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from section
+    where page_id = #{pageId,jdbcType=BIGINT}
+    <if test="num != null and num != '' and num.equals(1)">
+      and section_content like concat ('%',#{str1},'%')
+    </if>
+    <if test="num != null and num != '' and num.equals(2)">
+      and (section_content like concat ('%',#{str1},'%')
+      or section_content like concat ('%',#{str2},'%'))
+    </if>
+    order by id
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from section
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="cn.xmu.edu.legaldocument.entity.Section" useGeneratedKeys="true" keyProperty="id">
-    insert into section ( section_content, keywords,
+    insert into section ( section_content,
       page_id,order_num)
-    values ( #{sectionContent,jdbcType=VARCHAR}, #{keywords,jdbcType=VARCHAR},
+    values ( #{sectionContent,jdbcType=VARCHAR},
       #{pageId,jdbcType=BIGINT},#{orderNum,jdbcType=INTEGER})
   </insert>
 
   <update id="updateByPrimaryKey" parameterType="cn.xmu.edu.legaldocument.entity.Section" >
     update section
     set section_content = #{sectionContent,jdbcType=VARCHAR},
-      keywords = #{keywords,jdbcType=VARCHAR},
       page_id = #{pageId,jdbcType=BIGINT},
       order_num=#{orderNum,jdbcType=BIGINT}
     where id = #{id,jdbcType=INTEGER}

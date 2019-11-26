@@ -19,10 +19,25 @@
         <input type="button" v-on:click="searchBooks()" name="sub" id="sub" class="btn">
       </form>
     </div>
+    <div class="upload_button">
+      <button type="button" v-on:click="uploadBookBox(1)" style="width: 150px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;">upload</button>
+    </div>
     <div class="delete_button">
       <button type="button" v-on:click="deleteBooks()" style="width: 150px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;">delete</button>
     </div>
-
+    <div id='uploadBox' class="box">
+      <a class='x' href=''; onclick="uploadBookBox(0); return false;">×</a>
+      <div class="name" style="display: flex;justify-content: center;">
+        <span class="info-order-text">author</span>
+        <div class="input-box">
+          <input type="text" name="authorname"  v-model="uploadBookMsg.authorName" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
+        </div>
+      </div>
+      <input type="file"  accept=".pdf"  @change="inputFileChange">
+      <p>share book：</p>
+      <input type="checkbox" id="sharebox" v-model="uploadBookMsg.isPublic">
+      <button type="button" v-on:click="uploadBook" >OK</button>
+    </div>
 
 
     <div class="sku-box store-content">
@@ -74,7 +89,12 @@
               imgpath:"",
               name:""
             }
-          ]
+          ],
+            uploadBookMsg:{
+                authorName:"",
+                file:'',
+                isPublic:""
+            }
         }
       },
       components: {
@@ -115,8 +135,40 @@
               booklist:bookList
             }
           })
+        },  uploadBookBox(n){
+            document.getElementById('uploadBox').style.display=n?'block':'none';
         },
-
+        inputFileChange (e){
+            // input的@change事件拿到数据
+            this.uploadBookMsg.file = e.target.files[0]
+        },
+        uploadBook(){
+            let formData = new FormData()
+            var isPublic= 1
+            this.uploadBookMsg.isPublic?isPublic=1:isPublic=0;
+            formData.append('isPublic',isPublic)
+            formData.append('author', this.uploadBookMsg.authorName)
+            formData.append('file', this.uploadBookMsg.file)
+            let config = {
+                headers: {
+                    'Content-Type': 'multipart/form-data;boundary = ' + new Date().getTime()
+                }
+            }
+            this.$axios('/apis/upload/'+localStorage.getItem('userId'), formData, config).then(response => {
+                if (response.status===200){
+                    this.$notify.success({
+                        title: 'upload success！',
+                        message: 'upload success！'
+                    })
+                }
+            })
+                .catch(error => {
+                    this.$notify.error({
+                        title: 'upload fail！',
+                        message: 'upload fail！'
+                    });
+                })
+        },
         goToPublicLibrary(){
           this.$router.push({name: 'PublicBooks'});
         },
@@ -138,7 +190,7 @@
             }).catch(error=>{
             console.log(error)
           })
-        },
+        }
       }
     }
 </script>
@@ -494,7 +546,7 @@
     width: 600px;
     position: absolute;
     top: 5%;
-    left: 25%;
+    left: 15%;
   }
   .parent {
     position: relative;
@@ -600,6 +652,11 @@
     position: absolute;
     top: 5%;
     left: 73%;
+  }
+  .upload_button{
+    position: absolute;
+    top: 5%;
+    left: 60%;
   }
   * {
     list-style:none;
@@ -781,5 +838,18 @@
   .page .prev{
     color: #999;
     cursor: text;
+  }
+  .box{
+    width:50%; margin-top:10%; margin:auto; padding:28px;
+    height:350px; border:1px #111 solid;
+    display:none;            /* 默认对话框隐藏 */
+  }
+  .box.show{display:block;}
+  .box .x{ font-size:18px; text-align:right; display:block;}
+  .box input{width:80%; font-size:18px; margin-top:18px;}
+  .info-order-text{
+    width: 50px;
+    font-family: STHeiti;
+    font-size: 15px;
   }
 </style>

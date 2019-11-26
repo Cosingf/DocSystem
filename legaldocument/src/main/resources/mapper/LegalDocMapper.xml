@@ -7,12 +7,13 @@
     <result column="is_enrich" property="isEnrich" jdbcType="TINYINT" />
     <result column="author" property="author" jdbcType="VARCHAR" />
     <result column="bookname" property="name" jdbcType="VARCHAR" />
+    <result column="is_public" property="isPublic" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, path, is_enrich, author, bookname
+    id, path, is_enrich, author, bookname,is_public
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from legal_doc
     where id = #{id,jdbcType=BIGINT}
@@ -21,8 +22,22 @@
     select
     <include refid="Base_Column_List" />
     from legal_doc
-     order by id
   </select>
+  <select id="selectPublicBooksByName" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from legal_doc
+    where  is_public ==1 and bookname like concat ('%',#{selectName},'%')
+  </select>
+
+  <select id="selectPublicPage" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from legal_doc
+    where is_public =1
+    limit #{num},6
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from legal_doc
     where id = #{id,jdbcType=BIGINT}
@@ -47,7 +62,8 @@
     set path = #{path,jdbcType=VARCHAR},
       is_enrich = #{isEnrich,jdbcType=TINYINT},
       author = #{author,jdbcType=VARCHAR},
-      name = #{name,jdbcType=VARCHAR}
+      bookname = #{name,jdbcType=VARCHAR},
+      is_public = #{isPublic,jdbcType=TINYINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="setLegalDocEnriched" parameterType="java.lang.Long" >

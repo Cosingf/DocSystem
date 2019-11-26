@@ -3,7 +3,7 @@ package cn.xmu.edu.legaldocument.entity;
 public class Page {
     private Long id;
 
-    private String pageContent;
+//    private String pageContent;
 
     private Long bookId;
 
@@ -25,13 +25,13 @@ public class Page {
         this.id = id;
     }
 
-    public String getPageContent() {
+/*    public String getPageContent() {
         return pageContent;
     }
 
     public void setPageContent(String pageContent) {
         this.pageContent = pageContent == null ? null : pageContent.trim();
-    }
+    }*/
 
     public Long getBookId() {
         return bookId;

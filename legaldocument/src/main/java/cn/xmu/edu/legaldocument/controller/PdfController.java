@@ -1,17 +1,20 @@
 package cn.xmu.edu.legaldocument.controller;
 
-import cn.xmu.edu.legaldocument.entity.*;
+import cn.xmu.edu.legaldocument.entity.LegalDoc;
+import cn.xmu.edu.legaldocument.entity.Page;
+import cn.xmu.edu.legaldocument.entity.PersonalLegaldocStack;
+import cn.xmu.edu.legaldocument.entity.Section;
 import cn.xmu.edu.legaldocument.service.PdfService;
+import com.google.common.util.concurrent.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
-import com.google.common.util.concurrent.*;
 
 @RestController
 public class PdfController {
@@ -115,7 +118,7 @@ public class PdfController {
                     return "第 " + i + " 个文件上传失败 ==> "
                             + e.getMessage();
                 }
-            } else {
+            } ele {
                 return "第 " + i
                         + " 个文件上传失败因为文件为空";
             }

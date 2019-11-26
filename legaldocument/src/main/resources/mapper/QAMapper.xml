@@ -12,20 +12,32 @@
     select a.question_id,a.id,q.question, a.answer, q.link
     from question q LEFT JOIN answer a on q.id = a.question_id
   </select>
+
   <insert id="insertQASection" parameterType="cn.xmu.edu.legaldocument.entity.QASection" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into qa_section (question_id,answer_id,section_id,rank_score)
     values  <foreach collection="list" item="item" index= "index" separator =",">
-      (
-      #{item.questionId,jdbcType=BIGINT},
-      #{item.answerId,jdbcType=BIGINT},
-      #{item.sectionId,jdbcType=BIGINT},
-      #{item.rankScore,jdbcType=TINYINT}
-      )
-    </foreach>
+    (
+    #{item.questionId,jdbcType=BIGINT},
+    #{item.answerId,jdbcType=BIGINT},
+    #{item.sectionId,jdbcType=BIGINT},
+    #{item.rankScore,jdbcType=TINYINT}
+    )
+  </foreach>
   </insert>
+
+  <select id="selectQASectionBySectionId" resultMap="BaseResultMap" >
+    select a.question_id,a.id,q.question, a.answer, q.link
+    from qa_section s
+    LEFT JOIN question q on s.question_id = q.id
+    LEFT JOIN answer a on s.answer_id = a.id
+    where s.section_id=#{sectionId,jdbcType=BIGINT}
+    order by s.rank_score DESC
+  </select>
   <select id="getLastQASectionId" resultType="java.lang.Long">
     select id
     from qa_section
     order by id DESC limit 1
   </select>
+
+
 </mapper>

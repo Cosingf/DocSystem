@@ -17,77 +17,78 @@ import java.util.List;
 @RestController
 public class BookController {
 
-//    TODO
-//    @Autowired
-//    BookService bookService;
-//
-//    @PostMapping("/publicbooks/sixbooks")
-//    public void getPublicBooks(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) throws Exception
-//    {
-//        httpServletResponse.setContentType("application/json;charset=utf-8");
-//
-//        List<LegalDoc> legalDocList = bookService.getSixPublicBooksByNum(1);
-//        if (legalDocList!=null||legalDocList.size()!=0) {
-//            httpServletResponse.setStatus(200);
-//            httpServletResponse.getWriter().write(JSON.toJSONString(legalDocList));
-//        }
-//        else
-//        {httpServletResponse.setStatus(404);}
-//    }
-//
-//
-//    @PostMapping("/mybooks/sixbooks/{userid}")
-//    public void getPersonalBooks(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest,@PathVariable("userid") Long userid) throws Exception
-//    {
-//        httpServletResponse.setContentType("application/json;charset=utf-8");
-//
-//        List<LegalDoc> legalDocList = bookService.getSixMyBooksByNumAndUserId(1,userid);
-//        if (legalDocList!=null||legalDocList.size()!=0) {
-//            httpServletResponse.setStatus(200);
-//            httpServletResponse.getWriter().write(JSON.toJSONString(legalDocList));
-//        }
-//        else
-//            httpServletResponse.setStatus(404);
-//    }
-//
-//    @PostMapping("/publicbooks/search/{bookname}")
-//    public void searchPersonalBooks(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @PathVariable("bookname") String bookname) throws Exception
-//    {
-//        httpServletResponse.setContentType("application/json;charset=utf-8");
-//
-//        List<LegalDoc> legalDocList = bookService.searchBooksByName(bookname);
-//        if (legalDocList!=null||legalDocList.size()!=0) {
-//            httpServletResponse.setStatus(200);
-//            httpServletResponse.getWriter().write(JSON.toJSONString(legalDocList));
-//        }
-//        else
-//            httpServletResponse.setStatus(404);
-//    }
-//
-//    @PostMapping("/mybooks/sixbooks/{bookname}/{userid}")
-//    public void searchMybooksByname(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @PathVariable("bookname") String bookname,@PathVariable("userid") Long userid) throws Exception
-//    {
-//        httpServletResponse.setContentType("application/json;charset=utf-8");
-//
-//        List<LegalDoc> legalDocList = bookService.searchMybooksByNameAndUserId(bookname,userid);
-//        if (legalDocList!=null||legalDocList.size()!=0) {
-//            httpServletResponse.setStatus(200);
-//            httpServletResponse.getWriter().write(JSON.toJSONString(legalDocList));
-//        }
-//        else
-//            httpServletResponse.setStatus(404);
-//    }
-//
-//    @PutMapping("/publicbooks/toMyBook/{userId}/{bookId}")
-//    public void toMyBooks(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @PathVariable("userId") Long userId,@PathVariable("bookId") Long bookId) throws Exception
-//    {
-//        httpServletResponse.setContentType("application/json;charset=utf-8");
-//
-//        if (bookService.addToMyBooks(bookId,userId)) {
-//            httpServletResponse.setStatus(200);
-//        }
-//        else {
-//            httpServletResponse.setStatus(404);
-//        }
-//    }
+
+    @Autowired
+    BookService bookService;
+
+    @PostMapping("/publicbooks/sixbooks/{num}")
+    public void getPublicBooks(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest,@PathVariable("num") String num) throws Exception
+    {
+        httpServletResponse.setContentType("application/json;charset=utf-8");
+
+        List<LegalDoc> legalDocList = bookService.getSixPublicBooksByNum(Integer.valueOf(num));
+        if (legalDocList!=null||legalDocList.size()!=0) {
+            httpServletResponse.setStatus(200);
+            httpServletResponse.getWriter().write(JSON.toJSONString(legalDocList));
+        }
+        else
+        {httpServletResponse.setStatus(404);}
+    }
+
+
+    @PostMapping("/mybooks/sixbooks/{userid}/{num}")
+    public void getPersonalBooks(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest,@PathVariable("userid") Long userid,@PathVariable("num") String num) throws Exception
+    {
+        httpServletResponse.setContentType("application/json;charset=utf-8");
+
+        List<LegalDoc> legalDocList = bookService.getSixMyBooksByNumAndUserId(Integer.valueOf(num),userid);
+        if (legalDocList!=null||legalDocList.size()!=0) {
+            httpServletResponse.setStatus(200);
+            httpServletResponse.getWriter().write(JSON.toJSONString(legalDocList));
+        }
+        else
+            httpServletResponse.setStatus(404);
+    }
+
+    @PostMapping("/publicbooks/search/{bookname}")
+    public void searchPersonalBooks(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @PathVariable("bookname") String bookname) throws Exception
+    {
+        httpServletResponse.setContentType("application/json;charset=utf-8");
+
+        List<LegalDoc> legalDocList = bookService.searchPublicBooksByName(bookname);
+        if (legalDocList!=null||legalDocList.size()!=0) {
+            httpServletResponse.setStatus(200);
+            httpServletResponse.getWriter().write(JSON.toJSONString(legalDocList));
+        }
+        else
+            httpServletResponse.setStatus(404);
+    }
+
+    @PostMapping("/mybooks/{bookname}/{userid}")
+    public void searchMybooksByname(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @PathVariable("bookname") String bookname,@PathVariable("userid") Long userid) throws Exception
+    {
+        httpServletResponse.setContentType("application/json;charset=utf-8");
+
+        List<LegalDoc> legalDocList = bookService.searchMybooksByNameAndUserId(bookname,userid);
+        if (legalDocList!=null||legalDocList.size()!=0) {
+            httpServletResponse.setStatus(200);
+            httpServletResponse.getWriter().write(JSON.toJSONString(legalDocList));
+        }
+        else
+            httpServletResponse.setStatus(404);
+    }
+
+    @PutMapping("/publicbooks/toMyBook/{userId}/{bookId}")
+    public void toMyBooks(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @PathVariable("userId") Long userId,@PathVariable("bookId") Long bookId) throws Exception
+    {
+        httpServletResponse.setContentType("application/json;charset=utf-8");
+
+        if (bookService.addToMyBooks(bookId,userId)) {
+            httpServletResponse.setStatus(200);
+        }
+        else {
+            httpServletResponse.setStatus(404);
+        }
+    }
+
 }

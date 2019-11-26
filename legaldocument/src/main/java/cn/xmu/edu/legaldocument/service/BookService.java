@@ -4,14 +4,10 @@ import cn.xmu.edu.legaldocument.entity.LegalDoc;
 import cn.xmu.edu.legaldocument.entity.PersonalLegaldocStack;
 import cn.xmu.edu.legaldocument.mapper.LegalDocMapper;
 import cn.xmu.edu.legaldocument.mapper.PersonalLegaldocStackMapper;
-import org.hibernate.validator.constraints.EAN;
-import org.hibernate.validator.internal.util.logging.formatter.CollectionOfClassesObjectFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -23,41 +19,28 @@ public class BookService
     PersonalLegaldocStackMapper personalLegaldocStackMapper;
 
     public List<LegalDoc> getSixMyBooksByNumAndUserId(int num,Long userId){
-
-          List<LegalDoc> legalDocs=new ArrayList<>();
-          List<PersonalLegaldocStack> personalLegaldocStacks= personalLegaldocStackMapper.selectByUserId(userId);
-          if (personalLegaldocStacks.size()!=0||personalLegaldocStacks!=null)
-          {
-              for (PersonalLegaldocStack personalLegaldocStack:personalLegaldocStacks)
-              {
-                  legalDocs.add(legalDocMapper.selectByPrimaryKey(personalLegaldocStack.getBookId()));
-              }
-          }
-        Collections.sort(legalDocs, new Comparator<LegalDoc>() {
-            @Override
-            public int compare(LegalDoc o1, LegalDoc o2) {
-                return o1.getId().compareTo(o2.getId());
+        List<LegalDoc> legalDocs=new ArrayList<>();
+        num = (num-1)*6;
+        List<PersonalLegaldocStack> personalLegaldocStacks= personalLegaldocStackMapper.selectPageByUserId(userId,num);
+        if (personalLegaldocStacks.size()!=0||personalLegaldocStacks!=null)
+        {
+            for (PersonalLegaldocStack personalLegaldocStack:personalLegaldocStacks)
+            {
+                legalDocs.add(legalDocMapper.selectByPrimaryKey(personalLegaldocStack.getBookId()));
             }
-        });
-          int booknum = num*6-1;
-          return legalDocs;
-    }
-
-    public List<LegalDoc> getSixPublicBooksByNum(int num){
-        List<LegalDoc> legalDocs=legalDocMapper.selectAll();
-        int booknum = num*6-1;
+        }
         return legalDocs;
     }
 
-    public List<LegalDoc> searchBooksByName(String name){
-        List<LegalDoc> legalDocs=legalDocMapper.selectAll();
-        List<LegalDoc> books = new ArrayList<>();
-        for (LegalDoc legalDoc:legalDocs)
-        {
-            if (legalDoc.getName().contains(name))
-                books.add(legalDoc);
-        }
-        return books;
+    public List<LegalDoc> getSixPublicBooksByNum(int num){
+        int n = (num-1)*6;
+        List<LegalDoc> legalDocs=legalDocMapper.selectPublicPage(n);
+        return legalDocs;
+    }
+
+    public List<LegalDoc> searchPublicBooksByName(String name){
+        List<LegalDoc> legalDocs=legalDocMapper.selectPublicBooksByName(name);
+        return legalDocs;
     }
 
     public List<LegalDoc> searchMybooksByNameAndUserId(String name,Long userId){
@@ -77,7 +60,6 @@ public class BookService
             if (legalDoc.getName().contains(name))
                 books.add(legalDoc);
         }
-
         return books;
     }
 

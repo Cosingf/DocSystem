@@ -1,14 +1,13 @@
 package cn.xmu.edu.legaldocument.service;
 
 
-import cn.xmu.edu.legaldocument.entity.Page;
-import cn.xmu.edu.legaldocument.entity.QA;
-import cn.xmu.edu.legaldocument.dao.QADao;
-import cn.xmu.edu.legaldocument.entity.QASection;
-import cn.xmu.edu.legaldocument.entity.Section;
+import cn.xmu.edu.legaldocument.VO.PageSectionVO;
+import cn.xmu.edu.legaldocument.VO.QASectionVO;
+import cn.xmu.edu.legaldocument.entity.*;
 import cn.xmu.edu.legaldocument.mapper.PageMapper;
+import cn.xmu.edu.legaldocument.mapper.QAMapper;
 import cn.xmu.edu.legaldocument.mapper.SectionMapper;
-import cn.xmu.edu.legaldocument.util.WordUtil;
+import cn.xmu.edu.legaldocument.mapper.SelectionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,44 +17,92 @@ import java.util.List;
 @Service
 public class ReadService {
 
-    @Autowired
-    WordUtil wordUtil;
 
     @Autowired
     PageMapper pageMapper;
 
     @Autowired
     SectionMapper sectionMapper;
-    QADao qaDao = new QADao();
+
+    @Autowired
+    SelectionMapper selectionMapper;
+    @Autowired
+    QAMapper qaMapper;
 
 
-    public List<QA> getHighLightResult(String highLight) throws Exception {
-        String[] keyWords = wordUtil.getKeywords(highLight,2);
-        return qaDao.findIndexDB(keyWords,3);
+    public List<QA> getHighLightResult(String highLight,Long bookid,Integer pagenum) throws Exception {
+        Page page =pageMapper.selectByBookIdAndPageNum(bookid,pagenum);
+        List<QA> qas = new ArrayList<>();
+        if (page!=null) {
+            Selection selection = new Selection();
+            selection.setSelection(highLight);
+            selection.setPageId(page.getId());
+            selection.setBookId(bookid);
+            selectionMapper.insert(selection);
+            List<QASection> results = new ArrayList<>();
+            String[] words = highLight.split(" ");
+            List<String> inputStr = new ArrayList<>();
+            String strNum = "";
+            String str1="";String str2="";
+            if (words.length==1) {
+                str1=words[0];
+                strNum ="1";
+            }//当高亮词小于十个，就把其划分成两个str，模糊查询
+            else if (words.length<=10){
+                int n = words.length/2;
+                String str="";
+                for (int i=0;i<n;i++)
+                     str+=words[i];
+                str1=str;
+                str="";
+                for (int i=n;i<words.length;i++)
+                    str+=words[i];
+                str2=str;
+                strNum ="2";
+            }
+            //若高亮词大于十，取前是个划分成两个str，模糊查询，先定位出具体位置
+            else {
+                String str="";
+                 for (int i=0;i<5;i++)
+                     str+=words[i];
+                inputStr.add(str);
+                str="";
+                for (int i=5;i<10;i++)
+                    str+=words[i];
+                inputStr.add(str);
+                strNum ="2";
+            }
+            List<Section> sections = sectionMapper.selectByPageIdAndHighLightAndNum(page.getId(),str1,str2,strNum);
+            Section section = sections.get(1);
+             qas = qaMapper.selectQASectionBySectionId(section.getId());
+        }
+        return qas;
     }
 
 
-    public List<QASection> getPageAllResult(Long bookid, Integer pagenum) throws Exception {
-        Page page =pageMapper.selectByBookIdAndPageNum(bookid,pagenum);
-       List<QASection>results = new ArrayList<>();
-        if (page!=null) {
-            List<Section> sections = sectionMapper.selectByPageId(page.getId());
-            for (Section section:sections){
-                QASection result = new QASection();
-                String[] keyWords;
-                if (section.getKeywords()==null) {
-                    keyWords = wordUtil.getKeywords(section.getSectionContent(), 2);
+    public List<PageSectionVO> getBookEnrich(Long bookid) throws Exception {
+        List<Page> pages =pageMapper.selectByBookId(bookid);
+        List<PageSectionVO> pageSectionVOs = new ArrayList<>();
+        if (pages!=null) {
+            for (Page page : pages) {
+                List<Section> sections = sectionMapper.selectByPageId(page.getId());
+                List<QASectionVO> qaSectionVOs = new ArrayList<>();
+                PageSectionVO pageSectionVO = new PageSectionVO();
+                pageSectionVO.setPageId(page.getId());
+                pageSectionVO.setPageNum(page.getOrderNum());
+                for (Section section : sections) {
+                    List<QA> qas = qaMapper.selectQASectionBySectionId(section.getId());
+                    QASectionVO qaSectionVO = new QASectionVO();
+                    qaSectionVO.setQas(qas);
+                    qaSectionVO.setSectionId(section.getId());
+                    qaSectionVO.setSectionNum(section.getOrderNum());
+                    qaSectionVOs.add(qaSectionVO);
                 }
-                else {keyWords =section.getKeywords().split(" ");}
-                List<QA> qas=qaDao.findIndexDB(keyWords,1);
-                //TODO
-//                result.setQa(qas.get(0));
-//                result.setSection(section);
-               results.add(result);
+                pageSectionVO.setQaSectionVOS(qaSectionVOs);
+                pageSectionVOs.add(pageSectionVO);
             }
-            return results;
         }
-        return  null;
+        return  pageSectionVOs;
     }
 
 }

@@ -16,6 +16,8 @@ public interface QAMapper {
 
     void insertQASection(@Param("list") List<QASection> list);
 
+    List<QA> selectQASectionBySectionId(@Param("sectionId") Long sectionId);
+
 //    Long getLastQASectionId();
 
 }

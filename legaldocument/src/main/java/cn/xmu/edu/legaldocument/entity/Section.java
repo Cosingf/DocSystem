@@ -5,7 +5,7 @@ public class Section {
 
     private String sectionContent;
 
-    private String keywords;
+//    private String keywords;
 
     private Long pageId;
 
@@ -35,13 +35,13 @@ public class Section {
         this.sectionContent = sectionContent == null ? null : sectionContent.trim();
     }
 
-    public String getKeywords() {
+  /*  public String getKeywords() {
         return keywords;
     }
 
     public void setKeywords(String keywords) {
         this.keywords = keywords == null ? null : keywords.trim();
-    }
+    }*/
 
     public Long getPageId() {
         return pageId;

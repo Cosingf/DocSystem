@@ -10,10 +10,17 @@
     id, user_id, book_id
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from personal_legaldoc_stack
     where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectPageByUserId" resultMap="BaseResultMap"  >
+    select
+    <include refid="Base_Column_List" />
+    from personal_legaldoc_stack
+    where user_id = #{userId,jdbcType=BIGINT} limit #{num},6
   </select>
 
   <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -22,6 +29,7 @@
     from personal_legaldoc_stack
     where user_id = #{userId,jdbcType=BIGINT}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from personal_legaldoc_stack
     where id = #{id,jdbcType=BIGINT}

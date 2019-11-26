@@ -1,9 +1,11 @@
 package cn.xmu.edu.legaldocument.controller;
 
+import cn.xmu.edu.legaldocument.VO.PageSectionVO;
 import cn.xmu.edu.legaldocument.entity.QA;
 import cn.xmu.edu.legaldocument.entity.QASection;
 import cn.xmu.edu.legaldocument.service.ReadService;
 import com.alibaba.fastjson.JSON;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,11 +30,11 @@ public class ReadController {
      */
 
     @PostMapping("/read/highlight")
-    public void getHighLightResult(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest,@RequestBody Map<String, Object> map) throws Exception
+    public void getHighLightResult(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @RequestParam("content") String content, @RequestParam("bookId") Long bookid,@RequestParam("pageNum") Integer pageNum) throws Exception
     {
         httpServletResponse.setContentType("application/json;charset=utf-8");
 
-        List<QA>  qas =readService.getHighLightResult(map.get("content").toString());
+        List<QA>  qas =readService.getHighLightResult(content,bookid,pageNum);
         if (qas!=null||qas.size()!=0) {
             httpServletResponse.setStatus(200);
             httpServletResponse.getWriter().write(JSON.toJSONString(qas));
@@ -43,12 +45,12 @@ public class ReadController {
     }
 
 
-    @PostMapping("/read/{bookid}/{pagenum}")
-    public void getAllPageResult(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @PathVariable("bookid") Long bookid,@PathVariable("pagenum") Integer pagenum  ) throws Exception
+    @PostMapping("/read/{bookid}")
+    public void getAllPageResult(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @PathVariable("bookid") Long bookid ) throws Exception
     {
         httpServletResponse.setContentType("application/json;charset=utf-8");
 
-       List<QASection> relusts =readService.getPageAllResult(bookid,pagenum);
+       List<PageSectionVO> relusts =readService.getBookEnrich(bookid);
         if (relusts==null)
             httpServletResponse.setStatus(404);
         else {

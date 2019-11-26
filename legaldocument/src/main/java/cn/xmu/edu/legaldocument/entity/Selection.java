@@ -5,7 +5,7 @@ public class Selection {
 
     private String selection;
 
-    private String keywords;
+//    private String keywords;
 
     private Long bookId;
 
@@ -27,13 +27,13 @@ public class Selection {
         this.selection = selection == null ? null : selection.trim();
     }
 
-    public String getKeywords() {
+/*    public String getKeywords() {
         return keywords;
     }
 
     public void setKeywords(String keywords) {
         this.keywords = keywords == null ? null : keywords.trim();
-    }
+    }*/
 
     public Long getBookId() {
         return bookId;

@@ -14,7 +14,9 @@ public interface PersonalLegaldocStackMapper {
 
     PersonalLegaldocStack selectByPrimaryKey(Long id);
 
-    List<PersonalLegaldocStack> selectByUserId(Long userId);
+    List<PersonalLegaldocStack> selectPageByUserId(@Param("userId") Long userId,@Param("num") Integer num);
+
+    List<PersonalLegaldocStack> selectByUserId(@Param("userId") Long userId);
 
     int updateByPrimaryKey(PersonalLegaldocStack record);
 

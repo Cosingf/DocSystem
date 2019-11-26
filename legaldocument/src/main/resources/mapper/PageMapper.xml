@@ -3,12 +3,11 @@
 <mapper namespace="cn.xmu.edu.legaldocument.mapper.PageMapper" >
   <resultMap id="BaseResultMap" type="cn.xmu.edu.legaldocument.entity.Page" >
     <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="page_content" property="pageContent" jdbcType="VARCHAR" />
     <result column="book_id" property="bookId" jdbcType="BIGINT" />
     <result column="order_num" property="orderNum" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, page_content, book_id,order_num
+    id, book_id,order_num
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -23,22 +22,27 @@
     where  book_id = #{bookId,jdbcType=BIGINT} and
     order_num = #{orderNum,jdbcType=TINYINT}
   </select>
+  <select id="selectByBookId" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from page
+    where  book_id = #{bookId,jdbcType=BIGINT}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from page
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="cn.xmu.edu.legaldocument.entity.Page" useGeneratedKeys="true" keyProperty="id" >
-    insert into page ( page_content, book_id,order_num
+    insert into page (  book_id,order_num
       )
-    values (#{pageContent,jdbcType=VARCHAR}, #{bookId,jdbcType=BIGINT},#{orderNum,jdbcType=TINYINT}
+    values ( #{bookId,jdbcType=BIGINT},#{orderNum,jdbcType=TINYINT}
       )
   </insert>
 
 
   <update id="updateByPrimaryKey" parameterType="cn.xmu.edu.legaldocument.entity.Page" >
     update page
-    set page_content = #{pageContent,jdbcType=VARCHAR},
-      book_id = #{bookId,jdbcType=BIGINT},
+    set book_id = #{bookId,jdbcType=BIGINT},
       order_num=#{orderNum,jdbcType=TINYINT}
     where id = #{id,jdbcType=BIGINT}
   </update>

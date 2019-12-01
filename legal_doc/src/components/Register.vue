@@ -6,31 +6,31 @@
     <span class="back_word" >return</span>
     <div class="main">
       <div class="name" style="display: flex;justify-content: center;">
-        <span class="info-order-text"><strong>用 户 名</strong></span>
+        <span class="info-order-text"><strong>Username:</strong></span>
         <div class="input-box">
-          <input type="text" v-model="userInfo.account"  placeholder="请输入用户名" name="name" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
+          <input type="text" v-model="userInfo.account"  placeholder=" Username" name="name" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
         </div>
       </div>
       <div class="password" style="display: flex;justify-content: center;">
-        <span class="info-order-text"><strong>密&nbsp;&nbsp;&nbsp;码</strong></span>
+        <span class="info-order-text"><strong>Password:</strong></span>
         <div class="input-box">
-          <input type="password"  v-model="userInfo.password" placeholder="请输入密码" name="password" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
+          <input type="password"  v-model="userInfo.password" placeholder=" Password" name="password" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
         </div>
       </div>
       <div class="repassword" style="display: flex;justify-content: center;">
-        <span class="info-order-text"><strong>确认密码</strong></span>
+        <span class="info-order-text" style="padding-right:20px;"><strong>Confirm pasword:</strong></span>
         <div class="input-box">
-          <input type="password" v-model="userInfo.confirmPw" placeholder="请再次输入密码" name="password2" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
+          <input type="password" v-model="userInfo.confirmPw" placeholder=" Confirm password" name="password2" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
         </div>
       </div>
       <div class="address" style="display: flex;justify-content: center;">
-        <span class="info-order-text"><strong>邮&nbsp;&nbsp;&nbsp;箱</strong></span>
+        <span class="info-order-text"><strong>Eamil:</strong></span>
         <div class="input-box">
-          <input type="text" v-model="userInfo.email" placeholder="请输入邮箱地址" name="email" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
+          <input type="text" v-model="userInfo.email" placeholder=" Email" name="email" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
         </div>
       </div>
       <div class="button">
-        <button type="submit" :onclick="register" style="width: 130px;height: 45px;font-size: 26px;">注    册</button>
+        <button type="submit" :onclick="register()" style="width: 130px;height: 45px;font-size: 26px;">Register</button>
       </div>
     </div>
   </div>
@@ -158,8 +158,8 @@
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(220,20,60,.6)
   }
   .info-order-text{
-    width: 200px;
+    width: 250px;
     font-family: STHeiti;
-    font-size: 30px;
+    font-size: 25px;
   }
 </style>

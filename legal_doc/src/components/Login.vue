@@ -4,25 +4,25 @@
     <div class="main">
       <img class="logo" src="../assets/logo.png"/>
       <div class="name" style="display: flex;justify-content: center;">
-        <span class="info-order-text"><strong>username:</strong></span>
+        <span class="info-order-text"><strong>Username:</strong></span>
         <div class="input-box">
-          <input type="text"  placeholder="username"  name="name"  v-model="user.username" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
+          <input type="text"  placeholder=" Username"  name="name"  v-model="user.username" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
         </div>
       </div>
       <div class="password" style="display: flex;justify-content: center;">
-        <span class="info-order-text"><strong>password:</strong></span>
+        <span class="info-order-text"><strong>Password:</strong></span>
         <div class="input-box">
-          <input type="password"  placeholder="password" name="password" v-model="user.password" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
+          <input type="password"  placeholder=" Password" name="password" v-model="user.password" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
         </div>
       </div>
       <div class="forget">
-        <a href="#"  v-on:click="goToForgetPassword()"  >forget password</a>
+        <a href="#"  v-on:click="goToForgetPassword()"  >Forget password</a>
       </div>
       <div class="button1">
-        <button type="submit" v-on:click="userLogin()" style="width: 130px;height: 45px;font-size: 26px;">login</button>
+        <button type="submit" v-on:click="userLogin()" style="width: 130px;height: 45px;font-size: 26px;">Login</button>
       </div>
       <div class="button">
-        <button type="submit" v-on:click="goToRegister()" style="width: 130px;height: 45px;font-size: 26px;">register</button>
+        <button type="submit" v-on:click="goToRegister()" style="width: 130px;height: 45px;font-size: 26px;">Register</button>
 
       </div>
     </div>

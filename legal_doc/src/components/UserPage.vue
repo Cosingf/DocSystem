@@ -7,22 +7,17 @@
       <div class="back">
         <a  href="#" v-on:click="back" style="float: left;"><img src="../assets/back.png" border="0"></a>
       </div>
-      <span class="back_word" >back</span>
+      <span class="back_word" >Back</span>
       <img class="photo" src="../assets/头像.jpg">
       <div class="button1">
-
-        <button v-on:click="gotoPublicBook" style="width: 200px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;"><strong>enter system</strong></button>
-
-
+        <button v-on:click="gotoPublicBook" style="width: 200px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;"><strong>Enter system</strong></button>
       </div>
       <div class="button2">
-        <button @click="gotoRePass" style="width: 250px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;"><strong>change password</strong></button>
+        <button @click="gotoRePass" style="width: 250px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;"><strong>Change password</strong></button>
       </div>
-
       <div class="info" style="float: left;" >
-        <p  >account: {{user.account}}</p><p></p>
-        <p v-if="ok">email: {{user.email}}</p>
-
+        <p  >Account: {{user.account}}</p><p></p>
+        <p v-if="ok">Email: {{user.email}}</p>
       </div>
 
 

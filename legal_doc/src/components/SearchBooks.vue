@@ -1,17 +1,17 @@
 <template>
     <div id="SearchBooks" class="body">
-      <div class="top">
-        <img class="photo" src="../assets/头像.jpg" v-on:click="goToPersonalPage()">
-        <p id="welcome">欢迎您，XXX</p>
-        <div class="menu">
-          <ul class="button-list">
-            <li><a href='#' class='choosed_button' onclick="return false;">公共书库</a></li>
-            <li><a href='#' class='button' v-on:click="goToMyLibrary()">我的书库</a></li>
-          </ul>
-        </div>
-        <p id="back">退出</p>
-        <a href="#" v-on:click="gotoLogin()"><img class="back_image" src="../assets/enter.png"></a>
+         <div  class="top">
+      <img class="photo" src="../assets/头像.jpg" v-on:click="gotoUserPage()">
+      <p id="welcome">Welcome</p>
+      <div class="menu">
+        <ul class="button-list">
+          <li><router-link href='#' class='button' to="/publicbooks/sixbooks/1">Public library</router-link></li>
+          <li><router-link href='#' class='button' to="/mybooks/sixbooks/1">My library</router-link></li>
+        </ul>
       </div>
+      <p id="back">Exit</p>
+      <router-link href='#' to="/"><img class="back_image" src="../assets/enter.png"></router-link>
+    </div>
       <div class="main">
         <div class="container">
           <form action="" class="parent">

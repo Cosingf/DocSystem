@@ -3,15 +3,15 @@
 
     <div  class="top">
       <img class="photo" src="../assets/头像.jpg" v-on:click="gotoUserPage()">
-      <p id="welcome">welcome</p>
+      <p id="welcome">Welcome</p>
       <div class="menu">
         <ul class="button-list">
-          <li><a href='/' class='choosed_button' v-on:click="goToPublicLibrary()">public library</a></li>
-          <li><a href='#' class='button'v-on:click="goToMyLibrary()">my library</a></li>
+          <li><router-link href='#' class='button' to="/publicbooks/sixbooks/1">Public library</router-link></li>
+          <li><router-link href='#' class='button' to="/mybooks/sixbooks/1">My library</router-link></li>
         </ul>
       </div>
-      <p id="back">退出</p>
-      <a href="#"  v-on:click="goToLogin()"><img class="back_image" src="../assets/enter.png"></a>
+      <p id="back">Exit</p>
+       <router-link href='#' to="/"><img class="back_image" src="../assets/enter.png"></router-link>
     </div>
 
 
@@ -22,10 +22,10 @@
         <div class="bookauthor"><p style="font-size:20px;padding-top:10px;margin-left:0px;width: 300px;margin-top:90px;">{{this.author}}</p></div>
         <div class="addmybook">
           <button type="button" v-on:click="addToMyLibrary()" class="btn btn-light"style="font-size:20px;margin-top:90px;background-color: #ed757a;color:white;border-radius: 10px;" data-toggle="modal" data-target="#myModal">
-            add to My Book
+            Add to My Book
           </button>
           <button type="button" v-on:click="enhance()" class="btn btn-light"style="font-size:20px;margin-top:90px;margin-left:50px;background-color: #ed757a;color:white;border-radius: 10px;" data-toggle="modal" data-target="#myModal">
-            enhance
+            Enhance
           </button>
         </div>
        <!-- <button class="btn col-1 offset-3" style="background-color:rgba(255,255,255,0.5);margin-top:10px;margin-left: 800px;"><img src="../assets/add.png"></button>-->
@@ -36,8 +36,8 @@
     <div style="margin-top:30px;">
       <div style="width:60%">
 
-        <button type="button" v-on:click="last()" style="margin-left: 300px;margin-bottom: 10px"> prev</button>
-        <button type="button" v-on:click="next()" style="margin-left: 50px;margin-bottom: 10px"> next</button>
+        <button type="button" v-on:click="last()" style="margin-left: 300px;margin-bottom: 10px"> Prev</button>
+        <button type="button" v-on:click="next()" style="margin-left: 50px;margin-bottom: 10px"> Next</button>
           <div class="drag-box" id="dragBox" >
             <el-scrollbar style="height: 200% ">
               <div class="wrapper" id="pdf-container" @mouseup="tooltip($event)" >
@@ -633,8 +633,8 @@
     float: left;
     margin: 0 50px 0 0;
   }
-  #back{
-    margin: 0;
+   #back{
+    margin-right: 10px;
     padding: 0;
     font-size: 24px;
     font-weight: bold;

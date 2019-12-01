@@ -2,28 +2,28 @@
   <div id="MyBooks" class="body">
   <div class="top">
     <img class="photo" src="../assets/头像.jpg">
-    <p id="welcome">welcome</p>
+    <p id="welcome">Welcome</p>
     <div class="menu">
       <ul class="button-list">
-        <li><a href='#' class='button' v-on:click="goToPublicLibrary()">public library</a></li>
-        <li><a href='/' class='choosed_button' onclick="return false;">my library</a></li>
+        <li><router-link href='#' class='button' to="/publicbooks/sixbooks/1">Public library</router-link></li>
+        <li><a href='/' class='choosed_button' onclick="return false;">My library</a></li>
       </ul>
     </div>
-    <p id="back">exit</p>
-    <a href="#"  v-on:click="goToLogin()"><img class="back_image" src="../assets/enter.png"></a>
+    <p id="back">Exit</p>
+    <router-link href='#' to="/"><img class="back_image" src="../assets/enter.png"></router-link>
   </div>
   <div class="main">
     <div class="container">
       <form action="" class="parent">
-        <input type="text" name="searchContent" id="searchContent"class="search" placeholder="keyword">
+        <input type="text" name="searchContent" id="searchContent"class="search" placeholder="Keywords">
         <input type="button" v-on:click="searchBooks()" name="sub" id="sub" class="btn">
       </form>
     </div>
     <!--<div class="upload_button">
-      <button type="button" v-on:click="uploadBookBox(1)" style="width: 150px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;">upload</button>
+      <button type="button" v-on:click="uploadBookBox(1)" style="width: 150px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;">Upload</button>
     </div>-->
     <div class="delete_button">
-      <el-button type="button" v-on:click="deleteBooks()" style="width: 150px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;">delete</el-button>
+      <el-button type="button" v-on:click="deleteBooks()" style="width: 150px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;">Delete</el-button>
     </div>
 
 
@@ -40,8 +40,8 @@
           :before-upload="beforeupload"
           :limit="1"
           >
-          <el-button slot="trigger" size="medium" type="primary">选取文件</el-button>
-          <div slot="tip" class="el-upload__tip">只能上传pdf文件</div>
+          <el-button slot="trigger" size="medium" type="primary">Select files</el-button>
+          <div slot="tip" class="el-upload__tip">Only support pdf files</div>
 
         </el-upload>
         <el-form-item :label=uploadBookMsg.file.name>
@@ -55,9 +55,9 @@
 
 
       </el-form>
-      <el-button size="medium" type="primary" @click="uploadBook">upload</el-button>
+      <el-button size="medium" type="primary" @click="uploadBook">Upload</el-button>
       <el-button slot="reference" style=" position: absolute;top: 5%;left: 60%;width: 150px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;">
-        upload</el-button>
+        Upload</el-button>
     </el-popover>
 
 
@@ -539,13 +539,13 @@
     margin: 0 50px 0 0;
   }
   #back{
-    margin: 0;
+    margin-right: 10px;
     padding: 0;
     font-size: 24px;
     font-weight: bold;
     position: absolute;
     top: 23%;
-    right: 4%;
+    right: 4%; 
   }
   .back_image{
     margin-top: 3px;

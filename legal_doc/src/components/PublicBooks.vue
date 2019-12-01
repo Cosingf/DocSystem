@@ -3,28 +3,28 @@
 
     <div  class="top">
       <img class="photo" src="../assets/头像.jpg" >
-      <p id="welcome">welcome</p>
+      <p id="welcome">Welcome</p>
       <div class="menu">
         <ul class="button-list">
-          <li><a href='/' class='choosed_button' onclick="return false;">public library</a></li>
-          <li><a href='#' class='button'v-on:click="goToMyLibrary()">my library</a></li>
+          <li><a href='/' class='choosed_button' onclick="return false;">Public library</a></li>
+          <li><router-link href='#' class='button' to="/mybooks/sixbooks/1">My library</router-link></li>
         </ul>
       </div>
-      <p id="back">退出</p>
-      <a href="#"  v-on:click="goToLogin()"><img class="back_image" src="../assets/enter.png"></a>
+      <p id="back">Exit</p>
+      <router-link href='#' to="/"><img class="back_image" src="../assets/enter.png"></router-link>
     </div>
 
     <div class="main">
 
       <div class="container">
         <form action="" class="parent">
-          <input type="text" name="searchContent" id="searchContent"class="search" placeholder="keyword">
+          <input type="text" name="searchContent" id="searchContent"class="search" placeholder="Keywords">
           <input type="button" v-on:click="searchBooks()" name="sub" id="sub" class="btn">
         </form>
       </div>
 
       <div class="add_button">
-        <button type="button" v-on:click="addToMyLibrary()" style="width: 220px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;">add to my library</button>
+        <button type="button" v-on:click="addToMyLibrary()" style="width: 250px;height: 50px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;">Add to my library</button>
       </div>
 
       <div class="sku-box store-content">
@@ -473,7 +473,7 @@
     margin: 0 50px 0 0;
   }
   #back{
-    margin: 0;
+    margin-right: 10px;
     padding: 0;
     font-size: 24px;
     font-weight: bold;

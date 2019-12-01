@@ -4,37 +4,37 @@
     <div class="back">
       <a href="#" v-on:click="back()" style="float: left;"><img src="../assets/back.png" border="0" ></a>
     </div>
-    <span class="back_word">返回</span>
+    <span class="back_word">Back</span>
     <div class="main">
       <div class="name" style="display: flex;justify-content: center;">
-        <span class="info-order-text"><strong>注册邮箱</strong></span>
+        <span class="info-order-text"><strong>Eamil:</strong></span>
         <div class="input-box">
-          <input type="text"  v-model="modifyPWInfo.email"  placeholder="请输入注册邮箱" name="email" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
+          <input type="text"  v-model="modifyPWInfo.email"  placeholder=" Eamil" name="email" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
         </div>
       </div>
       <div class="code" style="display: flex;justify-content: center;">
-        <span class="info-order-text"><strong>验 证 码</strong></span>
+        <span class="info-order-text"><strong>Verification code:</strong></span>
         <div class="input-box">
-          <input type="text"v-model="modifyPWInfo.verifyCode" placeholder="请输入验证码" style="height: 33px;width: 130px;border: 2px solid;font-size: 18px;">
+          <input type="text" v-model="modifyPWInfo.verifyCode" placeholder=" Code" style="height: 33px;width: 130px;border: 2px solid;font-size: 18px;">
         </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <div class="CODE_button">
-          <button type="button" onclick="alert('验证码已发送!')" style="width: 130px;height: 35px;font-size: 16px;">点击发送验证码</button>
+          <button type="button" onclick="alert('The verification code has been sent!')" style="width: 150px;height: 35px;font-size: 18px;">Send code</button>
         </div>
       </div>
       <div class="new_password" style="display: flex;justify-content: center;">
-        <span class="info-order-text"><strong>新 密 码</strong></span>
+        <span class="info-order-text"><strong>New password:</strong></span>
         <div class="input-box">
-          <input type="password" v-model="modifyPWInfo.password"  placeholder="请输入新密码" name="password" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
+          <input type="password" v-model="modifyPWInfo.password"  placeholder=" New password" name="password" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
         </div>
       </div>
       <div class="repassword" style="display: flex;justify-content: center;">
-        <span class="info-order-text"><strong>确认密码</strong></span>
+        <span class="info-order-long-text" ><strong>Confirm password:</strong></span>
         <div class="input-box">
-          <input type="password" v-model="modifyPWInfo.confirmPw" placeholder="请再次输入新密码" name="password" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
+          <input type="password" v-model="modifyPWInfo.confirmPw" placeholder=" Confirm new password" name="password" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
         </div>
       </div>
       <div class="button">
-        <button type="submit" v-on:click="repassword()" style="width: 130px;height: 45px;font-size: 26px;">确    认</button>
+        <button type="submit" v-on:click="repassword()" style="width: 130px;height: 45px;font-size: 26px;">Commit</button>
       </div>
     </div>
   </div>
@@ -112,7 +112,7 @@
     width: 80px;
     position: absolute;
     left: 90px;
-    bottom: 6%;
+    bottom: 5%;
     float: left;
     font-size: 30px;
   }
@@ -165,9 +165,15 @@
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(220,20,60,.6)
   }
   .info-order-text{
-    width: 200px;
+    width: 240px;
     font-family: STHeiti;
-    font-size: 30px;
+    font-size: 23px;
+  }
+  .info-order-long-text{
+    width: 260px;
+    margin-left:-20px;
+    font-family: STHeiti;
+    font-size: 23px;
   }
 
 </style>

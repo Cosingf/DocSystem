@@ -6,6 +6,8 @@ import cn.xmu.edu.legaldocument.entity.PersonalLegaldocStack;
 import cn.xmu.edu.legaldocument.entity.Section;
 import cn.xmu.edu.legaldocument.service.PdfService;
 import com.google.common.util.concurrent.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +23,7 @@ public class PdfController {
 
     @Autowired
     PdfService pdfService;
+    private static final Logger logger= LoggerFactory.getLogger(PdfController.class);
 
     //private static final Logger log = LoggerFactory.getLogger(FileController.class);
 
@@ -49,6 +52,9 @@ public class PdfController {
         legalDoc.setPath(path);
         legalDoc.setIsEnrich(0);//0代表未增强
         legalDoc.setIsPublic(isPublic);
+        //pdf首页生成封面
+        String coverImg=pdfService.createCoverImg(path);
+        legalDoc.setCoverImg(coverImg);
         pdfService.insertLegalDoc(legalDoc);
 
         //更新关系书库

@@ -11,8 +11,8 @@ import com.alibaba.fastjson.TypeReference;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.pdfbox.exceptions.COSVisitorException;
-import org.pdfbox.exceptions.InvalidPasswordException;
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
 import org.pdfbox.pdfparser.PDFParser;
 import org.pdfbox.pdfwriter.COSWriter;
 import org.pdfbox.util.Splitter;
@@ -22,6 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 
@@ -306,7 +311,7 @@ public class PdfService {
             if (document.isEncrypted()) {
                 try {
                     document.decrypt(password);
-                } catch (InvalidPasswordException e) {
+                } catch (Exception e) {
                     //they didn't suppply a password and the default of "" was wrong.
                     System.err.println("Error: The document is encrypted.");
                     usage();
@@ -335,12 +340,14 @@ public class PdfService {
 
 
 
-    private void writeDocument(org.pdfbox.pdmodel.PDDocument doc, String fileName ) throws IOException, COSVisitorException
+    private void writeDocument(org.pdfbox.pdmodel.PDDocument doc, String fileName ) throws IOException
     {
         COSWriter writer = null;
         try (FileOutputStream output = new FileOutputStream(fileName)) {
             writer = new COSWriter(output);
             writer.write(doc);
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             if (writer != null) {
                 writer.close();
@@ -391,5 +398,32 @@ public class PdfService {
 
     public void setLegalDocEnriched(Long bookId) {
         legalDocMapper.setLegalDocEnriched(bookId);
+    }
+    
+    //利用首页生成pdf封面
+    public String createCoverImg(String filePath) throws IOException {
+        String outputPrefix = filePath.substring( 0, filePath.lastIndexOf( '.' ));
+        String imageFormat = "png";
+        String outPath = outputPrefix  + "." + imageFormat;
+        // 利用PdfBox生成图像
+        PDDocument pdDocument = PDDocument.load(new File(filePath));
+        System.out.println(pdDocument.getNumberOfPages());
+        PDFRenderer renderer = new PDFRenderer(pdDocument);
+
+        // 构造图片
+        BufferedImage img_temp = renderer.renderImageWithDPI(0 , 300, ImageType.RGB);
+        // 设置图片格式
+        Iterator<ImageWriter> it = ImageIO.getImageWritersBySuffix("png");
+        // 将文件写出
+        ImageWriter writer = (ImageWriter) it.next();
+        ImageOutputStream imageOut = ImageIO.createImageOutputStream(new FileOutputStream(outPath));
+        writer.setOutput(imageOut);
+        writer.write(new IIOImage(img_temp, null, null));
+        img_temp.flush();
+        imageOut.flush();
+        imageOut.close();
+        //Warning: You did not close a PDF Document
+        pdDocument.close();
+        return outPath;
     }
 }

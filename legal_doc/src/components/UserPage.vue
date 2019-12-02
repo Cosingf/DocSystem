@@ -9,9 +9,9 @@
       </div>
       <span class="back_word" >Back</span>
       <img class="photo" src="../assets/头像.jpg">
-      <div class="button1">
+      <!-- <div class="button1">
         <button v-on:click="gotoPublicBook" style="width: 200px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;"><strong>Enter system</strong></button>
-      </div>
+      </div> -->
       <div class="button2">
         <button @click="gotoRePass" style="width: 250px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;"><strong>Change password</strong></button>
       </div>
@@ -143,8 +143,8 @@
   }
   .button2{
     position: absolute;
-    top: 25%;
-    right: 10%;
+    top: 17%;
+    right: 15%;
   }
   .info{
     width: 400px;

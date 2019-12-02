@@ -8,9 +8,10 @@
     <result column="author" property="author" jdbcType="VARCHAR" />
     <result column="bookname" property="name" jdbcType="VARCHAR" />
     <result column="is_public" property="isPublic" jdbcType="VARCHAR" />
+    <result column="cover_img" property="coverImg" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, path, is_enrich, author, bookname,is_public
+    id, path, is_enrich, author, bookname,is_public,cover_img
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select
@@ -44,9 +45,9 @@
   </delete>
   <insert id="insert" parameterType="cn.xmu.edu.legaldocument.entity.LegalDoc" useGeneratedKeys="true" keyProperty="id" >
     insert into legal_doc ( path, is_enrich,
-      author, bookname,is_public)
-    values ( #{path,jdbcType=VARCHAR}, #{isEnrich,jdbcType=TINYINT},
-      #{author,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},#{isPublic,jdbcType=TINYINT})
+      author, bookname,is_public,cover_img)
+    values ( #{path,jdbcType=VARCHAR}, #{isEnrich,jdbcType=TINYINT},#{author,jdbcType=VARCHAR},
+    #{name,jdbcType=VARCHAR},#{isPublic,jdbcType=TINYINT},#{coverImg,jdbcType=VARCHAR})
   </insert>
   <insert id="insertPersonalLegalDoc" parameterType="cn.xmu.edu.legaldocument.entity.PersonalLegaldocStack" useGeneratedKeys="true" keyProperty="id" >
     insert into personal_legaldoc_stack (user_id,book_id)
@@ -63,7 +64,8 @@
       is_enrich = #{isEnrich,jdbcType=TINYINT},
       author = #{author,jdbcType=VARCHAR},
       bookname = #{name,jdbcType=VARCHAR},
-      is_public = #{isPublic,jdbcType=TINYINT}
+      is_public = #{isPublic,jdbcType=TINYINT},
+      cover_img=#{coverImg,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="setLegalDocEnriched" parameterType="java.lang.Long" >

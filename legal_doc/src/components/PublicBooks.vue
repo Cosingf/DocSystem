@@ -2,7 +2,7 @@
   <div id="PublicBooks" class="body">
 
     <div  class="top">
-      <img class="photo" src="../assets/头像.jpg" >
+      <router-link href='#' to="/users/info"><img class="photo" src="../assets/头像.jpg" ></router-link>
       <p id="welcome">Welcome</p>
       <div class="menu">
         <ul class="button-list">

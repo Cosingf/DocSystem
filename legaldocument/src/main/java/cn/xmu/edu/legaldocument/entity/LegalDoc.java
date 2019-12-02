@@ -13,6 +13,16 @@ public class LegalDoc {
 
     private int isPublic;
 
+    private String coverImg;
+
+    public String getCoverImg() {
+        return coverImg;
+    }
+
+    public void setCoverImg(String coverImg) {
+        this.coverImg = coverImg;
+    }
+
     public int getIsPublic() {
         return isPublic;
     }

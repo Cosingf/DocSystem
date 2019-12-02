@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="forget">
-        <a href="#"  v-on:click="goToForgetPassword()"  >Forget password</a>
+        <router-link href="#"  to="/users/repassword"  >Forget password</router-link>
       </div>
       <div class="button1">
         <button type="submit" v-on:click="userLogin()" style="width: 130px;height: 45px;font-size: 26px;">Login</button>
@@ -58,7 +58,7 @@
                     localStorage.setItem('user',response.data.account)
                   localStorage.setItem('userId',response.data.id)
 
-                        this.$router.push({name: 'UserPage'});
+                         this.$router.push({name: 'PublicBooks'});
 
                 }
             }).catch(error => {

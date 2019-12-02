@@ -1,10 +1,15 @@
 <template>
   <div id="MyBooks" class="body">
   <div class="top">
-    <img class="photo" src="../assets/头像.jpg">
+    
+    <router-link href='#' to="/users/info"><img class="photo" src="../assets/头像.jpg" ></router-link>
     <p id="welcome">Welcome</p>
     <div class="menu">
       <ul class="button-list">
+        <!-- <el-radio-group v-model="tabPosition" style="height:35px;">
+          <router-link href='#' to="/publicbooks/sixbooks/1"><el-radio-button label="top">Public library</el-radio-button></router-link>
+          <el-radio-button label="right" onclick="return false;" >My library</el-radio-button>
+       </el-radio-group> -->
         <li><router-link href='#' class='button' to="/publicbooks/sixbooks/1">Public library</router-link></li>
         <li><a href='/' class='choosed_button' onclick="return false;">My library</a></li>
       </ul>
@@ -15,13 +20,13 @@
   <div class="main">
     <div class="container">
       <form action="" class="parent">
-        <input type="text" name="searchContent" id="searchContent"class="search" placeholder="Keywords">
+        <input type="text" name="searchContent" id="searchContent" class="search" placeholder="Keywords">
         <input type="button" v-on:click="searchBooks()" name="sub" id="sub" class="btn">
       </form>
     </div>
-    <!--<div class="upload_button">
+    <div class="upload_button">
       <button type="button" v-on:click="uploadBookBox(1)" style="width: 150px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;">Upload</button>
-    </div>-->
+    </div>
     <div class="delete_button">
       <el-button type="button" v-on:click="deleteBooks()" style="width: 150px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;">Delete</el-button>
     </div>
@@ -201,6 +206,9 @@
         goToLogin(){
           this.$router.push({name: 'Login'});
         },
+         handleClick(tab, event) {
+          console.log(tab, event);
+        },
         searchBooks(){
           var searchContent= document.getElementById("searchContent").value
           this.$axios({
@@ -224,6 +232,10 @@
 <style scoped>
   html{
     width: 100%;
+  }
+  .el-radio-button__inner{
+    height:51px;
+    font-size:25px;
   }
   .sku-box{
     position: relative;
@@ -538,6 +550,7 @@
     float: left;
     margin: 0 50px 0 0;
   }
+
   #back{
     margin-right: 10px;
     padding: 0;

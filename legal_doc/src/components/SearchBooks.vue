@@ -1,7 +1,7 @@
 <template>
     <div id="SearchBooks" class="body">
          <div  class="top">
-      <img class="photo" src="../assets/头像.jpg" v-on:click="gotoUserPage()">
+      <router-link href='#' to="/users/info"><img class="photo" src="../assets/头像.jpg" ></router-link>
       <p id="welcome">Welcome</p>
       <div class="menu">
         <ul class="button-list">

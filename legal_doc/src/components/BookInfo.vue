@@ -6,7 +6,7 @@
     <div>
         <!--<div id="bookInfo.id" class="content1" style="background-color: rgba(255,255,255,0.8);">-->
           <div class="item-img">
-          <img v-on:click="gotoBook(item.path,item.id,item.name,item.author)" :src="item.imgpath" height="300" width="300" style="cursor: pointer;">
+          <img v-on:click="gotoBook(item.path,item.id,item.name,item.author)" :src="item.coverImg" height="300" width="300" style="cursor: pointer;">
 
           </div>
 

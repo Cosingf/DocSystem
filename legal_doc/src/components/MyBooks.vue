@@ -30,163 +30,163 @@
           <div style="height: 50px;"></div>
         </div>
         <div class="pagination"><el-pagination layout="prev, pager, next" :total="100"></el-pagination></div>
-      </body>
-      </template>
-      <script>
-      import BookInfo from '@/components/BookInfo'
-      export default {
-          data() {
-            return {
-              activeIndex: '2',
-              books:[{
-                id:"ggg",
-                imgpath:"",
-                name:"legal document",
-                path:"",
-                author:"legal user"
-              }]
-            };s
-          },
-          components: {
-            BookInfo
-          },
-          methods: {
-            handleCommand(command) {
-              this.$message('click on item ' + command);
-            },
-            goToPublicLibrary(){
-                this.$router.push({name: 'PublicBooks'});
-            }
-          }
-      }
-      </script>
-      <style scoped>
-      .el-menu-item{
-        font-weight:500;
-        font-size:17px;
-        padding:0px 10px;
-      }
-      .el-menu--horizontal>.el-menu-item {
-        line-height:50px;
-        height:50px;
-      }
-      .el-icon-collection{
-        font-size:15px;
-      }
-      .el-menu-demo {
-        padding-left: 450px;;
-      }
-      .myicon{
-        position: absolute;
-        margin-top: 6px;
-        font-size: 24px;
-        font-weight: 500;
-        margin-left: -135px;
-      }
-      .private-book >>> .el-input {
-        position: absolute;
-        width:250px;
-        margin-top:9px;
-        margin-left:30px;
-      }    
-      .private-book >>> .el-input__inner{
-        background: #f6f6f6;
-        height:33px;
-      }
-      .private-book >>> .el-button {
-        position:absolute;
-        font-size:14px;
-        padding: 10px 10px;
-        margin-top:8px;
-        margin-left:290px;
-        line-height:13px;
-      }
-      .white-panel  >>> .el-button {
-        position:absolute;
-        font-size:14px;
-        padding: 10px 10px;
-        margin-top:-5px;
-        margin-left:0px;
-        line-height:13px;
-      }
-      .panel-tips >>> .el-button {
-        position:absolute;
-        font-size:14px;
-        padding: 10px 10px;
-        margin-top:3px;
-        margin-left:460px;
-        line-height:13px;
-      }
-      .el-avatar{
-        position: absolute;
-        margin-top:9px;
-        margin-left:510px;
-      }
-      .el-avatar--medium {
-        width: 34px;
-        height: 34px;
-        line-height: 34px;
-        cursor: pointer;
-      }
-      .el-dropdown-link {
-        cursor: pointer;
-      }
-      .el-icon-arrow-down {
-        font-size: 12px;
-      }
-      .el-dropdown{
-        position:absolute;
-      }
-      .el-popper[x-placement^=bottom] {
-        margin-top:48px;
-        margin-left: 1145px;
-      }
-      .router-link{
-        color: #606266;
-        text-decoration: none;
-      }
-      .router-link:hover{
-        color: #66b1ff;
-      }
-      .white-panel{
-        width:1000px;
-        margin:0 auto;
-        margin-top: 20px; 
-        background: #fff; 
-        overflow: hidden; 
-        border-radius: 2px; 
-        -webkit-box-shadow: 0 1px 3px rgba(26,26,26,.1); 
-        box-shadow: 0 1px 3px rgba(26,26,26,.1); 
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-      }
-      .el-row {
-          margin-bottom: 20px;
-          &:last-child {
-            margin-bottom: 0;
-          }
-      }
-      .el-col {
-        border-radius: 4px;
-      }
-      .bg-purple-dark {
-        background: #99a9bf;
-      }
-      .bg-purple {
-        background: #d3dce6;
-      }
-      .bg-purple-light {
-        background: #e5e9f2;
-      }
-      .grid-content {
-        border-radius: 4px;
-        min-height: 36px;
-      }
-      .row-bg {
-        padding: 10px 0;
-        background-color: #f9fafc;
-      }
-      .pagination >>> .el-pagination{
-        margin:20px auto;
-      }
-      </style>
+    </body>
+</template>
+<script>
+import BookInfo from '@/components/BookInfo'
+export default {
+    data() {
+    return {
+        activeIndex: '2',
+        books:[{
+        id:"ggg",
+        imgpath:"",
+        name:"legal document",
+        path:"",
+        author:"legal user"
+        }]
+        };
+    },
+    components: {
+        BookInfo
+    },
+    methods: {
+        handleCommand(command) {
+            this.$message('click on item ' + command);
+        },
+        goToPublicLibrary(){
+            this.$router.push({name: 'PublicBooks'});
+        }
+    }
+}
+</script>
+<style scoped>
+.el-menu-item{
+    font-weight:500;
+    font-size:17px;
+    padding:0px 10px;
+}
+.el-menu--horizontal>.el-menu-item {
+    line-height:50px;
+    height:50px;
+}
+.el-icon-collection{
+    font-size:15px;
+}
+.el-menu-demo {
+    padding-left: 450px;;
+}
+.myicon{
+    position: absolute;
+    margin-top: 6px;
+    font-size: 24px;
+    font-weight: 500;
+    margin-left: -135px;
+}
+.private-book >>> .el-input {
+    position: absolute;
+    width:250px;
+    margin-top:9px;
+    margin-left:30px;
+}    
+.private-book >>> .el-input__inner{
+    background: #f6f6f6;
+    height:33px;
+}
+.private-book >>> .el-button {
+    position:absolute;
+    font-size:14px;
+    padding: 10px 10px;
+    margin-top:8px;
+    margin-left:290px;
+    line-height:13px;
+}
+.white-panel  >>> .el-button {
+    position:absolute;
+    font-size:14px;
+    padding: 10px 10px;
+    margin-top:-5px;
+    margin-left:0px;
+    line-height:13px;
+}
+.panel-tips >>> .el-button {
+    position:absolute;
+    font-size:14px;
+    padding: 10px 10px;
+    margin-top:3px;
+    margin-left:460px;
+    line-height:13px;
+}
+.el-avatar{
+    position: absolute;
+    margin-top:9px;
+    margin-left:510px;
+}
+.el-avatar--medium {
+    width: 34px;
+    height: 34px;
+    line-height: 34px;
+    cursor: pointer;
+}
+.el-dropdown-link {
+    cursor: pointer;
+}
+.el-icon-arrow-down {
+    font-size: 12px;
+}
+.el-dropdown{
+    position:absolute;
+}
+.el-popper[x-placement^=bottom] {
+    margin-top:48px;
+    margin-left: 1145px;
+}
+.router-link{
+    color: #606266;
+    text-decoration: none;
+}
+.router-link:hover{
+    color: #66b1ff;
+}
+.white-panel{
+    width:1000px;
+    margin:0 auto;
+    margin-top: 20px; 
+    background: #fff; 
+    overflow: hidden; 
+    border-radius: 2px; 
+    -webkit-box-shadow: 0 1px 3px rgba(26,26,26,.1); 
+    box-shadow: 0 1px 3px rgba(26,26,26,.1); 
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.el-row {
+    margin-bottom: 20px;
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+.el-col {
+    border-radius: 4px;
+}
+.bg-purple-dark {
+    background: #99a9bf;
+}
+.bg-purple {
+    background: #d3dce6;
+}
+.bg-purple-light {
+    background: #e5e9f2;
+}
+.grid-content {
+    border-radius: 4px;
+    min-height: 36px;
+}
+.row-bg {
+    padding: 10px 0;
+    background-color: #f9fafc;
+}
+.pagination >>> .el-pagination{
+    margin:20px auto;
+}
+</style>

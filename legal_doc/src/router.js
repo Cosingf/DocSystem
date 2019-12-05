@@ -28,11 +28,6 @@ export default new Router({
       component: UserPage
     },
     {
-      path: '/bookinfo',
-      name:'BookInfo',
-      component: BookInfo
-    },
-    {
       path: '/publicbooks/sixbooks/1',
       name: 'PublicBooks',
       component: PublicBooks
@@ -41,11 +36,6 @@ export default new Router({
       path: '/users/register',
       name: 'Register',
       component: Register
-    },
-    {
-      path: '/users/search/:bookname',
-      name: 'SearchBooks',
-      component: SearchBooks
     },
     {
       path: '/users/repassword',

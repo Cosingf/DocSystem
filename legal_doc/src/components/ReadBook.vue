@@ -14,14 +14,42 @@
         </el-dropdown-menu>
       </el-dropdown>
     </el-menu>
-    <div class="white-panel"></div>
+    <div class="white-panel">
+      <div style="height: 20px;"></div>
+      <p style="font-weight:normal;font-size:24px;margin:0 70px;color:#586069;">{{this.bookname}}</p>
+      <p style="color:#909399;margin:5px 72px;">{{this.author}}</p>
+      <el-button type="success" @click="drawer = true" style="margin-top: -45px;margin-left: 800px;" plain>Enhancn text</el-button>
+      <el-divider></el-divider>
+      <div style="margin:20px 70px;color:#586069;">example text text text text text text text text text 
+          text text text text text text text text text text text text text text text 
+          text text text text text text text text text text text text text text text text 
+          text text text text text text text text text text text text text text text text-----
+          --------------------------------------------------------------------------------
+          -------------------------------------------------------------------------------
+          --------------------------------------------------------------------------------
+          ----------------------------------------------------------------------------------
+          ------------------------------------------------------------------------------------
+          -------------------------------------------------------------------------------------
+      </div>
+      <el-drawer title="我是标题" :visible.sync="drawer" :direction="direction" size="25%">
+        <span>我来啦!</span>
+      </el-drawer>
+      <div style="height: 70px;"></div>
+    </div>
+    <div class="pagination"><el-pagination layout="prev, pager, next" :total="100"></el-pagination></div>
   </div>
 </template> 
 <script>
 export default {
   data() {
     return {
-      activeIndex: '0'
+      activeIndex: '0',
+      drawer: false,
+      direction: 'rtl',
+      pdf: localStorage.getItem('bookId'),
+      bookId: localStorage.getItem('id'),
+      bookname:localStorage.getItem('bookname'),
+      author:localStorage.getItem('author')
     };
   },
   methods: {
@@ -136,6 +164,17 @@ export default {
     box-shadow: 0 1px 3px rgba(26,26,26,.1); 
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+}
+.white-panel>>>.el-divider--horizontal {
+    display: block;
+    height: 1px;
+    width: 850px;
+    margin: 15px 65px;
+}
+.pagination >>> .el-pagination{
+    margin-left: 570px;
+    margin-top:20px;
+    color:#586069;
 }
 </style>
   

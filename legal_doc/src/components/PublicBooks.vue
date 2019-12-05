@@ -188,5 +188,6 @@
   .pagination >>> .el-pagination{
     margin-left: 570px;
     margin-top:20px;
+    color:#586069;
   }
   </style>

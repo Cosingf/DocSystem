@@ -89,7 +89,7 @@ public class CutTest {
     public static String execute() throws Exception {
         String filePath="F:\\\\DocSystem\\\\legaldocument/file/test.pdf";
         String outPath="F:\\\\DocSystem\\\\legaldocument/file/test.png";
-        String outputPrefix = filePath.substring( 0, filePath.lastIndexOf( '.' ));
+        String outputPrefix = filePath.substring(filePath.lastIndexOf( '/' )+1,filePath.lastIndexOf('.'));
         System.out.println(outputPrefix);
         // 利用PdfBox生成图像
         PDDocument pdDocument = PDDocument.load(new File(filePath));

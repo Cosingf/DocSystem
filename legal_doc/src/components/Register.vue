@@ -1,165 +1,178 @@
-<template >
-  <div id="Register" class="body">
-    <div class="back">
-      <a  href="#" v-on:click="back" style="float: left;"><img src="../assets/back.png" border="0"></a>
-    </div>
-    <span class="back_word" >return</span>
-    <div class="main">
-      <div class="name" style="display: flex;justify-content: center;">
-        <span class="info-order-text"><strong>Username:</strong></span>
-        <div class="input-box">
-          <input type="text" v-model="userInfo.account"  placeholder=" Username" name="name" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
+<template>
+    <body>
+        <router-link href='#' to="/"><i class="el-icon-back">&nbsp;Back</i></router-link>
+        <div style="height: 10px;"></div>
+        <div class="title">
+            <a style="color: #6a737d;font-size:20px;">Join Reedpeer</a>
+            <a class="head">Create your account</a>
         </div>
-      </div>
-      <div class="password" style="display: flex;justify-content: center;">
-        <span class="info-order-text"><strong>Password:</strong></span>
-        <div class="input-box">
-          <input type="password"  v-model="userInfo.password" placeholder=" Password" name="password" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
+        <div class="register">
+        <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="80px" style="margin-left:20px;margin-top:10px;" class="demo-ruleForm">
+            <el-form-item label="Username" label-width="100px;" style="font-weight: bold;" prop="name">
+                <el-input vregi-model.number="ruleForm.name"></el-input>
+            </el-form-item>
+            <el-form-item label="Password" label-width="100px;" style="font-weight: bold;" prop="pass">
+                <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="Confirm password" label-width="100px;" style="font-weight: bold;" prop="checkPass">
+                <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="Eamil" label-width="100px;" style="font-weight: bold;" prop="email">
+                <el-input type="email" v-model="ruleForm.email" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="success" @click="submitForm('ruleForm')" class="loginBtn"  round>Sign up</el-button>
+            </el-form-item>
+        </el-form>
         </div>
-      </div>
-      <div class="repassword" style="display: flex;justify-content: center;">
-        <span class="info-order-text" style="padding-right:20px;"><strong>Confirm pasword:</strong></span>
-        <div class="input-box">
-          <input type="password" v-model="userInfo.confirmPw" placeholder=" Confirm password" name="password2" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
-        </div>
-      </div>
-      <div class="address" style="display: flex;justify-content: center;">
-        <span class="info-order-text"><strong>Eamil:</strong></span>
-        <div class="input-box">
-          <input type="text" v-model="userInfo.email" placeholder=" Email" name="email" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
-        </div>
-      </div>
-      <div class="button">
-        <button type="submit" :onclick="register()" style="width: 130px;height: 45px;font-size: 26px;">Register</button>
-      </div>
-    </div>
-  </div>
+    </body>
 </template>
-
 <script>
     export default {
-        name: "Register",
-      data(){
-        return{
-          userInfo:{
-            account:"",
-            password:"",
-            confirmPw:"",
-            email:"",
-          }
-        }
-      },
-      methods:{
-        back(){
-          this.$router.go(-1);//返回上一层
+        data() {
+        var checkName = (rule, value, callback) => {
+            if (!value) {
+                return callback(new Error('Username cannot be empty'));
+            }
+            setTimeout(() => {
+                callback();
+            }, 1000);
+        };
+        var validatePass = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('Please enter password'));
+            } else {
+                if (this.ruleForm.checkPass !== '') {
+                  this.$refs.ruleForm.validateField('checkPass');
+                }
+                callback();
+            }
+        };
+        var validatePass2 = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('Please enter password again'));
+            } else if (value !== this.ruleForm.pass) {
+                callback(new Error('The two passwords you typed do not match'));
+            } else {
+                callback();
+            }
+        };
+        var checkEmail = (rule, value, callback) => {
+            const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
+            if (value === '') {
+                callback(new Error('Please enter email'))
+            }
+            setTimeout(() => {
+                if (mailReg.test(value)) {
+                    callback()
+                } else {
+                    callback(new Error('Please enter the correct email address'))
+                }
+            }, 100);
+        };
+        return {
+            ruleForm: {
+                name: '',
+                pass: '',
+                checkPass: '',
+                email: ''   
+            },
+            rules: {
+                name: [
+                  { validator: checkName, trigger: 'blur' }
+                ],
+                pass: [
+                  { validator: validatePass, trigger: 'blur' }
+                ],
+                checkPass: [
+                  { validator: validatePass2, trigger: 'blur' }
+                ],
+                email:[
+                  { validator: checkEmail, trigger: 'blur' }
+                ]
+              }
+            };
         },
-        register(){
-          this.$axios.post("/users/register",this.$data.userInfo).then(respoonse=>{
-            this.$notify({
-              title: '成功',
-              message: '注册成功',
-              type: 'success',
-              duration: 2000
+        methods: {
+            submitForm(formName) {
+              this.$refs[formName].validate((valid) => {
+                if (valid) {
+                  alert('submit!');
+                } else {
+                  console.log('error submit!!');
+                  return false;
+                }
             });
-          }).catch(error=>{
-            console.log(error)
-            this.$notify({
-              title: '失败',
-              message: '注册失败',
-              type: 'error',
-              duration: 2000
-            });
-        })
-      }
+        },
+        resetForm(formName) {
+            this.$refs[formName].resetFields();
+        }
     }
-    }
+}
 </script>
-
-<style scoped>
-  html{
-    width: 100%;
-  }
-  .body{
-    background: url("../assets/bg.jpg") no-repeat;
-    background-size:  100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    position: fixed;
-    width: 100%
-  }
-  img{
-    width: 50px;
-    height: 50px;
-    position: absolute;
-    left: 30px;
-    top: 30px;
-  }
-  .back
-  {
-    position: absolute;
-    bottom: 15%;
-  }
-  .back_word{
-    width: 80px;
-    position: absolute;
-    left: 90px;
-    bottom: 6%;
-    float: left;
-    font-size: 30px;
-  }
-  .main{
-    background: url("../assets/white.jpg");
-    margin: 0 auto;
-    margin-top: 10%;
-    padding: 0;
-    border: 0;
-    width:700px;
-    height: 500px;
-
-    opacity: 0.8;
+<style>
+body{
+    background-color: #f6f6f6;
+}
+.tittle{
+    letter-spacing: -.5px;
+    box-sizing: border-box;
+    display: block;
     text-align: center;
-    position: relative;
-  }
-  .name{
-    margin:0 auto;
-    position: absolute;
-    top:60px;
-    left: 10%;
-  }
-  .password{
-    margin:0 auto;
-    position: absolute;
-    top:140px;
-    left: 10%;
-  }
-  .repassword{
-    margin:0 auto;
-    position: absolute;
-    top:220px;
-    left: 10%;
-  }
-  .address{
-    margin:0 auto;
-    position: absolute;
-    top:300px;
-    left: 10%;
-  }
-  .button{
-    margin:0 auto;
-    position: absolute;
-    top:390px;
-    left: 40%;
-  }
-  input:focus{
-    border-color:#66afe9;
-    outline: 0;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(220,20,60,.6)
-  }
-  .info-order-text{
-    width: 250px;
-    font-family: STHeiti;
-    font-size: 25px;
-  }
+}
+.head{
+    font-size: 40px;
+    font-weight: 500;
+    box-sizing: border-box;
+    display: block;
+    color: #333;
+    text-align: center;
+    line-height:1.6;
+}
+.register{
+    width: 500px;
+    margin: 0 auto;
+    margin-top:20px;
+    border-top: 1px solid #d8dee2;
+    border-radius: 5px;
+    padding: 10px 45px 20px 30px;
+    font-size: 15px;
+    background-color: #fff;
+    border: 1px solid #d8dee2;
+}
+.el-icon-collection{
+    display: block;
+    text-align: center;
+    font-size: 40px;
+    margin-bottom:20px;
+}
+.loginBtn{
+    text-align: center;
+    width:100%;
+    margin-left:-27px;
+    margin-top:5px;
+    font-size:16px;
+}
+.create-account{
+    width:370px;
+    margin: 0 auto;
+    margin-top:15px;
+    padding: 15px 20px 0px 20px;
+    text-align: center;
+    border: 1px solid #d8dee2;
+    border-radius: 5px;
+}
+.el-form-item__label {
+    margin-bottom: -5px;
+}
+.el-form-item {
+    margin-bottom: 15px;
+}
+.el-icon-back{
+    margin-top:15px;
+    font-size:20px;
+    margin-left:30px;
+    cursor: pointer;
+    color: #333;
+}
 </style>

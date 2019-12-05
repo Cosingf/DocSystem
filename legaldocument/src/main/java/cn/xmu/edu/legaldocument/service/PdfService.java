@@ -424,6 +424,6 @@ public class PdfService {
         imageOut.close();
         //Warning: You did not close a PDF Document
         pdDocument.close();
-        return outPath;
+        return "/uploadFile/"+filePath.substring(filePath.lastIndexOf( '/' )+1,filePath.lastIndexOf('.'))+".png";
     }
 }

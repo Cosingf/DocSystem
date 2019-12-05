@@ -77,6 +77,7 @@
 <style>
 body{
     background-color: #f6f6f6;
+    margin:0px;
 }
 .title{
     font-size: 25px;

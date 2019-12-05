@@ -1,5 +1,5 @@
 <template>
-    <body class="private-book">
+    <div class="private-book">
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="">
         <a class="myicon" style="color:#007bff">Reedpeer</a>
         <el-menu-item index="1" @click="goToPublicLibrary">Public library</el-menu-item>
@@ -30,7 +30,7 @@
           <div style="height: 50px;"></div>
         </div>
         <div class="pagination"><el-pagination layout="prev, pager, next" :total="100"></el-pagination></div>
-    </body>
+    </div>
 </template>
 <script>
 import BookInfo from '@/components/BookInfo'
@@ -151,7 +151,7 @@ export default {
 .white-panel{
     width:1000px;
     margin:0 auto;
-    margin-top: 20px; 
+    margin-top: 13px; 
     background: #fff; 
     overflow: hidden; 
     border-radius: 2px; 
@@ -187,6 +187,7 @@ export default {
     background-color: #f9fafc;
 }
 .pagination >>> .el-pagination{
-    margin:20px auto;
+    margin-left: 570px;
+    margin-top:20px;
 }
 </style>

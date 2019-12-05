@@ -12,8 +12,8 @@
     </div> -->
     <el-image style="cursor: pointer;width: 167px; height: 240px" v-on:click="gotoBook(item.path,item.id,item.name,item.author)"  src="https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg"></el-image>
     <div class="intro">
-      <p style="font-size:19px;cursor: pointer;color:#3377aa;margin-bottom: 0px;"  v-on:click="gotoBook(item.path,item.id,item.name,item.author)">{{item.name}}</p>
-      <p >{{item.author}}</p>
+      <p style="font-size:19px;cursor: pointer;color:#3377aa;margin: 0px;"  v-on:click="gotoBook(item.path,item.id,item.name,item.author)">{{item.name}}</p>
+      <p style="color: rgb(88, 96, 105);margin-top:0px;">{{item.author}}</p>
     </div>
   </div>
 </template>

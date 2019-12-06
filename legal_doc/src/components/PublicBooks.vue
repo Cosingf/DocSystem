@@ -6,11 +6,11 @@
         <el-menu-item index="2" @click="goToMyLibrary">My library</el-menu-item>
         <el-input placeholder="Please enter keywords" prefix-icon="el-icon-search" class="my-input" v-model="input"></el-input>
         <el-button type="primary">Find books</el-button>
-        <el-dropdown  trigger="click" @command="handleCommand">
+        <el-dropdown  trigger="click" >
             <el-avatar icon="el-icon-user-solid"  class="el-dropdown-link" shape="square" size="medium"></el-avatar>
             <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="a">Settings</el-dropdown-item>
-                <el-dropdown-item command="b"> <router-link  to="/" class="router-link">Sign out</router-link></el-dropdown-item>
+                <el-dropdown-item >Settings</el-dropdown-item>
+                <el-dropdown-item > <router-link  to="/" class="router-link">Sign out</router-link></el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
     </el-menu>

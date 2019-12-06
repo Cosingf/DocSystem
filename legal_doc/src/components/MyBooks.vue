@@ -6,11 +6,11 @@
         <el-menu-item index="2">My library</el-menu-item>
         <el-input placeholder="Please enter keywords" prefix-icon="el-icon-search" class="my-input" v-model="input"></el-input>
         <el-button type="primary">Find books</el-button>
-        <el-dropdown  trigger="click" @command="handleCommand">
+        <el-dropdown  trigger="click" >
             <el-avatar icon="el-icon-user-solid"  class="el-dropdown-link" shape="square" size="medium"></el-avatar>
             <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="a">Settings</el-dropdown-item>
-                <el-dropdown-item command="b"> <router-link  to="/" class="router-link">Sign out</router-link></el-dropdown-item>
+                <el-dropdown-item >Settings</el-dropdown-item>
+                <el-dropdown-item > <router-link  to="/" class="router-link">Sign out</router-link></el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
         </el-menu>
@@ -18,7 +18,7 @@
             <div class="panel-tips">
                 <div style="height: 20px;"></div>
                 <a style="font-weight: 600;font-size:20px;margin:0 30px;color:#586069;">Books in your own library</a>
-                <el-button type="primary" plain>Upload more books</el-button>
+                <el-button type="primary" @click="uploadBook" plain>Upload more books</el-button>
                 <el-divider></el-divider>
             </div>
           <el-row :gutter="20" style="margin:30px;" v-for="item , index in books">
@@ -51,11 +51,11 @@ export default {
         BookInfo
     },
     methods: {
-        handleCommand(command) {
-            this.$message('click on item ' + command);
-        },
         goToPublicLibrary(){
             this.$router.push({name: 'PublicBooks'});
+        },
+        uploadBook() {
+            this.$router.push({name: 'UploadBook'});
         }
     }
 }

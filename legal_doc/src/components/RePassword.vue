@@ -1,179 +1,179 @@
 <template>
-  <div id="RePassword" class="body">
-  <div class="all">
-    <div class="back">
-      <a href="#" v-on:click="back()" style="float: left;"><img src="../assets/back.png" border="0" ></a>
-    </div>
-    <span class="back_word">Back</span>
-    <div class="main">
-      <div class="name" style="display: flex;justify-content: center;">
-        <span class="info-order-text"><strong>Eamil:</strong></span>
-        <div class="input-box">
-          <input type="text"  v-model="modifyPWInfo.email"  placeholder=" Eamil" name="email" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
+    <body>
+        <router-link href='#' to="/"><i class="el-icon-back">&nbsp;Back</i></router-link>
+        <div style="height: 10px;"></div>
+        <div class="title">
+            <a style="color: #6a737d;font-size:20px;">Join Reedpeer</a>
+            <a class="head">Reset password</a>
         </div>
-      </div>
-      <div class="code" style="display: flex;justify-content: center;">
-        <span class="info-order-text"><strong>Verification code:</strong></span>
-        <div class="input-box">
-          <input type="text" v-model="modifyPWInfo.verifyCode" placeholder=" Code" style="height: 33px;width: 130px;border: 2px solid;font-size: 18px;">
-        </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <div class="CODE_button">
-          <button type="button" onclick="alert('The verification code has been sent!')" style="width: 150px;height: 35px;font-size: 18px;">Send code</button>
+        <div class="register">
+        <!--邮箱（不允许修改），验证码，密码，确认密码，提交-->
+        <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="80px" style="margin-left:20px;margin-top:10px;" class="demo-ruleForm">
+            <el-form-item label="Username" label-width="100px;" style="font-weight: bold;" prop="name">
+                <el-input vregi-model.number="ruleForm.name"></el-input>
+            </el-form-item>
+            <el-form-item label="Password" label-width="100px;" style="font-weight: bold;" prop="pass">
+                <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="Confirm password" label-width="100px;" style="font-weight: bold;" prop="checkPass">
+                <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="Eamil" label-width="100px;" style="font-weight: bold;" prop="email">
+                <el-input type="email" v-model="ruleForm.email" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="success" @click="submitForm('ruleForm')" class="loginBtn"  round>Sign up</el-button>
+            </el-form-item>
+        </el-form>
         </div>
-      </div>
-      <div class="new_password" style="display: flex;justify-content: center;">
-        <span class="info-order-text"><strong>New password:</strong></span>
-        <div class="input-box">
-          <input type="password" v-model="modifyPWInfo.password"  placeholder=" New password" name="password" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
-        </div>
-      </div>
-      <div class="repassword" style="display: flex;justify-content: center;">
-        <span class="info-order-long-text" ><strong>Confirm password:</strong></span>
-        <div class="input-box">
-          <input type="password" v-model="modifyPWInfo.confirmPw" placeholder=" Confirm new password" name="password" style="height: 33px;width: 300px;border: 2px solid;font-size: 18px;">
-        </div>
-      </div>
-      <div class="button">
-        <button type="submit" v-on:click="repassword()" style="width: 130px;height: 45px;font-size: 26px;">Commit</button>
-      </div>
-    </div>
-  </div>
-  </div>
+    </body>
 </template>
-
 <script>
     export default {
-        name: "RePassword",
-      data()
-      {
-        return{
-          modifyPWInfo:{
-            email:'',
-            password:'',
-            confirmPw:'',
-            verifyCode:''
+        data() {
+        var checkName = (rule, value, callback) => {
+            if (!value) {
+                return callback(new Error('Username cannot be empty'));
             }
-          }
+            setTimeout(() => {
+                callback();
+            }, 1000);
+        };
+        var validatePass = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('Please enter password'));
+            } else {
+                if (this.ruleForm.checkPass !== '') {
+                  this.$refs.ruleForm.validateField('checkPass');
+                }
+                callback();
+            }
+        };
+        var validatePass2 = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('Please enter password again'));
+            } else if (value !== this.ruleForm.pass) {
+                callback(new Error('The two passwords you typed do not match'));
+            } else {
+                callback();
+            }
+        };
+        var checkEmail = (rule, value, callback) => {
+            const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
+            if (value === '') {
+                callback(new Error('Please enter email'))
+            }
+            setTimeout(() => {
+                if (mailReg.test(value)) {
+                    callback()
+                } else {
+                    callback(new Error('Please enter the correct email address'))
+                }
+            }, 100);
+        };
+        return {
+            ruleForm: {
+                name: '',
+                pass: '',
+                checkPass: '',
+                email: ''   
+            },
+            rules: {
+                name: [
+                  { validator: checkName, trigger: 'blur' }
+                ],
+                pass: [
+                  { validator: validatePass, trigger: 'blur' }
+                ],
+                checkPass: [
+                  { validator: validatePass2, trigger: 'blur' }
+                ],
+                email:[
+                  { validator: checkEmail, trigger: 'blur' }
+                ]
+              }
+            };
         },
-      methods:{
-        back() {
-          this.$router.go(-1);//返回上一层
+        methods: {
+            submitForm(formName) {
+              this.$refs[formName].validate((valid) => {
+                if (valid) {
+                  alert('submit!');
+                } else {
+                  console.log('error submit!!');
+                  return false;
+                }
+            });
         },
-          repassword(){
-            this.$axios.post("/users/repassword",this.$data.modifyPWInfo)
-              .then(response => {
-                this.$notify({
-                  title: '成功',
-                  message: '修改密码成功',
-                  type: 'success',
-                  duration: 2000
-                });
-              }).catch(error => {
-              console.log(error)
-              this.$notify({
-                title: '失败',
-                message: '修改密码失败',
-                type: 'error',
-                duration: 2000
-              });
-            })
-          }
-      }
-      }
-
+        resetForm(formName) {
+            this.$refs[formName].resetFields();
+        }
+    }
+}
 </script>
-
-<style scoped>
-  html{
-    width: 100%;
-  }
-  .body{
-    background: url("../assets/bg.jpg") no-repeat;
-    background-size:  100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    position: fixed;
-    width: 100%
-  }
-  img{
-    width: 50px;
-    height: 50px;
-    position: absolute;
-    left: 30px;
-    top: 30px;
-  }
-  .back
-  {
-    position: absolute;
-    bottom: 15%;
-  }
-  .back_word{
-    width: 80px;
-    position: absolute;
-    left: 90px;
-    bottom: 5%;
-    float: left;
-    font-size: 30px;
-  }
-  .main{
-    margin: 0 auto;
-    margin-top: 10%;
-    padding: 0;
-    border: 0;
-    width:700px;
-    height: 500px;
-    background: url(../assets/white.jpg);
-    opacity: 0.8;
+<style>
+body{
+    background-color: #f6f6f6;
+}
+.tittle{
+    letter-spacing: -.5px;
+    box-sizing: border-box;
+    display: block;
     text-align: center;
-    position: relative;
-  }
-  .name{
-    margin:0 auto;
-    position: absolute;
-    top:60px;
-    left: 10%;
-  }
-  .code{
-    margin:0 auto;
-    position: absolute;
-    top:140px;
-    left: 10%;
-  }
-  .new_password{
-    margin:0 auto;
-    position: absolute;
-    top:220px;
-    left: 10%;
-  }
-  .repassword{
-    margin:0 auto;
-    position: absolute;
-    top:300px;
-    left: 10%;
-  }
-  .button{
-    margin:0 auto;
-    position: absolute;
-    top:390px;
-    left: 40%;
-  }
-  input:focus{
-    border-color:#66afe9;
-    outline: 0;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(220,20,60,.6)
-  }
-  .info-order-text{
-    width: 240px;
-    font-family: STHeiti;
-    font-size: 23px;
-  }
-  .info-order-long-text{
-    width: 260px;
-    margin-left:-20px;
-    font-family: STHeiti;
-    font-size: 23px;
-  }
-
+}
+.head{
+    font-size: 40px;
+    font-weight: 500;
+    box-sizing: border-box;
+    display: block;
+    color: #333;
+    text-align: center;
+    line-height:1.6;
+}
+.register{
+    width: 500px;
+    margin: 0 auto;
+    margin-top:20px;
+    border-top: 1px solid #d8dee2;
+    border-radius: 5px;
+    padding: 10px 45px 20px 30px;
+    font-size: 15px;
+    background-color: #fff;
+    border: 1px solid #d8dee2;
+}
+.el-icon-collection{
+    display: block;
+    text-align: center;
+    font-size: 40px;
+    margin-bottom:20px;
+}
+.loginBtn{
+    text-align: center;
+    width:100%;
+    margin-left:-27px;
+    margin-top:5px;
+    font-size:16px;
+}
+.create-account{
+    width:370px;
+    margin: 0 auto;
+    margin-top:15px;
+    padding: 15px 20px 0px 20px;
+    text-align: center;
+    border: 1px solid #d8dee2;
+    border-radius: 5px;
+}
+.el-form-item__label {
+    margin-bottom: -5px;
+}
+.el-form-item {
+    margin-bottom: 15px;
+}
+.el-icon-back{
+    margin-top:15px;
+    font-size:20px;
+    margin-left:30px;
+    cursor: pointer;
+    color: #333;
+}
 </style>

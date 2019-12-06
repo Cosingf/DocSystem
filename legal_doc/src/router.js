@@ -11,6 +11,7 @@ import MyBooks from "./components/MyBooks";
 import UserPage from "./components/UserPage";
 import BookInfo from "./components/BookInfo"
 import ReadBook from "./components/ReadBook"
+import UploadBook from "./components/UploadBook"
 
 
 Vue.use(Router)
@@ -51,6 +52,11 @@ export default new Router({
       path: '/publicbook/read',
       name: 'ReadBook',
       component: ReadBook
+    },
+    {
+      path: '/books/upload',
+      name: 'UploadBook',
+      component: UploadBook
     }
   ]
 })

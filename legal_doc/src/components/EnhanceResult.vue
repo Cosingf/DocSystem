@@ -1,43 +1,16 @@
 <template>
-  <div :id="'main-' + index" class="item" @mouseenter="highlight()" @mouseleave="cancelhighlight()">
+  <div :id="'main-' + index" class="item" >
 
-    <!--±à¼­¼°É¾³ıQ&A-->
-    <el-button v-on:click="deleteQA()"size="medium" style="float: right;margin-top: 5px;margin-right: 10px;" type="danger" icon="el-icon-delete" circle></el-button>
-    <el-button  v-on:click="editAnswer()" size="medium" style="float: right;margin-top: 5px;margin-right: 5px;" type="primary" icon="el-icon-edit" circle></el-button>
-
+    <!--ç¼–è¾‘åŠåˆ é™¤Q&A-->
+    <!-- <el-button v-on:click="deleteQA()"size="medium" style="float: right;margin-top: 5px;margin-left: 510px;" type="danger" icon="el-icon-delete" circle></el-button>
+    <el-button  v-on:click="editAnswer()" size="medium" style="float: right;margin-top: 5px;margin-left: 460px;" type="primary" icon="el-icon-edit" circle></el-button> -->
 
     <div class="intro" >
-      <div class="text" >
-
-        <!--ÆôÓÃ±à¼­ºóµÄÕÚÕÖ²ã-->
-        <div ref="bg"  style="opacity: 0.7; position:fixed; left: 0px; top:0px; background-color: lightgrey; z-index: 99998;display: none"></div>
-
-        <!--±£´æºÍÈ¡Ïû±à¼­-->
-       <!-- <el-button v-if="showEditBox==true"  type="primary" round style="left: 30%;top: -80%;position: absolute;z-index: 99999;" v-on:click="save()">save</el-button>
-        <el-button v-if="showEditBox==true"  type="primary" round style="left: 60%;top: -80%;position: absolute;z-index: 99999;" v-on:click="cancel()">cancel</el-button>
--->
-        <!--±à¼­¿ò-->
-        <el-input  v-model="textarea2"  v-if="showEditBox==true" style="font-size:15px;position: absolute;z-index: 99999;left: 4%;top: 30%;background: #fff;" type="textarea" autosize >
-        </el-input>
-
-
-
-        <!--Q&AÕÛµşÃæ°å-->
-        <el-collapse-item  :name=index  >
-          <!--×Ô¶¨Òå±êÌâ-->
-          <template slot="title">
-            <h6>{{item.qa.question}}<br><br>
-              original link: {{item.qa.link}}<br>
-              {{item.qa.answer.substring(0,87)}}</h6>
-          </template>
-          <!--Òş²ØÃæ°å-->
-          <div style="background-color:lightgoldenrodyellow;font-size:15px;position: absolute;z-index: 9999;left: 5%;width:100%;top: 125%;">{{item.qa.answer.substring(87,item.qa.answer.length)}}</div>
-        </el-collapse-item>
-
-      </div>
+      <div>test QA</div>
+      <div>test QA</div>
+      <div>test QA</div>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -54,7 +27,7 @@
       data () {
         return{
           showEditBox:false,
-          textarea2:'',//Ë«Ïò°ó¶¨±à¼­¿ò
+          textarea2:'',//åŒå‘ç»‘å®šç¼–è¾‘æ¡†
         }
       },
 
@@ -63,18 +36,18 @@
           this.showEditBox=true;
           this.$refs.bg.style.display="block";
           this.$refs.bg.style.width=window.innerWidth.toString()+ "px";
-          this.$refs.bg.style.height=window.innerHeight.toString()+ "px";//ÉèÖÃÕÚÕÖ²ãÎªÕû¸öÒ³Ãæ
+          this.$refs.bg.style.height=window.innerHeight.toString()+ "px";//è®¾ç½®é®ç½©å±‚ä¸ºæ•´ä¸ªé¡µé¢
           var s=this.item.qa.answer;
           this.textarea2=s;
         },
         cancel(){
-          this.showEditBox=false;//Òş²Ø±à¼­¿ò
-          this.$refs.bg.style.display="none";//È¡ÏûÕÚÕÖ
+          this.showEditBox=false;//éšè—ç¼–è¾‘æ¡†
+          this.$refs.bg.style.display="none";//å–æ¶ˆé®ç½©
         },
         save(){
           this.showEditBox=false;
           this.$refs.bg.style.display="none";
-          this.item.qa.answer=this.textarea2;//½«textarea2µÄÖµ¸üĞÂµ½itemÖĞ
+          this.item.qa.answer=this.textarea2;//å°†textareaçš„å€¼æ›´æ–°åˆ°itemä¸­
         },
         deleteQA(){
           var box = document.getElementById("main-"+this.index);
@@ -89,8 +62,8 @@
           }
           var start=0;
           for(var i=0; i<spanNodes.length; i++) {
-            var spanNode = spanNodes[i];  //¶ÎÂä½Úµã
-            var spanText = spanTextArr[i];    //Ã¿Ò»¶ÎµÄÎÄ×Ö
+            var spanNode = spanNodes[i];  
+            var spanText = spanTextArr[i];    
               if(spanText!=null){
               if (spanText.indexOf(text[0]) != -1) {
                   spanNode.style.backgroundColor="blue";
@@ -130,127 +103,13 @@
 </script>
 
 <style scoped>
-  html{
-    width: 100%;
-  }
-
-  .button-list li {
-    float: left;
-    margin: 0 50px 0 0;
-  }
-
-
-  li a{
-    color: #000000;
-    text-align: center;
-    padding: 0;
-  }
-
-  .bottom ul{
-    width: 1400px;
-  }
-  .bottom li{
-    display: inline-block;
-    width: 200px;
-    float: left;
-  }
-
-  * {
-    list-style:none;
-    padding:0;
-    margin:0;
-    text-decoration:none;
-    font-family:'Microsoft YaHei';
-  }
-
-  .type li {
-    border-right: 1px solid #888;
-    position:relative;
-    float:left;
-    width:200px;
-    height:53px;
-    text-align:center;
-    font-size: 25px;
-    font-weight: bold;
-    line-height:50px;
-    color: #000;
-  }
-
-  .type li.active{
-    color: #ed757a;
-    font-weight: bold;
-  }
-  .tab .tab_list{
-    display: none;
-  }
-  .tab .tab_list p{
-    margin-top: 20px;
-    text-align: center;
-  }
-  .sku-box .item {
-
-    float: top;
-    border-right: 1px solid #efefef;
-    border-bottom: 1px solid #efefef;
-    width: 100%;
-    height: 200px;
-    background: #fff;
-    box-sizing: border-box;
-    position: relative;
-
-  }
-  .intro{
-    width: 500px;
-    height: auto;
-    border-radius: 15px;
-    position: absolute;
-    left: 3%;
-    top: 40%;
-
-
-  }
-  .text{
-    float: left;
-    height:auto;
-    width: 500px;
-    margin-right: 25px;
-    margin-left: 25px;
-    overflow: visible;
-  }
-
-  .page a,.page span{
-    margin-left: 12px;
-  }
-  .page .num{
-    display: inline-block;
-    color: #333;
-    text-decoration: none;
-    width: 32px;
-    height: 32px;
-    text-align: center;
-    line-height: 32px;
-  }
-  .page .next{
-    display: inline-block;
-    color: #333;
-    text-decoration: none;
-    width: 50px;
-    height: 32px;
-    text-align: center;
-    line-height: 32px;
-  }
-  .page .on{
-    background: #ED757A;
-    color: #FFFFFF;
-    border-radius: 100%;
-  }
-  .page .num:hover{
-    background: #ED757A;
-    color: #FFFFFF;
-    border-radius: 100%;
-  }
-  .page .prev{
-    color: #999;
-    cursor: text;
-  }
+.intro{
+  width: 500px;
+  height: auto;
+  border-radius: 15px;
+  left: 3%;
+  top: 40%;
+  color: #586069;
+  font-size:15px;
+}
 </style>

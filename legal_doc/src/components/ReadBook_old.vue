@@ -80,19 +80,9 @@
           </el-collapse>
         </div>
            </el-scrollbar>
-
         </div>
     </el-drawer>
-
   </div>
-
-
-
-
-
-
-
-
 </template>
 
 <script>

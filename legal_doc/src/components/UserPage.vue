@@ -1,167 +1,157 @@
 <template>
-  <div id="UserPage" class="body">
-   <!-- <el-scroller style="height: 100%">-->
-
-
-    <div class="main">
-      <div class="back">
-        <a  href="#" v-on:click="back" style="float: left;"><img src="../assets/back.png" border="0"></a>
+  <div class="user-page">
+      <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="">
+      <a class="myicon" style="color:#007bff">Reedpeer</a>
+      <el-menu-item index="1" @click="goToPublicLibrary">Public library</el-menu-item>
+      <el-menu-item index="2" @click="goToMyLibrary">My library</el-menu-item>
+      <el-input placeholder="Please enter keywords" prefix-icon="el-icon-search" class="my-input" v-model="input"></el-input>
+      <el-button type="primary">Find books</el-button>
+      <el-dropdown  trigger="click" >
+          <el-avatar icon="el-icon-user-solid"  class="el-dropdown-link" shape="square" size="medium"></el-avatar>
+          <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item >Settings</el-dropdown-item>
+              <el-dropdown-item > <router-link  to="/" class="router-link">Sign out</router-link></el-dropdown-item>
+          </el-dropdown-menu>
+      </el-dropdown>
+      </el-menu>
+      <div class="white-panel">
+        <div class="panel-tips">
+          <div style="height: 80px;"></div>
+          <a style="font-weight: 500;font-size:23px;margin-left:400px;color:#586069;">Userinfo</a>
+        </div>
+        <el-table :data="tableData" style="width: 100%;margin-top:0px;margin-left:300px;">
+          <el-table-column prop="item" label="" width="180"></el-table-column>
+          <el-table-column prop="value" label="" width="180"> </el-table-column>
+        </el-table>
+        <el-button type="success" @click="resetPassword" plain>Reset password</el-button>
       </div>
-      <span class="back_word" >Back</span>
-      <img class="photo" src="../assets/头像.jpg">
-      <!-- <div class="button1">
-        <button v-on:click="gotoPublicBook" style="width: 200px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;"><strong>Enter system</strong></button>
-      </div> -->
-      <div class="button2">
-        <button @click="gotoRePass" style="width: 250px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;"><strong>Change password</strong></button>
-      </div>
-      <div class="info" style="float: left;" >
-        <p  >Account: {{user.account}}</p><p></p>
-        <p v-if="ok">Email: {{user.email}}</p>
-      </div>
-
-
-
-
-      <div class="book">
-        <div><img style="height: 300px;width: 250px;top: -12%" src="../assets/刑法.jpg" ></div>
-        <div style="position: absolute;left: 30%;top: -20%"><img style="height: 300px;width: 250px;" src="../assets/国际争端.jpg"></div>
-        <div style="position: absolute;left: 60%;top: -20%"><img style="height: 300px;width: 250px;" src="../assets/革命根据地.jpg"></div>
-      </div>
-    </div>
-    <!--</el-scroller>-->
   </div>
-
 </template>
-
 <script>
-    export default {
-      name: "UserPage",
-      data()
-      {
-
-        return{
-          user:{
-            id:'',
-            createTime:'',
-            username:'',
-            password:' ',
-            userID:' ',
-            age:' ',
-            sex:' ',
-            email:' '
+export default {
+  data() {
+  return {
+      activeIndex: '0',
+      tableData: [{
+            item: 'Username',
+            value: 'Legal user'
           },
-          ok: false,
-        }
-
-      },
-     created(){
-        this.$data.user.username=localStorage.getItem('user')
-        this.$axios.get("/apis/getInfo/"+this.$data.user.username)
-          .then(response => {
-            if (response.status===200){
-              this.$data.user=response.data
-              this.ok=true;
-
-            }
-          }).catch(error => {
-          this.$notify.error({
-            title: 'error！',
-            message: 'error'
-          });
-        })
-      },
-
-      methods: {
-        back() {
-          this.$router.go(-1);//返回上一层
-        },
-        gotoPublicBook(){
-
+          {
+            item: 'Email',
+            value: '123456@qq.com'
+          }]
+      };
+  },
+  methods: {
+      goToPublicLibrary(){
           this.$router.push({name: 'PublicBooks'});
-        },
-
-        gotoRePass(){
-          this.$router.push({name: 'RePassword'});
-        }
-
+      },
+      goToMyLibrary(){
+        this.$router.push({name: 'MyBooks'});
+      },
+      resetPassword(){
+        this.$router.push({name: 'RePassword'});
       }
-    }
-
+  }
+}
 </script>
-
 <style scoped>
-  html{
-    width: 100%;
-  }
-  .body{
-    background: url("../assets/bg.jpg") no-repeat;
-    background-size:  100%;
-    top: 0;
+.el-menu-item{
+  font-weight:500;
+  font-size:17px;
+  padding:0px 10px;
+}
+.el-menu--horizontal>.el-menu-item {
+  line-height:50px;
+  height:50px;
+}
+.el-icon-collection{
+  font-size:15px;
+}
+.el-menu-demo {
+  padding-left: 450px;;
+}
+.myicon{
+  position: absolute;
+  margin-top: 6px;
+  font-size: 24px;
+  font-weight: 500;
+  margin-left: -135px;
+}
+.user-page >>> .el-input {
+  position: absolute;
+  width:250px;
+  margin-top:9px;
+  margin-left:30px;
+}    
+.user-page  >>> .el-input__inner{
+  background: #f6f6f6;
+  height:33px;
+}
+.user-page  >>> .el-button {
+  position:absolute;
+  font-size:14px;
+  padding: 10px 10px;
+  margin-top:8px;
+  margin-left:290px;
+  line-height:13px;
+}
+.el-avatar{
+  position: absolute;
+  margin-top:9px;
+  margin-left:510px;
+}
+.el-avatar--medium {
+  width: 34px;
+  height: 34px;
+  line-height: 34px;
+  cursor: pointer;
+}
+.el-dropdown-link {
+  cursor: pointer;
+}
+.el-icon-arrow-down {
+  font-size: 12px;
+}
+.el-dropdown{
+  position:absolute;
+}
+.el-popper[x-placement^=bottom] {
+  margin-top:48px;
+  margin-left: 1145px;
+}
+.router-link{
+  color: #606266;
+  text-decoration: none;
+}
+.router-link:hover{
+  color: #66b1ff;
+}
+.white-panel{
+  width:1000px;
+  margin:0 auto;
+  margin-top: 13px; 
+  background: #fff; 
+  overflow: hidden; 
+  border-radius: 2px; 
+  -webkit-box-shadow: 0 1px 3px rgba(26,26,26,.1); 
+  box-shadow: 0 1px 3px rgba(26,26,26,.1); 
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.white-panel  >>> .el-button {
+    position:relative;
+    font-size:14px;
+    padding: 10px 10px;
+    margin-top:50px;
+    margin-left:390px;
+    margin-bottom:100px;
+    line-height:13px;
+}
+.white-panel>>> .el-table::before {
     left: 0;
-    height: 1400px;
-    position: absolute;
-    width: 100%
-  }
-  img{
-    width: 50px;
-    height: 50px;
-    position: absolute;
-    left: 30px;
-    top: 30px;
-  }
-  .back_word{
-    width: 80px;
-    position: absolute;
-    left: 90px;
-    top: 3%;
-    float: left;
-    font-size: 30px;
-  }
-  .main{
-    margin: 0 auto;
-    margin-top: 10%;
-    padding: 0;
-    border: 0;
-    width:1000px;
-    height: 1200px;
-    background: url(../assets/white.jpg);
-    opacity: 0.8;
-    position: relative;
-  }
-  .photo{
-    width: 300px;
-    height: 300px;
-    position: absolute;
-    top: 10%;
-    left: 10%;
-  }
-  .button1{
-    position: absolute;
-    top: 15%;
-    right: 10%;
-  }
-  .button2{
-    position: absolute;
-    top: 17%;
-    right: 15%;
-  }
-  .info{
-    width: 400px;
-    float: left;
-    position: absolute;
-    top: 35%;
-    left: 12%;
-    font-weight: bold;
-    font-size: 20px;
-  }
-  .book{
-    margin: 0;
-    padding: 0;
-    width: 1000px;
-    height: 400px;
-    position: absolute;
-    top: 65%;
-    left: 6%;
-  }
+    bottom: 0;
+    width: 100%;
+    height: 0px;
+}
 </style>

@@ -9,7 +9,7 @@
         <el-dropdown  trigger="click" >
             <el-avatar icon="el-icon-user-solid"  class="el-dropdown-link" shape="square" size="medium"></el-avatar>
             <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item >Settings</el-dropdown-item>
+                <el-dropdown-item ><router-link  to="/users/info" class="router-link">Settings</router-link></el-dropdown-item>
                 <el-dropdown-item > <router-link  to="/" class="router-link">Sign out</router-link></el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>

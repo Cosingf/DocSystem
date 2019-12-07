@@ -9,20 +9,23 @@
         <div class="register">
         <!--邮箱（不允许修改），验证码，密码，确认密码，提交-->
         <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="80px" style="margin-left:20px;margin-top:10px;" class="demo-ruleForm">
-            <el-form-item label="Username" label-width="100px;" style="font-weight: bold;" prop="name">
-                <el-input vregi-model.number="ruleForm.name"></el-input>
+            <el-form-item label="Eamil" label-width="100px;" style="font-weight: bold;" prop="email">
+                <br>
+                <div style="color:#606266;font-weight: 400;">123456@qq.com</div>
             </el-form-item>
-            <el-form-item label="Password" label-width="100px;" style="font-weight: bold;" prop="pass">
+            <el-form-item label="Vrification code" label-width="100px;" style="font-weight: bold;" prop="verificationCode">
+                <br>
+                <el-input style="width:45%;" v-model="ruleForm.verificationCode" autocomplete="off"></el-input>
+                <el-button type="primary" style="margin-left: 50px;" plain>Send verification code</el-button>
+            </el-form-item>
+            <el-form-item label="New password" label-width="100px;" style="font-weight: bold;" prop="pass">
                 <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="Confirm password" label-width="100px;" style="font-weight: bold;" prop="checkPass">
+            <el-form-item label="Confirm new password" label-width="100px;" style="font-weight: bold;" prop="checkPass">
                 <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="Eamil" label-width="100px;" style="font-weight: bold;" prop="email">
-                <el-input type="email" v-model="ruleForm.email" autocomplete="off"></el-input>
-            </el-form-item>
             <el-form-item>
-                <el-button type="success" @click="submitForm('ruleForm')" class="loginBtn"  round>Sign up</el-button>
+                <el-button type="success" @click="submitForm('ruleForm')" class="loginBtn"  round>Commmit</el-button>
             </el-form-item>
         </el-form>
         </div>
@@ -41,7 +44,7 @@
         };
         var validatePass = (rule, value, callback) => {
             if (value === '') {
-                callback(new Error('Please enter password'));
+                callback(new Error('Please enter new password'));
             } else {
                 if (this.ruleForm.checkPass !== '') {
                   this.$refs.ruleForm.validateField('checkPass');
@@ -51,7 +54,7 @@
         };
         var validatePass2 = (rule, value, callback) => {
             if (value === '') {
-                callback(new Error('Please enter password again'));
+                callback(new Error('Please enter new password again'));
             } else if (value !== this.ruleForm.pass) {
                 callback(new Error('The two passwords you typed do not match'));
             } else {
@@ -73,23 +76,19 @@
         };
         return {
             ruleForm: {
-                name: '',
+                verificationCode: '',
                 pass: '',
-                checkPass: '',
-                email: ''   
+                checkPass: ''  
             },
             rules: {
-                name: [
-                  { validator: checkName, trigger: 'blur' }
+                verificationCode: [
+                  { trigger: 'blur' }
                 ],
                 pass: [
                   { validator: validatePass, trigger: 'blur' }
                 ],
                 checkPass: [
                   { validator: validatePass2, trigger: 'blur' }
-                ],
-                email:[
-                  { validator: checkEmail, trigger: 'blur' }
                 ]
               }
             };

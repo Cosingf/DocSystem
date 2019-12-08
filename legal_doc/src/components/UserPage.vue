@@ -29,29 +29,43 @@
 </template>
 <script>
 export default {
-  data() {
-  return {
+  data () {
+    return {
       activeIndex: '0',
       tableData: [{
-            item: 'Username',
-            value: 'Legal user'
-          },
-          {
-            item: 'Email',
-            value: '123456@qq.com'
-          }]
-      };
+        item: 'Username',
+        value: 'Legal user'
+      },
+      {
+        item: 'Email',
+        value: '123456@qq.com'
+      }]
+    }
+  },
+  created () {
+    this.$data.tableData[0].value = localStorage.getItem('user')
+    this.$axios.get('/apis/getInfo/' + this.$data.user.username)
+      .then(response => {
+        if (response.status === 200) {
+          this.$data.tableData[1].value = response.data.user.email
+        }
+      }).catch(error => {
+        this.$notify.error({
+          title: 'error！',
+          message: 'error'
+        })
+      })
   },
   methods: {
-      goToPublicLibrary(){
-          this.$router.push({name: 'PublicBooks'});
-      },
-      goToMyLibrary(){
-        this.$router.push({name: 'MyBooks'});
-      },
-      resetPassword(){
-        this.$router.push({name: 'RePassword'});
-      }
+    goToPublicLibrary () {
+      this.$router.push({ name: 'PublicBooks' })
+    },
+    goToMyLibrary () {
+      this.$router.push({ name: 'MyBooks' })
+    },
+    resetPassword () {
+      this.$router.push({ name: 'RePassword' })
+    }
   }
 }
 </script>
@@ -83,7 +97,7 @@ export default {
   width:250px;
   margin-top:9px;
   margin-left:30px;
-}    
+}
 .user-page  >>> .el-input__inner{
   background: #f6f6f6;
   height:33px;
@@ -130,12 +144,12 @@ export default {
 .white-panel{
   width:1000px;
   margin:0 auto;
-  margin-top: 13px; 
-  background: #fff; 
-  overflow: hidden; 
-  border-radius: 2px; 
-  -webkit-box-shadow: 0 1px 3px rgba(26,26,26,.1); 
-  box-shadow: 0 1px 3px rgba(26,26,26,.1); 
+  margin-top: 13px;
+  background: #fff;
+  overflow: hidden;
+  border-radius: 2px;
+  -webkit-box-shadow: 0 1px 3px rgba(26,26,26,.1);
+  box-shadow: 0 1px 3px rgba(26,26,26,.1);
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }

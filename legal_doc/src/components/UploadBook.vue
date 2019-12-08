@@ -9,7 +9,7 @@
         <el-dropdown  trigger="click" >
             <el-avatar icon="el-icon-user-solid"  class="el-dropdown-link" shape="square" size="medium"></el-avatar>
             <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item >Settings</el-dropdown-item>
+                <el-dropdown-item  @click="goToMyLibrary">Settings</el-dropdown-item>
                 <el-dropdown-item > <router-link  to="/" class="router-link">Sign out</router-link></el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
@@ -20,12 +20,12 @@
             accept=".pdf,.PDF"
             drag
             action="https://jsonplaceholder.typicode.com/posts/"
-            :auto-upload="false"
+            :before-upload="beforeUpload"
             multiple>
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">Drag file here to upload it to your own library，or <em>choose to upload</em></div>
             <div class="el-upload__tip" slot="tip" style="text-align: center;">Only PDF files can be uploaded</div>
-            </el-upload> 
+            </el-upload>
             <el-divider></el-divider>
             <el-form ref="form" :model="form" label-width="160px" style="margin-top:40px;">
                 <el-form-item label="Author name">
@@ -45,45 +45,67 @@
 </template>
 <script>
 export default {
-    data() {
-        return {
-            activeIndex: '0',
-            form:{
-                name: '',
-                isPublic: false
-            }
-        };
-    },
-    methods: {
-        handleCommand(command) {
-            this.$message('click on item ' + command);
-        },
-        goToPublicLibrary(){
-            this.$router.push({name: 'PublicBooks'});
-        },
-        goToMyLibrary(){
-          this.$router.push({name: 'MyBooks'});
-        },
-        beforeAvatarUpload(file) {
-            const isPDF = file.type == 'pdf';
-            if (!isPDF) {
-                this.$message.error('Only PDF files can be uploaded!');
-            }
-            return isPDF;
-        },
-        beforeRemove(file, fileList) {
-            return this.$confirm(`Make sure to remove ${ file.name }？`);
-        },
-        uploadSuccess(){
-            this.$message({
-                message: 'Successfully uploaded',
-                type: 'success'
-            });
-        },
-        uploadBook(){
-            console.log("upload book");
-        }
+  data () {
+    return {
+      activeIndex: '0',
+      form: {
+        name: '',
+        file: '',
+        isPublic: false
+      }
     }
+  },
+  methods: {
+    handleCommand (command) {
+      this.$message('click on item ' + command)
+    },
+    goToPublicLibrary () {
+      this.$router.push({ name: 'PublicBooks' })
+    },
+    goToMyLibrary () {
+      this.$router.push({ name: 'MyBooks' })
+    },
+    beforeUpload (file) {
+      this.form.file = file
+      return false
+    },
+    beforeRemove (file, fileList) {
+      return this.$confirm(`Make sure to remove ${file.name}？`)
+    },
+    uploadSuccess () {
+      this.$message({
+        message: 'Successfully uploaded',
+        type: 'success'
+      })
+    },
+    uploadBook () {
+      let formData = new FormData()
+      var isPublic = 1
+      this.form.isPublic ? isPublic = 1 : isPublic = 0
+      formData.append('isPublic', isPublic)
+      formData.append('author', this.form.name)
+      formData.append('file', this.form.file)
+      let config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+      axios.post('/apis/upload/' + localStorage.getItem('userId'), formData, config).then(response => {
+        if (response.status === 200) {
+          this.$notify.success({
+            title: 'Successfully uploaded！',
+            message: 'Successfully uploaded！'
+          })
+        }
+      })
+        .catch(error => {
+          this.$notify.error({
+            title: ' fail！',
+            message: ' fail！'
+          })
+        })
+    }
+  }
 }
 </script>
 <style scoped>
@@ -107,14 +129,14 @@ export default {
         margin-top: 6px;
         font-size: 24px;
         font-weight: 500;
-        margin-left: -135px;
+        margin-left: -200px;
     }
     .upload-book >>> .el-input {
         position: absolute;
         width:250px;
         margin-top:9px;
         margin-left:30px;
-    }    
+    }
     .upload-book >>> .el-button {
         position:absolute;
         font-size:14px;
@@ -177,12 +199,12 @@ export default {
 .white-panel{
     width:1000px;
     margin:0 auto;
-    margin-top: 13px; 
-    background: #fff; 
-    overflow: hidden; 
-    border-radius: 2px; 
-    -webkit-box-shadow: 0 1px 3px rgba(26,26,26,.1); 
-    box-shadow: 0 1px 3px rgba(26,26,26,.1); 
+    margin-top: 13px;
+    background: #fff;
+    overflow: hidden;
+    border-radius: 2px;
+    -webkit-box-shadow: 0 1px 3px rgba(26,26,26,.1);
+    box-shadow: 0 1px 3px rgba(26,26,26,.1);
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }

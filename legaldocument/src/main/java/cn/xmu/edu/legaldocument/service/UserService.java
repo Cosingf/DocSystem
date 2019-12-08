@@ -15,15 +15,15 @@ public class UserService {
     private UserMapper userDao;
 
 
-    public String  register(User user) {
+    public int  register(User user) {
 
         //判断用户是否存在
         if (userDao.selectByAccount(user.getAccount()) == null) {
             userDao.insert(user);
-            return "注册成功";
+            return 200;
         }
         else {
-            return "该用户名已被使用";
+            return 2004;
         }
     }
     //用户登陆逻辑

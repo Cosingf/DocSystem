@@ -5,7 +5,7 @@
       <el-menu-item index="1" @click="goToPublicLibrary">Public library</el-menu-item>
       <el-menu-item index="2" @click="goToMyLibrary">My library</el-menu-item>
       <el-input placeholder="Please enter keywords" prefix-icon="el-icon-search" class="my-input" v-model="input"></el-input>
-      <el-button type="primary">Find books</el-button>
+      <el-button type="primary" v-on:click="searchBooks()">Find books</el-button>
       <el-dropdown  trigger="click" >
         <el-avatar icon="el-icon-user-solid"  class="el-dropdown-link" shape="square" size="medium"></el-avatar>
         <el-dropdown-menu slot="dropdown">
@@ -20,21 +20,21 @@
       <p style="color:#909399;margin:5px 72px;">{{this.author}}</p>
       <el-button type="success" @click="enhance" style="margin-top: -45px;margin-left: 800px;" plain>Enhancn text</el-button>
       <el-divider></el-divider>
-      <!--显示文本-->
-      <!-- <div @mouseup="tooltip($event)" v-for="i in totals" :id="`page-${i}`" :key="i" class="pdf-canvas">
-        <canvas :id="'canvas-pdf-' + i" class="canvas-pdf" ></canvas> 
-      </div> -->
-      <!--显示文本测试内容，正式运行时注释掉这段，用上一段-->
-      <div @mouseup="tooltip($event)"  class="pdf-canvas">
-          测试文本内容，对接好接口，可以显示文本后，注释掉这段，用code中上一段注释掉的代码
-           ---------------------------------------------------
-          -------------------------------------------------------------
-          -------------------------------------------------------------
-          --------------------------------------------------------------
-          ----------------------------------------------------------------
-          -----------------------------------------------------------------
-          ----------------------------------------------------------------
+      显示文本
+       <div @mouseup="tooltip($event)" v-for="i in totals" :id="`page-${i}`" :key="i" class="pdf-canvas">
+        <canvas :id="'canvas-pdf-' + i" class="canvas-pdf" ></canvas>
       </div>
+      <!--显示文本测试内容，正式运行时注释掉这段，用上一段-->
+      <!--<div @mouseup="tooltip($event)"  class="pdf-canvas">
+          测试文本内容，对接好接口，可以显示文本后，注释掉这段，用code中上一段注释掉的代码
+           -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
+          -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
+          -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
+          &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
+          &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
+          -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
+          &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
+      </div>-->
       <!--划词搜索的弹出框-->
       <div id="tooltip"  ref="tip">
         <el-button @click="selectSearch()" icon="el-icon-search" circle></el-button>
@@ -56,51 +56,52 @@
     </div>
     <div class="pagination"><el-pagination layout="prev, pager, next" :total="100"></el-pagination></div>
   </div>
-</template> 
+</template>
 <script>
-import PDFJS from 'pdfjs-dist';
+import PDFJS from 'pdfjs-dist'
 import { TextLayerBuilder } from 'pdfjs-dist/web/pdf_viewer'
 import 'pdfjs-dist/web/pdf_viewer.css'
 import $ from 'jquery'
 import SearchResult from '@/components/SearchResult'
-import EnhanceResult from "./EnhanceResult";
+import EnhanceResult from './EnhanceResult'
 export default {
-  data() {
+  data () {
     return {
+      input: '',
       activeName: '0',
       activeIndex: '0',
-      accordion:true,
+      accordion: true,
       pdf: localStorage.getItem('bookId'),
       bookId: localStorage.getItem('id'),
-      bookname:localStorage.getItem('bookname'),
-      author:localStorage.getItem('author'),
+      bookname: localStorage.getItem('bookname'),
+      author: localStorage.getItem('author'),
       drawer: false,
       direction: 'rtl',
       modal: false,
-      selectShown :false,
+      selectShown: false,
       enhancedShown: false,
-      results:[{
-        question:"",
-        answer:"",
-        link:"",
-        sectionContent:"",
+      results: [{
+        question: '',
+        answer: '',
+        link: '',
+        sectionContent: ''
       }],
-      enhancedResults:[{
-        qa:{ answer:"",
-          question:"",
-          ink:"",},
-          section:{sectionContent:"",}
+      enhancedResults: [{
+        qa: { answer: '',
+          question: '',
+          ink: '' },
+        section: { sectionContent: '' }
       }]
-    };
+    }
   },
   components: {
     EnhanceResult,
     SearchResult
   },
   mounted () {
-    this.renderPdf(this.scale);
-    this.$refs.tip.style.display="none";
-    this.initialEnhance();
+    this.renderPdf(this.scale)
+    this.$refs.tip.style.display = 'none'
+    this.initialEnhance()
   },
   watch: {
     scale (val) {
@@ -109,56 +110,54 @@ export default {
     }
   },
   methods: {
-    handleCommand(command) {
-      this.$message('click on item ' + command);
+    handleCommand (command) {
+      this.$message('click on item ' + command)
     },
-    goToMyLibrary(){
-      this.$router.push({name: 'MyBooks'});
+    goToMyLibrary () {
+      this.$router.push({ name: 'MyBooks' })
     },
-    goToPublicLibrary(){
-      this.$router.push({name: 'PublicBooks'});
+    goToPublicLibrary () {
+      this.$router.push({ name: 'PublicBooks' })
     },
-    //打开弹框
-    tooltip(event){
-      var x = 10;
-      var y = 10;
-      //获取选中的文本
+    // 打开弹框
+    tooltip (event) {
+      var x = 10
+      var y = 10
+      // 获取选中的文本
       if (document.selection) {
-        this.content = document.selection.createRange().text;
+        this.content = document.selection.createRange().text
+      } else if (window.getSelection()) {
+        this.content = window.getSelection().toString()
       }
-      else if (window.getSelection()) {
-        this.content = window.getSelection().toString();
-      }
-      //弹框
-      if (this.content!= "") {
-        this.$refs.tip.style.top=(event.pageY +  y) + "px";
-        this.$refs.tip.style.left=(event.pageX + x) + "px";
-        this.$refs.tip.style.opacity="1";
-        this.$refs.tip.style.width="219px";
-        this.$refs.tip.style.height="33px";
-        this.$refs.tip.style.position="absolute";
-        this.$refs.tip.style.display="block";
-      }
-      else{
-        this.$refs.tip.style.display="none";
+      // 弹框
+      if (this.content != '') {
+        this.$refs.tip.style.top = (event.pageY + y) + 'px'
+        this.$refs.tip.style.left = (event.pageX + x) + 'px'
+        this.$refs.tip.style.opacity = '1'
+        this.$refs.tip.style.width = '219px'
+        this.$refs.tip.style.height = '33px'
+        this.$refs.tip.style.position = 'absolute'
+        this.$refs.tip.style.display = 'block'
+      } else {
+        this.$refs.tip.style.display = 'none'
       }
     },
     renderPdf (scale) {
       PDFJS.workerSrc = require('pdfjs-dist/build/pdf.worker.min')
       // 当 PDF 地址为跨域时，pdf 应该已流的形式传输，否则会出现pdf损坏无法展示
-      PDFJS.getDocument("/apis/"+this.pdf,{params: {
-        withCredentials : true,
-        dataType : 'jsonp'
-      }}).then(pdf => {
+      PDFJS.getDocument('/apis/' + this.pdf, { params: {
+        withCredentials: true,
+        dataType: 'jsonp'
+      } }).then(pdf => {
         this.pdf = pdf
         // 得到PDF的总的页数
         this.totalPage = pdf.numPages
         // 根据总的页数创建相同数量的canvas
         this.createCanvas(this.totalPage, this.idName)
-        this.createPage(1,scale);
-        this.isCreatedPage[1]=1;
-        for(let j=2;j<=this.totalPage;j++){
-          this.isCreatedPage[j]=0;
+        this.createPage(1, scale)
+        this.isCreatedPage[1] = 1
+        for (let j = 2; j <= this.totalPage; j++) {
+          this.isCreatedPage[j] = 0
         }
       })
     },
@@ -167,7 +166,7 @@ export default {
         this.totals.push(i)
       }
     },
-    createPage(i,scale){
+    createPage (i, scale) {
       this.pdf.getPage(i).then((page) => {
         let pageDiv = document.getElementById(`page-${i}`)
         let viewport = page.getViewport(scale)
@@ -188,7 +187,7 @@ export default {
           // 创建文本图层div
           const textLayerDiv = document.createElement('div')
           textLayerDiv.setAttribute('class', 'textLayer')
-          textLayerDiv.setAttribute('id','textLayer')
+          textLayerDiv.setAttribute('id', 'textLayer')
           // 将文本图层div添加至每页pdf的div中
           pageDiv.appendChild(textLayerDiv)
           // 创建新的TextLayerBuilder实例
@@ -202,47 +201,62 @@ export default {
         })
       })
     },
-    selectSearch(){
-      this.drawer = true;
-      this.$refs.tip.style.display="none";
-      this.selectShown = true;
-      this.enhancedShown = false;
+    selectSearch () {
+      this.drawer = true
+      this.$refs.tip.style.display = 'none'
+      this.selectShown = true
+      this.enhancedShown = false
       this.$axios({
         method: 'POST',
         url: '/apis/read/highlight',
-        data:{
-          content:this.content,
-          bookId:localStorage.getItem('bookId'),
-          pageNum:this.currentPageNo,
+        data: {
+          content: this.content,
+          bookId: localStorage.getItem('bookId'),
+          pageNum: this.currentPageNo
         }
       })
-      .then(response=>{
-        this.results=response.data
-      }).catch(error=>{
-        console.log(error)
-      })
+        .then(response => {
+          this.results = response.data
+        }).catch(error => {
+          console.log(error)
+        })
     },
-    //预调用增强接口
-    initialEnhance(){
-      this.$refs.tip.style.display="none";//隐藏弹框
+    // 预调用增强接口
+    initialEnhance () {
+      this.$refs.tip.style.display = 'none'// 隐藏弹框
       // this.enhancedShown = true;
       // this.selectShown = false;
       this.$axios({
         method: 'POST',
-        url: '/apis/read/'+this.bookId,
-      }).then(response=>{
-        this.enhancedResults=response.data
-      }).catch(error=>{
+        url: '/apis/read/' + this.bookId
+      }).then(response => {
+        this.enhancedResults = response.data
+      }).catch(error => {
         console.log(error)
       })
     },
-    //显示增强结果
-    enhance(){
-      this.$refs.tip.style.display="none";//隐藏弹框
-      this.enhancedShown = true;
-      this.selectShown = false;
-      this.drawer = true;//弹出抽屉
-    }   
+    // 显示增强结果
+    enhance () {
+      this.$refs.tip.style.display = 'none'// 隐藏弹框
+      this.enhancedShown = true
+      this.selectShown = false
+      this.drawer = true// 弹出抽屉
+    },
+    searchBooks () {
+      var searchContent = this.input
+      this.$axios({
+        method: 'POST',
+        url: '/apis/publicbooks/search/' + searchContent
+
+      })
+        .then(response => {
+          {
+            this.books = response.data
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+    }
   }
 }
 </script>
@@ -274,7 +288,7 @@ export default {
     width:250px;
     margin-top:9px;
     margin-left:30px;
-}    
+}
 .read-book >>> .el-input__inner{
     background: #f6f6f6;
     height:33px;
@@ -337,12 +351,12 @@ export default {
 .white-panel{
     width:1000px;
     margin:0 auto;
-    margin-top: 13px; 
-    background: #fff; 
-    overflow: hidden; 
-    border-radius: 2px; 
-    -webkit-box-shadow: 0 1px 3px rgba(26,26,26,.1); 
-    box-shadow: 0 1px 3px rgba(26,26,26,.1); 
+    margin-top: 13px;
+    background: #fff;
+    overflow: hidden;
+    border-radius: 2px;
+    -webkit-box-shadow: 0 1px 3px rgba(26,26,26,.1);
+    box-shadow: 0 1px 3px rgba(26,26,26,.1);
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }
@@ -360,7 +374,6 @@ export default {
     margin-top:20px;
     color:#586069;
 }
-
 
 .sku-box{
   position: relative;
@@ -491,7 +504,6 @@ export default {
   background-image: linear-gradient(#4d72de,#6189e6);
 }
 
-
 .sku-box .item:hover .item-price{
   opacity: 0;
   transition: all .1s ease-out;
@@ -529,4 +541,3 @@ export default {
   margin-left:280px;
 }
 </style>
-  

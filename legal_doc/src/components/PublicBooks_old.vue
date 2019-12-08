@@ -43,11 +43,6 @@
         </el-pagination>
       </div>
 
-
-
-
-
-
     </div>
   </div>
 
@@ -55,102 +50,98 @@
 
 <script>
 
-  import BookInfo from '@/components/BookInfo'
-  export default {
-    name: "PublicBooks",
+import BookInfo from '@/components/BookInfo'
+export default {
+  name: 'PublicBooks',
 
-    data(){
-      return{
-        currentPage:1,
-        currentTotal:0,
-        books:[{
-          id:"ggg",
-          imgpath:"",
-          name:"2.pdf",
-          path:"",
-          author:"rrf"
-        }
-        ],
+  data () {
+    return {
+      currentPage: 1,
+      currentTotal: 0,
+      books: [{
+        id: 'ggg',
+        imgpath: '',
+        name: '2.pdf',
+        path: '',
+        author: 'rrf'
       }
-    },
-    components: {
-      BookInfo
-    },
-    created(){
-      let that=this;
-      that.currentTotal=that.books.length;
-
-      that.$axios({
-        method:'POST',
-        url:'/apis/publicbooks/sixbooks/'+this.currentPage,
-      })
-        .then(response=>{
-         that.books=response.data;
-         that.currentTotal=that.books.length;
-
-        }).catch(error=>{
+      ]
+    }
+  },
+  components: {
+    BookInfo
+  },
+  created () {
+    let that = this
+    that.currentTotal = that.books.length
+    that.$axios({
+      method: 'POST',
+      url: '/apis/publicbooks/sixbooks/' + this.currentPage
+    })
+      .then(response => {
+        that.books = response.data
+        that.currentTotal = that.books.length
+      }).catch(error => {
         console.log(error)
       })
+  },
+  methods: {
+    addToMyLibrary () {
+      var checkedlist = document.getElementsByName('check')
+      for (var i = 0; i < checkedlist.length; i++) {
+        if (checkedlist[i].checked) {
+          var bookId = checkedlist[i].value
+        }
+      }
+      console.log(bookId)
+      this.$axios({
+        method: 'PUT',
+        url: '/apis/publicbooks/toMyBook/' + localStorage.getItem('userId') + '/' + bookId
 
-    },
-    methods:{
-      addToMyLibrary(){
-        var checkedlist=document.getElementsByName('check')
-       for(var i=0;i<checkedlist.length;i++){
-          if(checkedlist[i].checked){
-            var bookId=checkedlist[i].value
+      })
+        .then(response => {
+          if (response.status === 200) {
+            this.$notify.success({
+              title: '添加成功！',
+              message: '添加成功！'
+            })
           }
-       }
-        console.log(bookId)
-        this.$axios({
-          method: 'PUT',
-          url: '/apis/publicbooks/toMyBook/'+localStorage.getItem('userId')+'/'+bookId,
-
         })
-          .then(response => {
-            if (response.status===200){
-             this.$notify.success({
-               title: '添加成功！',
-               message: '添加成功！'
-             })
-
-            }
-          })
-          .catch(error => {
+        .catch(error => {
           this.$notify.error({
             title: '添加失败！',
             message: '添加失败！'
-          });
+          })
         })
-      },
+    },
 
-      searchBooks(){
-        var searchContent= document.getElementById("searchContent").value
+    searchBooks () {
+      var searchContent = document.getElementById('searchContent').value
 
-        this.$axios({
-          method: 'POST',
-          url: '/apis/publicbooks/search/' +searchContent,
+      this.$axios({
+        method: 'POST',
+        url: '/apis/publicbooks/search/' + searchContent
 
-        })
-          .then(response=>{
-            {
-              this.books=response.data
-              console.log(books)
-            }
-          }).catch(error=>{
+      })
+        .then(response => {
+          {
+            this.books = response.data
+            console.log(books)
+          }
+        }).catch(error => {
           console.log(error)
         })
-      },
+    },
 
-      goToMyLibrary(){
-        this.$router.push({name: 'MyBooks'});
-      },
-      goToLogin(){
-        this.$router.push({name: 'Login'});
-      }
-
+    goToMyLibrary () {
+      this.$router.push({ name: 'MyBooks' })
+    },
+    goToLogin () {
+      this.$router.push({ name: 'Login' })
     }
+
   }
+}
 </script>
 
 <style scoped>
@@ -336,7 +327,6 @@
     background-image: linear-gradient(#4d72de,#6189e6);
   }
 
-
   .sku-box .item:hover .item-price{
     opacity: 0;
     transition: all .1s ease-out;
@@ -367,7 +357,6 @@
     box-shadow: 0 3px 8px -6px rgba(0,0,0,.1);
 
   }
-
 
   .store-content {
     width: 1250px;
@@ -558,7 +547,6 @@
     top: 0;
   }
 
-
   ul{
     width: 250px;
     margin-top: 6px;
@@ -684,6 +672,3 @@
     cursor: text;
   }
 </style>
-
-
-

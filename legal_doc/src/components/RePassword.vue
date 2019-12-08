@@ -32,82 +32,82 @@
     </body>
 </template>
 <script>
-    export default {
-        data() {
-        var checkName = (rule, value, callback) => {
-            if (!value) {
-                return callback(new Error('Username cannot be empty'));
-            }
-            setTimeout(() => {
-                callback();
-            }, 1000);
-        };
-        var validatePass = (rule, value, callback) => {
-            if (value === '') {
-                callback(new Error('Please enter new password'));
-            } else {
-                if (this.ruleForm.checkPass !== '') {
-                  this.$refs.ruleForm.validateField('checkPass');
-                }
-                callback();
-            }
-        };
-        var validatePass2 = (rule, value, callback) => {
-            if (value === '') {
-                callback(new Error('Please enter new password again'));
-            } else if (value !== this.ruleForm.pass) {
-                callback(new Error('The two passwords you typed do not match'));
-            } else {
-                callback();
-            }
-        };
-        var checkEmail = (rule, value, callback) => {
-            const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
-            if (value === '') {
-                callback(new Error('Please enter email'))
-            }
-            setTimeout(() => {
-                if (mailReg.test(value)) {
-                    callback()
-                } else {
-                    callback(new Error('Please enter the correct email address'))
-                }
-            }, 100);
-        };
-        return {
-            ruleForm: {
-                verificationCode: '',
-                pass: '',
-                checkPass: ''  
-            },
-            rules: {
-                verificationCode: [
-                  { trigger: 'blur' }
-                ],
-                pass: [
-                  { validator: validatePass, trigger: 'blur' }
-                ],
-                checkPass: [
-                  { validator: validatePass2, trigger: 'blur' }
-                ]
-              }
-            };
-        },
-        methods: {
-            submitForm(formName) {
-              this.$refs[formName].validate((valid) => {
-                if (valid) {
-                  alert('submit!');
-                } else {
-                  console.log('error submit!!');
-                  return false;
-                }
-            });
-        },
-        resetForm(formName) {
-            this.$refs[formName].resetFields();
-        }
+export default {
+  data () {
+    var checkName = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('Username cannot be empty'))
+      }
+      setTimeout(() => {
+        callback()
+      }, 1000)
     }
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('Please enter new password'))
+      } else {
+        if (this.ruleForm.checkPass !== '') {
+          this.$refs.ruleForm.validateField('checkPass')
+        }
+        callback()
+      }
+    }
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('Please enter new password again'))
+      } else if (value !== this.ruleForm.pass) {
+        callback(new Error('The two passwords you typed do not match'))
+      } else {
+        callback()
+      }
+    }
+    var checkEmail = (rule, value, callback) => {
+      const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
+      if (value === '') {
+        callback(new Error('Please enter email'))
+      }
+      setTimeout(() => {
+        if (mailReg.test(value)) {
+          callback()
+        } else {
+          callback(new Error('Please enter the correct email address'))
+        }
+      }, 100)
+    }
+    return {
+      ruleForm: {
+        verificationCode: '',
+        pass: '',
+        checkPass: ''
+      },
+      rules: {
+        verificationCode: [
+          { trigger: 'blur' }
+        ],
+        pass: [
+          { validator: validatePass, trigger: 'blur' }
+        ],
+        checkPass: [
+          { validator: validatePass2, trigger: 'blur' }
+        ]
+      }
+    }
+  },
+  methods: {
+    submitForm (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          alert('submit!')
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    resetForm (formName) {
+      this.$refs[formName].resetFields()
+    }
+  }
 }
 </script>
 <style>

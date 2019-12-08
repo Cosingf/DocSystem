@@ -1,7 +1,7 @@
 <template>
   <div id="MyBooks" class="body">
   <div class="top">
-    
+
     <router-link href='#' to="/users/info"><img class="photo" src="../assets/头像.jpg" ></router-link>
     <p id="welcome">Welcome</p>
     <div class="menu">
@@ -31,9 +31,6 @@
       <el-button type="button" v-on:click="deleteBooks()" style="width: 150px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;">Delete</el-button>
     </div>
 
-
-
-
     <el-popover
       placement="bottom"
       width="400"
@@ -58,13 +55,11 @@
           <el-switch v-model="uploadBookMsg.isPublic"></el-switch>
         </el-form-item>
 
-
       </el-form>
       <el-button size="medium" type="primary" @click="uploadBook">Upload</el-button>
       <el-button slot="reference" style=" position: absolute;top: 5%;left: 60%;width: 150px;height: 45px;font-size: 26px;border-radius: 20px;background-color: #FFA07A;">
         Upload</el-button>
     </el-popover>
-
 
     <div class="sku-box store-content">
       <div class="sort-option">
@@ -74,7 +69,6 @@
         <BookInfo  v-for="item , index in books" :item="item" :key="index"></BookInfo>
       </div>
     </div>
-
 
     <div class="page">
       <a href="#" class="prev">prev</a>
@@ -86,147 +80,144 @@
       <a href="#" class="next">next</a>
     </div>
 
-
-
-
   </div>
   </div>
 </template>
 
 <script>
-  import BookInfo from '@/components/BookInfo'
-    export default {
-        name: "MyBooks" ,
-      data(){
-        return{
-          userId:localStorage.getItem('userId'),
-          pageNum:1,
-          books:[{
-            id:"ggg",
-            imgpath:"/apis/1.jpg",
-            name:"2.pdf",
-            path:"",
-            author:"rrf"
-          }
-          ],
-          searchBookInfo:[
-            {
-              id:"",
-              imgpath:"",
-              name:""
-            }
-          ],
-            uploadBookMsg:{
-                authorName:"",
-                file:'',
-                isPublic:""
-            }
+import BookInfo from '@/components/BookInfo'
+export default {
+  name: 'MyBooks',
+  data () {
+    return {
+      userId: localStorage.getItem('userId'),
+      pageNum: 1,
+      books: [{
+        id: 'ggg',
+        imgpath: '/apis/1.jpg',
+        name: '2.pdf',
+        path: '',
+        author: 'rrf'
+      }
+      ],
+      searchBookInfo: [
+        {
+          id: '',
+          imgpath: '',
+          name: ''
         }
-      },
-      components: {
-        BookInfo
-      },
-          /*searchBookInfo:[
-            {
-              id:"",
-              imgpath:"",
-              name:""
-            }
-          ],*/
-      created(){
-        let that=this;
-        that.$axios({
-          method:'POST',
-          url:'/apis/mybooks/sixbooks/'+this.userId+'/'+this.pageNum
-        })
-          .then(response=>{
-           that.books=response.data
-            console.log(that.books)
-          }).catch(error=>{
-          console.log(error)
-        })
-
-      },
-
-      methods:{
-
-        beforeupload(file){
-          this.uploadBookMsg.file=file;
-          return false;
-        },
-        deleteBooks(){
-          var checkedlist=$(":checkbox[name='check']:checked")
-          var bookList=checkedlist.parentElement.id
-          this.$axios({
-            method: 'DELETE',
-            url: '/mybooks/delete',
-            data:{
-              userId:window.localStorage['userId'],
-              booklist:bookList
-            }
-          })
-        },  uploadBookBox(n){
-            document.getElementById('uploadBox').style.display=n?'block':'none';
-        },
-        inputFileChange (e){
-            // input的@change事件拿到数据
-            this.uploadBookMsg.file = e.target.files[0]
-        },
-        uploadBook(){
-            let formData = new FormData()
-            var isPublic= 1
-            this.uploadBookMsg.isPublic?isPublic=1:isPublic=0;
-            formData.append('isPublic',isPublic)
-            formData.append('author', this.uploadBookMsg.authorName)
-            formData.append('file', this.uploadBookMsg.file)
-          console.log(formData.get(""))
-            let config = {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            }
-            axios.post('/apis/upload/'+localStorage.getItem('userId'),formData,config).then(response => {
-                if (response.status===200){
-                    this.$notify.success({
-                        title: 'upload success！',
-                        message: 'upload success！'
-                    })
-                }
-            })
-                .catch(error => {
-                    this.$notify.error({
-                        title: 'upload fail！',
-                        message: 'upload fail！'
-                    });
-                })
-        },
-        goToPublicLibrary(){
-          this.$router.push({name: 'PublicBooks'});
-        },
-        goToLogin(){
-          this.$router.push({name: 'Login'});
-        },
-         handleClick(tab, event) {
-          console.log(tab, event);
-        },
-        searchBooks(){
-          var searchContent= document.getElementById("searchContent").value
-          this.$axios({
-            method: 'POST',
-            url: '/apis/mybooks/' +searchContent +'/'+localStorage.getItem('userId'),
-
-          })
-            .then(response=>{
-              {
-                this.books=response.data
-                console.log(books)
-              }
-            }).catch(error=>{
-            console.log(error)
-          })
-        }
+      ],
+      uploadBookMsg: {
+        authorName: '',
+        file: '',
+        isPublic: ''
       }
     }
+  },
+  components: {
+    BookInfo
+  },
+  /* searchBookInfo:[
+            {
+              id:"",
+              imgpath:"",
+              name:""
+            }
+          ], */
+  created () {
+    let that = this
+    that.$axios({
+      method: 'POST',
+      url: '/apis/mybooks/sixbooks/' + this.userId + '/' + this.pageNum
+    })
+      .then(response => {
+        that.books = response.data
+        console.log(that.books)
+      }).catch(error => {
+        console.log(error)
+      })
+  },
+
+  methods: {
+
+    beforeupload (file) {
+      this.uploadBookMsg.file = file
+      return false
+    },
+    deleteBooks () {
+      var checkedlist = $(":checkbox[name='check']:checked")
+      var bookList = checkedlist.parentElement.id
+      this.$axios({
+        method: 'DELETE',
+        url: '/mybooks/delete',
+        data: {
+          userId: window.localStorage['userId'],
+          booklist: bookList
+        }
+      })
+    },
+    uploadBookBox (n) {
+      document.getElementById('uploadBox').style.display = n ? 'block' : 'none'
+    },
+    inputFileChange (e) {
+      // input的@change事件拿到数据
+      this.uploadBookMsg.file = e.target.files[0]
+    },
+    uploadBook () {
+      let formData = new FormData()
+      var isPublic = 1
+      this.uploadBookMsg.isPublic ? isPublic = 1 : isPublic = 0
+      formData.append('isPublic', isPublic)
+      formData.append('author', this.uploadBookMsg.authorName)
+      formData.append('file', this.uploadBookMsg.file)
+      console.log(formData.get(''))
+      let config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+      axios.post('/apis/upload/' + localStorage.getItem('userId'), formData, config).then(response => {
+        if (response.status === 200) {
+          this.$notify.success({
+            title: 'upload success！',
+            message: 'upload success！'
+          })
+        }
+      })
+        .catch(error => {
+          this.$notify.error({
+            title: 'upload fail！',
+            message: 'upload fail！'
+          })
+        })
+    },
+    goToPublicLibrary () {
+      this.$router.push({ name: 'PublicBooks' })
+    },
+    goToLogin () {
+      this.$router.push({ name: 'Login' })
+    },
+    handleClick (tab, event) {
+      console.log(tab, event)
+    },
+    searchBooks () {
+      var searchContent = document.getElementById('searchContent').value
+      this.$axios({
+        method: 'POST',
+        url: '/apis/mybooks/' + searchContent + '/' + localStorage.getItem('userId')
+
+      })
+        .then(response => {
+          {
+            this.books = response.data
+            console.log(books)
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+    }
+  }
+}
 </script>
 
 <style scoped>
@@ -416,7 +407,6 @@
     background-image: linear-gradient(#4d72de,#6189e6);
   }
 
-
   .sku-box .item:hover .item-price{
     opacity: 0;
     transition: all .1s ease-out;
@@ -447,7 +437,6 @@
     box-shadow: 0 3px 8px -6px rgba(0,0,0,.1);
 
   }
-
 
   .store-content {
     width: 1250px;
@@ -558,7 +547,7 @@
     font-weight: bold;
     position: absolute;
     top: 23%;
-    right: 4%; 
+    right: 4%;
   }
   .back_image{
     margin-top: 3px;

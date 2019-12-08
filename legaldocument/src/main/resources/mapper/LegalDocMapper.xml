@@ -28,7 +28,7 @@
     select
     <include refid="Base_Column_List" />
     from legal_doc
-    where  is_public ==1 and bookname like concat ('%',#{selectName},'%')
+    where  is_public =1 and bookname like concat ('%',#{selectName},'%')
   </select>
 
   <select id="selectPublicPage" resultMap="BaseResultMap" >

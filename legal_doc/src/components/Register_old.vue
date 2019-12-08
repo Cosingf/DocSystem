@@ -37,42 +37,42 @@
 </template>
 
 <script>
-    export default {
-        name: "Register",
-      data(){
-        return{
-          userInfo:{
-            account:"",
-            password:"",
-            confirmPw:"",
-            email:"",
-          }
-        }
-      },
-      methods:{
-        back(){
-          this.$router.go(-1);//返回上一层
-        },
-        register(){
-          this.$axios.post("/users/register",this.$data.userInfo).then(respoonse=>{
-            this.$notify({
-              title: '成功',
-              message: '注册成功',
-              type: 'success',
-              duration: 2000
-            });
-          }).catch(error=>{
-            console.log(error)
-            this.$notify({
-              title: '失败',
-              message: '注册失败',
-              type: 'error',
-              duration: 2000
-            });
-        })
+export default {
+  name: 'Register',
+  data () {
+    return {
+      userInfo: {
+        account: '',
+        password: '',
+        confirmPw: '',
+        email: ''
       }
     }
+  },
+  methods: {
+    back () {
+      this.$router.go(-1)// 返回上一层
+    },
+    register () {
+      this.$axios.post('/users/register', this.$data.userInfo).then(respoonse => {
+        this.$notify({
+          title: '成功',
+          message: '注册成功',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch(error => {
+        console.log(error)
+        this.$notify({
+          title: '失败',
+          message: '注册失败',
+          type: 'error',
+          duration: 2000
+        })
+      })
     }
+  }
+}
 </script>
 
 <style scoped>

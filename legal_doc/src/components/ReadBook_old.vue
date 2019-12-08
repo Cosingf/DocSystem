@@ -14,7 +14,6 @@
        <router-link href='#' to="/"><img class="back_image" src="../assets/enter.png"></router-link>
     </div>
 
-
     <div class="main">
       <div class="container-fluid" >
       <div class="row">
@@ -31,7 +30,6 @@
        <!-- <button class="btn col-1 offset-3" style="background-color:rgba(255,255,255,0.5);margin-top:10px;margin-left: 800px;"><img src="../assets/add.png"></button>-->
       </div>
     </div>
-
 
     <div style="margin-top:30px;">
       <div style="width:60%">
@@ -50,8 +48,6 @@
       </div>
     </div>
 
-
-
   </div>
 
     <!--划词搜索的弹出框-->
@@ -60,8 +56,6 @@
       click
     </el-button>
     </div>
-
-
 
     <el-drawer
       title=""
@@ -86,262 +80,245 @@
 </template>
 
 <script>
-  import "bootstrap/dist/css/bootstrap.css";
-  import PDFJS from 'pdfjs-dist';
+import 'bootstrap/dist/css/bootstrap.css'
+import PDFJS from 'pdfjs-dist'
 
-  import { TextLayerBuilder } from 'pdfjs-dist/web/pdf_viewer'
-  import 'pdfjs-dist/web/pdf_viewer.css'
-  import $ from 'jquery'
-  import SearchResult from '@/components/SearchResult'
-  import EnhanceResult from "./EnhanceResult";
-    export default {
-        name: "ReadBook",
-      props: ['pdfUrl'],
-        data () {
-        return {
-          activeName: '0',
-          accordion:true,
-          pdf: localStorage.getItem('bookId'),
-          bookId: localStorage.getItem('id'),
-          bookname:localStorage.getItem('bookname'),
-          author:localStorage.getItem('author'),
-          totalPage: '',
-          i: 1,
-          content: "",
-          idName : 'canvas-pdf-',
-          scale: 1.5,
-          totals: [],
-          isCreatedPage:[],
-          currentPageNo :1,
-          viewHeight: 0,
-          drawer: false,
-          direction: 'rtl',
-          modal: false,
-          selectShown :false,
-          enhancedShown: false,
-          results:[{
-            question:"",
-            answer:"",
-            link:"",
-            sectionContent:"",
-          }],
-          enhancedResults:[
-            {
-               qa:{ answer:"",
-                 question:"",
-                 link:"",},
-              section:{sectionContent:"",}
-
-            }
-          ]
+import { TextLayerBuilder } from 'pdfjs-dist/web/pdf_viewer'
+import 'pdfjs-dist/web/pdf_viewer.css'
+import $ from 'jquery'
+import SearchResult from '@/components/SearchResult'
+import EnhanceResult from './EnhanceResult'
+export default {
+  name: 'ReadBook',
+  props: ['pdfUrl'],
+  data () {
+    return {
+      activeName: '0',
+      accordion: true,
+      pdf: localStorage.getItem('bookId'),
+      bookId: localStorage.getItem('id'),
+      bookname: localStorage.getItem('bookname'),
+      author: localStorage.getItem('author'),
+      totalPage: '',
+      i: 1,
+      content: '',
+      idName: 'canvas-pdf-',
+      scale: 1.5,
+      totals: [],
+      isCreatedPage: [],
+      currentPageNo: 1,
+      viewHeight: 0,
+      drawer: false,
+      direction: 'rtl',
+      modal: false,
+      selectShown: false,
+      enhancedShown: false,
+      results: [{
+        question: '',
+        answer: '',
+        link: '',
+        sectionContent: ''
+      }],
+      enhancedResults: [
+        {
+          qa: { answer: '',
+            question: '',
+            link: '' },
+          section: { sectionContent: '' }
 
         }
-      },
-      components: {
-        EnhanceResult,
-        SearchResult
-      },
-      mounted () {
-        this.renderPdf(this.scale);
-        this.$refs.tip.style.display="none";
-        this.enhance();
+      ]
 
-      },
-      watch: {
-        scale (val) {
-          this.totals = []
-          this.renderPdf(val)
+    }
+  },
+  components: {
+    EnhanceResult,
+    SearchResult
+  },
+  mounted () {
+    this.renderPdf(this.scale)
+    this.$refs.tip.style.display = 'none'
+    this.enhance()
+  },
+  watch: {
+    scale (val) {
+      this.totals = []
+      this.renderPdf(val)
+    }
+  },
+  methods: {
+    goToPublicLibrary () {
+      this.$router.push({ name: 'PublicBooks' })
+    },
+    goToLogin () {
+      this.$router.push({ name: 'Login' })
+    },
+    goToMyLibrary () {
+      this.$router.push({ name: 'MyBooks' })
+    },
+    addToMyLibrary () {
+      var checkedlist = $(":checkbox[name='check']:checked")
+      var bookList = checkedlist.parentElement.id
+      this.$axios({
+        method: 'POST',
+        url: '/mybooks/insert',
+        data: {
+          userId: window.localStorage['userId'],
+          booklist: bookList
         }
-      },
-      methods:{
-        goToPublicLibrary() {
-          this.$router.push({name: 'PublicBooks'});
-        },
-        goToLogin() {
-          this.$router.push({name: 'Login'});
-        },
-        goToMyLibrary(){
-          this.$router.push({name: 'MyBooks'});
-        },
-        addToMyLibrary(){
-          var checkedlist=$(":checkbox[name='check']:checked")
-          var bookList=checkedlist.parentElement.id
-          this.$axios({
-            method: 'POST',
-            url: '/mybooks/insert',
-            data:{
-              userId:window.localStorage['userId'],
-              booklist:bookList
-            }
-          })
-        },
+      })
+    },
 
-        //打开弹框
-        tooltip(event){
-          var x = 10;
-          var y = 10;
+    // 打开弹框
+    tooltip (event) {
+      var x = 10
+      var y = 10
 
-          //获取选中的文本
-          if (document.selection) {
-           this.content = document.selection.createRange().text;
-          }
-          else if (window.getSelection()) {
-           this.content = window.getSelection().toString();
-          }
-          //弹框
-          if (this.content!= "") {
-            this.$refs.tip.style.top=(event.pageY +  y) + "px";
-            this.$refs.tip.style.left=(event.pageX + x) + "px";
-              this.$refs.tip.style.opacity="1";
-            this.$refs.tip.style.width="219px";
-            this.$refs.tip.style.height="33px";
-            this.$refs.tip.style.position="absolute";
-            this.$refs.tip.style.display="block";
-          }
-
-        },
-
-
-       //上一页
-        last(){
-          var p= this.currentPageNo
-          if(p-1>0){
-            let pageDiv = document.getElementById(`page-${p}`);
-            pageDiv.style.display="none";
-            p = p-1;}
-          this.currentPageNo=p
-          if(this.isCreatedPage[p]==0){ this.createPage(p,this.scale);this.isCreatedPage[p]=1;}
-
-          let curPageDiv = document.getElementById(`page-${p}`);
-          curPageDiv.style.display="block";
-
-        },
-        //下一页
-        next(){
-          var p= this.currentPageNo
-          if(p+1<=this.totalPage){
-            let pageDiv = document.getElementById(`page-${p}`);
-            pageDiv.style.display="none";
-            p = p+1;
-          }
-          this.currentPageNo=p
-          if(this.isCreatedPage[p]==0){ this.createPage(p,this.scale);this.isCreatedPage[p]=1;}
-          let curPageDiv = document.getElementById(`page-${p}`);
-          curPageDiv.style.display="block";
-
-        },
-
-
-        renderPdf (scale) {
-          PDFJS.workerSrc = require('pdfjs-dist/build/pdf.worker.min')
-          // 当 PDF 地址为跨域时，pdf 应该已流的形式传输，否则会出现pdf损坏无法展示
-          PDFJS.getDocument("/apis/"+this.pdf,{params: {
-              withCredentials : true,
-              dataType : 'jsonp'
-            }}).then(pdf => {
-            this.pdf = pdf
-            // 得到PDF的总的页数
-            this.totalPage = pdf.numPages
-            // 根据总的页数创建相同数量的canvas
-            this.createCanvas(this.totalPage, this.idName)
-              this.createPage(1,scale);
-            this.isCreatedPage[1]=1;
-            for(let j=2;j<=this.totalPage;j++)
-            {
-              this.isCreatedPage[j]=0;
-            }
-
-          })
-        },
-        createCanvas (totalPages) {
-          for (let i = 1; i <= totalPages; i++) {
-            this.totals.push(i)
-          }
-        },
-        createPage(i,scale){
-          this.pdf.getPage(i).then((page) => {
-            let pageDiv = document.getElementById(`page-${i}`)
-            let viewport = page.getViewport(scale)
-            let canvas = document.getElementById(this.idName + i)
-            let context = canvas.getContext('2d')
-            canvas.height = viewport.height
-            canvas.width = viewport.width
-            this.viewHeight = viewport.height
-            let renderContext = {
-              canvasContext: context,
-              viewport
-            }
-            // 如果你只是展示pdf而不需要复制pdf内容功能，则可以这样写render
-            // page.render(renderContext) 如果你需要复制则像下面那样写利用text-layer
-            page.render(renderContext).then(() => {
-              return page.getTextContent()
-            }).then((textContent) => {
-              // 创建文本图层div
-              const textLayerDiv = document.createElement('div')
-              textLayerDiv.setAttribute('class', 'textLayer')
-              textLayerDiv.setAttribute('id','textLayer')
-              // 将文本图层div添加至每页pdf的div中
-              pageDiv.appendChild(textLayerDiv)
-              // 创建新的TextLayerBuilder实例
-              let textLayer = new TextLayerBuilder({
-                textLayerDiv: textLayerDiv,
-                pageIndex: page.pageIndex,
-                viewport: viewport
-              })
-              textLayer.setTextContent(textContent)
-              textLayer.render()
-            })
-          })
-        },
-
-
-
-        selectSearch(){
-          this.drawer = true;
-          this.$refs.tip.style.display="none";
-          this.selectShown = true;
-          this.enhancedShown = false;
-          this.$axios({
-            method: 'POST',
-            url: '/apis/read/highlight',
-            data:{
-              content:this.content,
-              bookId:localStorage.getItem('bookId'),
-              pageNum:this.currentPageNo,
-            }
-          })
-            .then(response=>{
-
-             this.results=response.data
-            }).catch(error=>{
-            console.log(error)
-          })
-        },
-
-
-        enhance(){
-          this.$refs.tip.style.display="none";//隐藏弹框
-          this.enhancedShown = true;
-          this.selectShown = false;
-          this.$axios({
-            method: 'POST',
-            url: '/apis/read/'+this.bookId,
-          })
-            .then(response=>{
-              this.enhancedResults=response.data
-
-
-            }).catch(error=>{
-            console.log(error)
-          })
-          this.drawer = true;//弹出抽屉
-        }
-
-
+      // 获取选中的文本
+      if (document.selection) {
+        this.content = document.selection.createRange().text
+      } else if (window.getSelection()) {
+        this.content = window.getSelection().toString()
       }
+      // 弹框
+      if (this.content != '') {
+        this.$refs.tip.style.top = (event.pageY + y) + 'px'
+        this.$refs.tip.style.left = (event.pageX + x) + 'px'
+        this.$refs.tip.style.opacity = '1'
+        this.$refs.tip.style.width = '219px'
+        this.$refs.tip.style.height = '33px'
+        this.$refs.tip.style.position = 'absolute'
+        this.$refs.tip.style.display = 'block'
+      }
+    },
+
+    // 上一页
+    last () {
+      var p = this.currentPageNo
+      if (p - 1 > 0) {
+        let pageDiv = document.getElementById(`page-${p}`)
+        pageDiv.style.display = 'none'
+        p = p - 1
+      }
+      this.currentPageNo = p
+      if (this.isCreatedPage[p] == 0) { this.createPage(p, this.scale); this.isCreatedPage[p] = 1 }
+
+      let curPageDiv = document.getElementById(`page-${p}`)
+      curPageDiv.style.display = 'block'
+    },
+    // 下一页
+    next () {
+      var p = this.currentPageNo
+      if (p + 1 <= this.totalPage) {
+        let pageDiv = document.getElementById(`page-${p}`)
+        pageDiv.style.display = 'none'
+        p = p + 1
+      }
+      this.currentPageNo = p
+      if (this.isCreatedPage[p] == 0) { this.createPage(p, this.scale); this.isCreatedPage[p] = 1 }
+      let curPageDiv = document.getElementById(`page-${p}`)
+      curPageDiv.style.display = 'block'
+    },
+
+    renderPdf (scale) {
+      PDFJS.workerSrc = require('pdfjs-dist/build/pdf.worker.min')
+      // 当 PDF 地址为跨域时，pdf 应该已流的形式传输，否则会出现pdf损坏无法展示
+      PDFJS.getDocument('/apis/' + this.pdf, { params: {
+        withCredentials: true,
+        dataType: 'jsonp'
+      } }).then(pdf => {
+        this.pdf = pdf
+        // 得到PDF的总的页数
+        this.totalPage = pdf.numPages
+        // 根据总的页数创建相同数量的canvas
+        this.createCanvas(this.totalPage, this.idName)
+        this.createPage(1, scale)
+        this.isCreatedPage[1] = 1
+        for (let j = 2; j <= this.totalPage; j++) {
+          this.isCreatedPage[j] = 0
+        }
+      })
+    },
+    createCanvas (totalPages) {
+      for (let i = 1; i <= totalPages; i++) {
+        this.totals.push(i)
+      }
+    },
+    createPage (i, scale) {
+      this.pdf.getPage(i).then((page) => {
+        let pageDiv = document.getElementById(`page-${i}`)
+        let viewport = page.getViewport(scale)
+        let canvas = document.getElementById(this.idName + i)
+        let context = canvas.getContext('2d')
+        canvas.height = viewport.height
+        canvas.width = viewport.width
+        this.viewHeight = viewport.height
+        let renderContext = {
+          canvasContext: context,
+          viewport
+        }
+        // 如果你只是展示pdf而不需要复制pdf内容功能，则可以这样写render
+        // page.render(renderContext) 如果你需要复制则像下面那样写利用text-layer
+        page.render(renderContext).then(() => {
+          return page.getTextContent()
+        }).then((textContent) => {
+          // 创建文本图层div
+          const textLayerDiv = document.createElement('div')
+          textLayerDiv.setAttribute('class', 'textLayer')
+          textLayerDiv.setAttribute('id', 'textLayer')
+          // 将文本图层div添加至每页pdf的div中
+          pageDiv.appendChild(textLayerDiv)
+          // 创建新的TextLayerBuilder实例
+          let textLayer = new TextLayerBuilder({
+            textLayerDiv: textLayerDiv,
+            pageIndex: page.pageIndex,
+            viewport: viewport
+          })
+          textLayer.setTextContent(textContent)
+          textLayer.render()
+        })
+      })
+    },
+
+    selectSearch () {
+      this.drawer = true
+      this.$refs.tip.style.display = 'none'
+      this.selectShown = true
+      this.enhancedShown = false
+      this.$axios({
+        method: 'POST',
+        url: '/apis/read/highlight',
+        data: {
+          content: this.content,
+          bookId: localStorage.getItem('bookId'),
+          pageNum: this.currentPageNo
+        }
+      })
+        .then(response => {
+          this.results = response.data
+        }).catch(error => {
+          console.log(error)
+        })
+    },
+
+    enhance () {
+      this.$refs.tip.style.display = 'none'// 隐藏弹框
+      this.enhancedShown = true
+      this.selectShown = false
+      this.$axios({
+        method: 'POST',
+        url: '/apis/read/' + this.bookId
+      })
+        .then(response => {
+          this.enhancedResults = response.data
+        }).catch(error => {
+          console.log(error)
+        })
+      this.drawer = true// 弹出抽屉
     }
 
-
+  }
+}
 
 </script>
 
@@ -349,7 +326,6 @@
   html{
     width:60%;
   }
-
 
   .main{
     margin: 0 auto;
@@ -367,7 +343,6 @@
   }
   .pdf-box {
     position: relative;
-
 
   }
 
@@ -505,7 +480,6 @@
     background-image: linear-gradient(#4d72de,#6189e6);
   }
 
-
   .sku-box .item:hover .item-price{
     opacity: 0;
     transition: all .1s ease-out;
@@ -527,8 +501,6 @@
     border-top: 1px solid #D8D8D8;
     color: #999;
   }
-
-
 
   .store-content {
     width: 580px;
@@ -729,10 +701,5 @@
     color: #FFFFFF;
     text-decoration: underline;
   }
-
-
-
-
-
 
 </style>

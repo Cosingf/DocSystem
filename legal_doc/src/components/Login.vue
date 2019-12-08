@@ -17,61 +17,80 @@
         </el-form>
         </div>
         <div class="create-account">
-            <p>New to Reedpeer?<el-link type="primary" style="font-size:16px;"><router-link href='#' to="/users/register">&nbsp;Create an account.</router-link></el-link></p>    
+            <p>New to Reedpeer?<el-link type="primary" style="font-size:16px;"><router-link href='#' to="/users/register">&nbsp;Create an account.</router-link></el-link></p>
         </div>
     </body>
 </template>
 <script>
-    export default {
-        data() {
-        var checkName = (rule, value, callback) => {
-            if (!value) {
-                return callback(new Error('Username cannot be empty'));
-            }
-            setTimeout(() => {
-                callback();
-            }, 1000);
-        };
-        var validatePass = (rule, value, callback) => {
-            if (value === '') {
-                callback(new Error('Please enter password'));
-            } else {
-                if (this.ruleForm.checkPass !== '') {
-                  this.$refs.ruleForm.validateField('checkPass');
-                }
-                callback();
-            }
-        };
-        return {
-            ruleForm: {
-                name: '',
-                pass: ''
-            },
-            rules: {
-                name: [
-                  { validator: checkName, trigger: 'blur' }
-                ],
-                pass: [
-                  { validator: validatePass, trigger: 'blur' }
-                ]
-              }
-            };
-        },
-        methods: {
-        submitForm(formName) {
-            this.$refs[formName].validate((valid) => {
-                if (valid) {
-                  alert('submit!');
-                } else {
-                  console.log('error submit!!');
-                  return false;
-                }
-            });
-        },
-        resetForm(formName) {
-            this.$refs[formName].resetFields();
-        }
+export default {
+  data () {
+    var checkName = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('Username cannot be empty'))
+      }
+      setTimeout(() => {
+        callback()
+      }, 1000)
     }
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('Please enter password'))
+      } else {
+        if (this.ruleForm.checkPass !== '') {
+          this.$refs.ruleForm.validateField('checkPass')
+        }
+        callback()
+      }
+    }
+    return {
+      ruleForm: {
+        name: '',
+        pass: ''
+      },
+      rules: {
+        name: [
+          { validator: checkName, trigger: 'blur' }
+        ],
+        pass: [
+          { validator: validatePass, trigger: 'blur' }
+        ]
+      }
+    }
+  },
+  methods: {
+    submitForm (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$axios({
+            method: 'post',
+            url: '/apis/login',
+            params: {
+              name: this.$data.ruleForm.name,
+              pass: this.$data.ruleForm.pass
+            }
+          })
+            .then(response => {
+              if (response.status === 200) {
+                localStorage.setItem('user', response.data.account)
+                localStorage.setItem('userId', response.data.id)
+                this.$router.push({ name: 'PublicBooks' })
+              }
+            }).catch(error => {
+              this.$notify.error({
+                title: 'fail！',
+                message: 'password error！'
+              })
+            })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    resetForm (formName) {
+      this.$refs[formName].resetFields()
+    }
+  }
 }
 </script>
 <style>

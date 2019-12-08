@@ -5,7 +5,7 @@
         <el-menu-item index="1">Public library</el-menu-item>
         <el-menu-item index="2" @click="goToMyLibrary">My library</el-menu-item>
         <el-input placeholder="Please enter keywords" prefix-icon="el-icon-search" class="my-input" v-model="input"></el-input>
-        <el-button type="primary">Find books</el-button>
+        <el-button type="primary" v-on:click="searchBooks()">Find books</el-button>
         <el-dropdown  trigger="click" >
             <el-avatar icon="el-icon-user-solid"  class="el-dropdown-link" shape="square" size="medium"></el-avatar>
             <el-dropdown-menu slot="dropdown">
@@ -23,7 +23,7 @@
       <el-row :gutter="20" style="margin:30px;" v-for="item , index in books">
         <el-col :span="6">
           <BookInfo :item="item" :key="index"></BookInfo>
-          <el-button type="primary" plain>Add to my library</el-button>
+          <el-button type="primary" @click="addToMyLibrary(item.id)" plain>Add to my library</el-button>
         </el-col>
       </el-row>
       <div style="height: 50px;"></div>
@@ -31,34 +31,86 @@
     <div class="pagination"><el-pagination layout="prev, pager, next" :total="100"></el-pagination></div>
   </body>
   </template>
-  <script>
-  import BookInfo from '@/components/BookInfo'
-  export default {
-      data() {
-        return {
-          activeIndex: '1',
-          books:[{
-            id:"ggg",
-            imgpath:"",
-            name:"legal document",
-            path:"",
-            author:"legal user"
-          }]
-        };s
-      },
-      components: {
-        BookInfo
-      },
-      methods: {
-        handleCommand(command) {
-          this.$message('click on item ' + command);
-        },
-        goToMyLibrary(){
-          this.$router.push({name: 'MyBooks'});
-        }
-      }
+<script>
+import BookInfo from '@/components/BookInfo'
+export default {
+  data () {
+    return {
+      input: '',
+      activeIndex: 1,
+      currentTotal: 0,
+      books: [{
+        id: '',
+        imgpath: '',
+        name: 'legal document',
+        path: '',
+        author: 'legal user'
+      }]
+    }
+  },
+  components: {
+    BookInfo
+  },
+  created () {
+    let that = this
+    that.currentTotal = that.books.length
+    that.$axios({
+      method: 'POST',
+      url: '/apis/publicbooks/sixbooks/' + that.activeIndex
+    })
+      .then(response => {
+        that.books = response.data
+        that.currentTotal = that.books.length
+      }).catch(error => {
+        console.log(error)
+      })
+  },
+  methods: {
+    handleCommand (command) {
+      this.$message('click on item ' + command)
+    },
+    goToMyLibrary () {
+      this.$router.push({ name: 'MyBooks' })
+    },
+    searchBooks () {
+      var searchContent = this.input
+      this.$axios({
+        method: 'POST',
+        url: '/apis/publicbooks/search/' + searchContent
+
+      })
+        .then(response => {
+          {
+            this.books = response.data
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+    },
+    addToMyLibrary (bookid) {
+      console.log(bookid)
+      this.$axios({
+        method: 'PUT',
+        url: '/apis/publicbooks/toMyBook/' + localStorage.getItem('userId') + '/' + bookid
+      })
+        .then(response => {
+          if (response.status === 200) {
+            this.$notify.success({
+              title: 'add success！',
+              message: 'add success！'
+            })
+          }
+        })
+        .catch(error => {
+          this.$notify.error({
+            title: 'add fail！',
+            message: 'add fail！'
+          })
+        })
+    }
   }
-  </script>
+}
+</script>
   <style scoped>
   .el-menu-item{
     font-weight:500;
@@ -87,7 +139,7 @@
     width:250px;
     margin-top:9px;
     margin-left:30px;
-  }    
+  }
   .public-book >>> .el-input__inner{
     background: #f6f6f6;
     height:33px;
@@ -150,12 +202,12 @@
   .white-panel{
     width:1000px;
     margin:0 auto;
-    margin-top: 13px; 
-    background: #fff; 
-    overflow: hidden; 
-    border-radius: 2px; 
-    -webkit-box-shadow: 0 1px 3px rgba(26,26,26,.1); 
-    box-shadow: 0 1px 3px rgba(26,26,26,.1); 
+    margin-top: 13px;
+    background: #fff;
+    overflow: hidden;
+    border-radius: 2px;
+    -webkit-box-shadow: 0 1px 3px rgba(26,26,26,.1);
+    box-shadow: 0 1px 3px rgba(26,26,26,.1);
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
   }

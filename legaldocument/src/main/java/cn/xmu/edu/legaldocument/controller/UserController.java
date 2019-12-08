@@ -9,10 +9,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
-@Controller
+@RestController
 //控制类，控制页面跳转，数据传输
 public class UserController
 {
@@ -23,28 +24,26 @@ public class UserController
 
     //注册用户，使用POST，传输数据
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    @ResponseBody
-    public String registerPost(Model model,
-
-                               @ModelAttribute(value = "user") User user, HttpServletResponse response)
+    public String registerPost(HttpServletResponse httpServletResponse, @RequestParam("name")String name,@RequestParam("pass")String pass,@RequestParam("email")String email, HttpServletResponse response)
     {
-        System.out.println(user);
+        User user = new User();
+        user.setAccount(name);
+        user.setPassword(pass);
+        user.setEmail(email);
         //使用userService处理业务
-        String result = userService.register(user);
-        //将结果放入model中，在模板中可以取到model中的值
-        model.addAttribute("result", result);
-        return response.encodeRedirectURL("/index");
+        int result = userService.register(user);
+        httpServletResponse.setStatus(result);
+        return  "";
     }
 
 
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    @ResponseBody
-    public User loginPost(@RequestBody Map<String, Object> map) throws AuthenticationException {
+    @PostMapping("/login")
+    public User loginPost(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @RequestParam("name")String name,@RequestParam("pass")String pass) throws Exception {
         User user=new User();
-        user=userService.getUser(map.get("username").toString());
-        user.setAccount(map.get("username").toString());
-        user.setPassword(map.get("password").toString());
+        user=userService.getUser(name);
+        user.setAccount(name);
+        user.setPassword(pass);
         System.out.println(user.toString());
         String result = userService.login(user);
         if (result.equals("登陆成功")) {
@@ -58,7 +57,6 @@ public class UserController
     }
 
     @RequestMapping(value = "/getInfo/{username}",method = RequestMethod.GET)
-    @ResponseBody
     public User getInfo(@PathVariable("username")String username){
         User user=new User();
         user.setAccount(username);

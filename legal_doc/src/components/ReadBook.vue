@@ -20,9 +20,14 @@
       <p style="color:#909399;margin:5px 72px;">{{this.author}}</p>
       <el-button type="success" @click="enhance" style="margin-top: -45px;margin-left: 800px;" plain>Enhancn text</el-button>
       <el-divider></el-divider>
-      显示文本
-       <div @mouseup="tooltip($event)" v-for="i in totals" :id="`page-${i}`" :key="i" class="pdf-canvas">
-        <canvas :id="'canvas-pdf-' + i" class="canvas-pdf" ></canvas>
+      <div class="drag-box" id="dragBox" >
+        <el-scrollbar style="height: 200% ">
+          <div class="wrapper" id="pdf-container" @mouseup="tooltip($event)" >
+            <div  v-for="i in totals" :id="`page-${i}`" :key="i" class="pdf-box" >
+              <canvas :id="'canvas-pdf-' + i" class="canvas-pdf" ></canvas>
+            </div>
+          </div>
+        </el-scrollbar>
       </div>
       <!--显示文本测试内容，正式运行时注释掉这段，用上一段-->
       <!--<div @mouseup="tooltip($event)"  class="pdf-canvas">
@@ -47,8 +52,10 @@
               <span>QA Name</span>
               <el-button style="float: right; padding: 8px 12px" type="success" plain>Edit</el-button>
             </div>
-            <SearchResult class="text item" v-for="item , index in results" :item="item" :index="index"  v-if="selectShown===true"></SearchResult>
+            <el-collapse v-model="activeName"  :accordion="accordion" >
+             <SearchResult class="text item" v-for="item , index in results" :item="item" :index="index"  v-if="selectShown===true"></SearchResult>
             <EnhanceResult class="text item" v-for="item , index in enhancedResults" :item="item"  :index="index" v-if="enhancedShown===true"></EnhanceResult>
+            </el-collapse>
           </el-card>
         </div>
     </el-drawer>
@@ -71,6 +78,13 @@ export default {
       activeName: '0',
       activeIndex: '0',
       accordion: true,
+      totals: [],
+      isCreatedPage: [],
+      viewHeight: 0,
+      currentPageNo: 1,
+      idName: 'canvas-pdf-',
+      scale: 1.5,
+      i: 1,
       pdf: localStorage.getItem('bookId'),
       bookId: localStorage.getItem('id'),
       bookname: localStorage.getItem('bookname'),
@@ -86,12 +100,21 @@ export default {
         link: '',
         sectionContent: ''
       }],
-      enhancedResults: [{
-        qa: { answer: '',
-          question: '',
-          ink: '' },
-        section: { sectionContent: '' }
-      }]
+      enhancedResults: [
+        {
+          qa: { answer: '',
+            question: '',
+            link: '',
+            sectionContent: '',
+            sectionId: '',
+            sectionNum: '',
+            questionId: '',
+            answerId: ''
+          },
+          pageId: '',
+          pageNum: ''
+        }
+      ]
     }
   },
   components: {
@@ -145,7 +168,7 @@ export default {
     renderPdf (scale) {
       PDFJS.workerSrc = require('pdfjs-dist/build/pdf.worker.min')
       // 当 PDF 地址为跨域时，pdf 应该已流的形式传输，否则会出现pdf损坏无法展示
-      PDFJS.getDocument('/apis/' + this.pdf, { params: {
+      PDFJS.getDocument('/apis/' + this.bookname, { params: {
         withCredentials: true,
         dataType: 'jsonp'
       } }).then(pdf => {
@@ -209,9 +232,9 @@ export default {
       this.$axios({
         method: 'POST',
         url: '/apis/read/highlight',
-        data: {
+        params: {
           content: this.content,
-          bookId: localStorage.getItem('bookId'),
+          bookId: localStorage.getItem('id'),
           pageNum: this.currentPageNo
         }
       })
@@ -230,7 +253,7 @@ export default {
         method: 'POST',
         url: '/apis/read/' + this.bookId
       }).then(response => {
-        this.enhancedResults = response.data
+        this.enhancedResults = response.data[this.i]
       }).catch(error => {
         console.log(error)
       })

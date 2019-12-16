@@ -123,9 +123,15 @@ export default {
         {
           qa: { answer: '',
             question: '',
-            link: '' },
-          section: { sectionContent: '' }
-
+            link: '',
+            sectionContent: '',
+            sectionId: '',
+            sectionNum: '',
+            questionId: '',
+            answerId: ''
+          },
+          pageId: '',
+          pageNum: ''
         }
       ]
 

@@ -29,7 +29,7 @@
           </el-row>
           <div style="height: 50px;"></div>
         </div>
-        <div class="pagination"><el-pagination layout="prev, pager, next" :total="100"></el-pagination></div>
+        <div class="pagination"><el-pagination  @current-change="currentChangeHandle" :current-page="currentPage" layout="prev, pager, next" :total="100"></el-pagination></div>
     </div>
 </template>
 <script>
@@ -38,7 +38,8 @@ export default {
   data () {
     return {
       input: '',
-      activeIndex: 1,
+      activeIndex: '1',
+      currentPage: 1,
       userId: localStorage.getItem('userId'),
       books: [{
         id: '',
@@ -56,7 +57,7 @@ export default {
     let that = this
     that.$axios({
       method: 'POST',
-      url: '/apis/mybooks/sixbooks/' + this.userId + '/' + this.activeIndex
+      url: '/apis/mybooks/sixbooks/' + this.userId + '/' + this.currentPage
     })
       .then(response => {
         that.books = response.data
@@ -66,6 +67,20 @@ export default {
       })
   },
   methods: {
+    currentChangeHandle (val) {
+      this.currentPage = val // 改变默认的页数
+      let that = this
+      that.$axios({
+        method: 'POST',
+        url: '/apis/mybooks/sixbooks/' + this.userId + '/' + this.currentPage
+      })
+        .then(response => {
+          that.books = response.data
+          console.log(that.books)
+        }).catch(error => {
+          console.log(error)
+        })
+    },
     searchBooks () {
       var searchContent = this.input
       this.$axios({

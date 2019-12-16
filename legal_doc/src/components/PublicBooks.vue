@@ -28,8 +28,8 @@
       </el-row>
       <div style="height: 50px;"></div>
     </div>
-    <div class="pagination"><el-pagination layout="prev, pager, next" :total="100"></el-pagination></div>
-  </body>
+        <div class="pagination"><el-pagination  @current-change="currentChangeHandle" :current-page="currentPage" layout="prev, pager, next" :total="100"></el-pagination></div>
+    </body>
   </template>
 <script>
 import BookInfo from '@/components/BookInfo'
@@ -37,8 +37,9 @@ export default {
   data () {
     return {
       input: '',
-      activeIndex: 1,
+      activeIndex: '1',
       currentTotal: 0,
+      currentPage: 1,
       books: [{
         id: '',
         imgpath: '',
@@ -56,7 +57,7 @@ export default {
     that.currentTotal = that.books.length
     that.$axios({
       method: 'POST',
-      url: '/apis/publicbooks/sixbooks/' + that.activeIndex
+      url: '/apis/publicbooks/sixbooks/' + that.currentPage
     })
       .then(response => {
         that.books = response.data
@@ -66,6 +67,20 @@ export default {
       })
   },
   methods: {
+    currentChangeHandle (val) {
+      this.currentPage = val // 改变默认的页数
+      let that = this
+      that.$axios({
+        method: 'POST',
+        url: '/apis/publicbooks/sixbooks/' + that.currentPage
+      })
+        .then(response => {
+          that.books = response.data
+          console.log(that.books)
+        }).catch(error => {
+          console.log(error)
+        })
+    },
     handleCommand (command) {
       this.$message('click on item ' + command)
     },

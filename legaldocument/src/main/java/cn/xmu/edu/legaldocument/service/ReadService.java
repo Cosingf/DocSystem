@@ -50,26 +50,26 @@ public class ReadService {
             }//当高亮词小于十个，就把其划分成两个str，模糊查询
             else if (words.length<=10){
                 int n = words.length/2;
-                String str="";
-                for (int i=0;i<n;i++)
-                     str+=words[i];
+                String str=words[0];
+                for (int i=1;i<n;i++)
+                     str=str+" "+words[i];
                 str1=str;
-                str="";
-                for (int i=n;i<words.length;i++)
-                    str+=words[i];
+                str=words[n];
+                for (int i=n+1;i<words.length;i++)
+                    str=str+" "+words[i];
                 str2=str;
                 strNum ="2";
             }
             //若高亮词大于十，取前是个划分成两个str，模糊查询，先定位出具体位置
             else {
-                String str="";
-                 for (int i=0;i<5;i++)
-                     str+=words[i];
-                inputStr.add(str);
-                str="";
-                for (int i=5;i<10;i++)
-                    str+=words[i];
-                inputStr.add(str);
+                String str=words[0];
+                for (int i=1;i<5;i++)
+                    str=str+" "+words[i];
+               str1 =str;
+                str=words[5];
+                for (int i=6;i<10;i++)
+                    str=str+" "+words[i];
+                 str2=str;
                 strNum ="2";
             }
             List<Section> sections = sectionMapper.selectByPageIdAndHighLightAndNum(page.getId(),str1,str2,strNum);
@@ -92,11 +92,11 @@ public class ReadService {
                 pageSectionVO.setPageNum(page.getOrderNum());
                 for (Section section : sections) {
                     List<QA> qas = qaMapper.selectQASectionBySectionId(section.getId());
-                    QASectionVO qaSectionVO = new QASectionVO();
-                    qaSectionVO.setQas(qas);
-                    qaSectionVO.setSectionId(section.getId());
-                    qaSectionVO.setSectionNum(section.getOrderNum());
-                    qaSectionVOs.add(qaSectionVO);
+                    for (QA qa:qas)
+                    {
+                        QASectionVO qaSectionVO = new QASectionVO(qa,section.getId(),section.getOrderNum(),section.getSectionContent());
+                        qaSectionVOs.add(qaSectionVO);
+                    }
                 }
                 pageSectionVO.setQaSectionVOS(qaSectionVOs);
                 pageSectionVOs.add(pageSectionVO);

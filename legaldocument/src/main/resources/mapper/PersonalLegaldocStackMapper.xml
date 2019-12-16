@@ -20,9 +20,15 @@
     select
     <include refid="Base_Column_List" />
     from personal_legaldoc_stack
-    where user_id = #{userId,jdbcType=BIGINT} limit #{num},6
+    where user_id = #{userId,jdbcType=BIGINT} limit #{num1},#{num2}
   </select>
 
+
+  <select id="getUserAllNumByUserId" resultType="java.lang.Integer"  >
+    select COUNT(id)
+    from personal_legaldoc_stack
+    where user_id = #{userId,jdbcType=BIGINT}
+  </select>
   <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select
     <include refid="Base_Column_List" />

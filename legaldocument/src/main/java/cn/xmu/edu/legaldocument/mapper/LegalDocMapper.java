@@ -17,7 +17,9 @@ public interface LegalDocMapper {
 
     List<LegalDoc> selectAll();
 
-    List<LegalDoc> selectPublicPage(@Param("num") Integer num);
+    int getAllNum();
+
+    List<LegalDoc> selectPublicPage(@Param("num1") Integer num1,@Param("num2") Integer num2);
 
     List<LegalDoc>  selectPublicBooksByName(@Param("selectName") String selectName);
 

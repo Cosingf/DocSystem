@@ -30,11 +30,11 @@ public class ReadController {
      */
 
     @PostMapping("/read/highlight")
-    public void getHighLightResult(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @RequestParam("content") String content, @RequestParam("bookId") Long bookid,@RequestParam("pageNum") Integer pageNum) throws Exception
+    public void getHighLightResult(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @RequestParam("content") String content, @RequestParam("bookId") String bookid,@RequestParam("pageNum") String pageNum) throws Exception
     {
         httpServletResponse.setContentType("application/json;charset=utf-8");
 
-        List<QA>  qas =readService.getHighLightResult(content,bookid,pageNum);
+        List<QA>  qas =readService.getHighLightResult(content,Long.valueOf(bookid),Integer.valueOf(pageNum));
         if (qas!=null||qas.size()!=0) {
             httpServletResponse.setStatus(200);
             httpServletResponse.getWriter().write(JSON.toJSONString(qas));

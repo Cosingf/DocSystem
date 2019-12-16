@@ -24,6 +24,10 @@
     <include refid="Base_Column_List" />
     from legal_doc
   </select>
+  <select id="getAllNum" resultType="java.lang.Integer" >
+    select COUNT(id)
+    from legal_doc
+  </select>
   <select id="selectPublicBooksByName" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />
@@ -36,7 +40,7 @@
     <include refid="Base_Column_List" />
     from legal_doc
     where is_public =1
-    limit #{num},6
+    limit #{num1},#{num2}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >

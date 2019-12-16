@@ -8,7 +8,6 @@ public class QASection {
     private Long id;
     private Long questionId;
     private Long answerId;
-
     private Long sectionId;
     private int rankScore;
 

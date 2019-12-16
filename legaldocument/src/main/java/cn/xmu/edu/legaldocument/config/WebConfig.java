@@ -5,6 +5,7 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.validation.MessageCodesResolver;
 import org.springframework.validation.Validator;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -85,8 +86,9 @@ public  class WebConfig implements WebMvcConfigurer {
     }
 
     @Override
+
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/**").addResourceLocations("file:E:/pic/");
+        registry.addResourceHandler("/**").addResourceLocations("file:D:/DocSystem/DocSystem/legaldocument/file/");
         registry.addResourceHandler("/uploadFile/**").addResourceLocations("file:F:/DocSystem/legaldocument/file/");
     }
 

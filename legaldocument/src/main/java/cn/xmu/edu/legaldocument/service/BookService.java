@@ -21,7 +21,10 @@ public class BookService
     public List<LegalDoc> getSixMyBooksByNumAndUserId(int num,Long userId){
         List<LegalDoc> legalDocs=new ArrayList<>();
         num = (num-1)*6;
-        List<PersonalLegaldocStack> personalLegaldocStacks= personalLegaldocStackMapper.selectPageByUserId(userId,num);
+        int num2= personalLegaldocStackMapper.getUserAllNumByUserId(userId);
+        if ((num2-1-num)>=6) num2=num+5;
+        else num2=num2-num;
+        List<PersonalLegaldocStack> personalLegaldocStacks= personalLegaldocStackMapper.selectPageByUserId(userId,num,num2);
         if (personalLegaldocStacks.size()!=0||personalLegaldocStacks!=null)
         {
             for (PersonalLegaldocStack personalLegaldocStack:personalLegaldocStacks)
@@ -34,7 +37,10 @@ public class BookService
 
     public List<LegalDoc> getSixPublicBooksByNum(int num){
         int n = (num-1)*6;
-        List<LegalDoc> legalDocs=legalDocMapper.selectPublicPage(n);
+        int n2 = legalDocMapper.getAllNum();
+        if ((n2-1-n)>=6) n2=6;
+        else n2=n2-n;
+        List<LegalDoc> legalDocs=legalDocMapper.selectPublicPage(n,n2);
         return legalDocs;
     }
 

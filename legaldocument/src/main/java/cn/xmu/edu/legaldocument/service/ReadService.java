@@ -6,6 +6,7 @@ import cn.xmu.edu.legaldocument.VO.QASectionVO;
 import cn.xmu.edu.legaldocument.entity.*;
 import cn.xmu.edu.legaldocument.mapper.PageMapper;
 import cn.xmu.edu.legaldocument.mapper.QAMapper;
+import cn.xmu.edu.legaldocument.mapper.WikiMapper;
 import cn.xmu.edu.legaldocument.mapper.SectionMapper;
 import cn.xmu.edu.legaldocument.mapper.SelectionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ public class ReadService {
     SelectionMapper selectionMapper;
     @Autowired
     QAMapper qaMapper;
+    @Autowired
+    WikiMapper wikiMapper;
 
 
     public List<QA> getHighLightResult(String highLight,Long bookid,Integer pagenum) throws Exception {
@@ -105,4 +108,11 @@ public class ReadService {
         return  pageSectionVOs;
     }
 
+    public WikiAnnotation getWikiByMatchingKeywords(String keyword) {
+        return wikiMapper.getWikiByMatchingKeywords(keyword);
+    }
+
+    public void insertWikiList(List<WikiAnnotation> wikiList) {
+        wikiMapper.insertWikiList(wikiList);
+    }
 }

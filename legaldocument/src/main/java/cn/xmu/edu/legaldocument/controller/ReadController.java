@@ -3,6 +3,7 @@ package cn.xmu.edu.legaldocument.controller;
 import cn.xmu.edu.legaldocument.VO.PageSectionVO;
 import cn.xmu.edu.legaldocument.entity.QA;
 import cn.xmu.edu.legaldocument.entity.QASection;
+import cn.xmu.edu.legaldocument.entity.WikiAnnotation;
 import cn.xmu.edu.legaldocument.service.ReadService;
 import com.alibaba.fastjson.JSON;
 import org.apache.ibatis.annotations.Param;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +44,10 @@ public class ReadController {
         else {
             httpServletResponse.setStatus(404);
         }
+    }
+
+    public WikiAnnotation getWikiByMatchingKeywords(HttpServletResponse httpServletResponse, @RequestParam("keyword") String keyword){
+        return readService.getWikiByMatchingKeywords(keyword);
     }
 
 

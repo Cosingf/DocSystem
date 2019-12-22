@@ -90,8 +90,8 @@ public class WikiTxtImporter {
             int stop=Math.min(space,period)>0?Math.min(space,period):900;
             summary=content.substring(1,stop);
         }
-        log.info(String.valueOf(summary.length()));
-        log.info("summary:"+summary);
+//        log.info(String.valueOf(summary.length()));
+//        log.info("summary:"+summary);
         //封装实体对象做入库准备
         WikiAnnotation wiki = new WikiAnnotation();
         wiki.setSummary(summary);

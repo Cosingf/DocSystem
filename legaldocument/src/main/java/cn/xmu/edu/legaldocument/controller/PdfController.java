@@ -28,7 +28,7 @@ public class PdfController {
     //private static final Logger log = LoggerFactory.getLogger(FileController.class);
 
     /**
-     * 用户上传pdf文件
+     * 用户上传pdf文件，同时实现QAlink和wiki关键词匹配预处理
      * isEnrich：文章是否增强过
      * 1:已增强
      * 0:未增强(用户上传后的初始状态)
@@ -64,7 +64,7 @@ public class PdfController {
         personalLegaldocStack.setBookId(bookId);
         pdfService.insertPersonalLegalDoc(personalLegaldocStack);
 
-        //另起一个线程处理文本增强
+        //另起一个线程处理文本增强，wiki关键词匹配
         long t1 = System.currentTimeMillis();
         final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
         ListenableFuture<Boolean> booleanTask = service.submit(new Callable<Boolean>() {
@@ -73,13 +73,16 @@ public class PdfController {
                 String sysPath = System.getProperty("user.dir");
                 String myPath = sysPath+"/file/";
                 int[] pages=pdfService.split(myPath,page,file);
-                System.out.println(pages.length);
+                logger.info(String.valueOf(pages.length));
 
                 for(int i=0;i<pages.length-1;i++)
                 {
                     String pdfFilePath = myPath+pages[i]+".pdf";
                     String txtFilePath = myPath+pages[i]+".txt";
                     Page page=pdfService.readPdfToTxt(pdfFilePath,txtFilePath,legalDoc.getId(),i+1);
+                    //txt分词，将关键词存入存入数据库，并和wiki_corpus进行预匹配
+                    pdfService.mathchWikiCorpus(txtFilePath,legalDoc.getId(),page.getId());
+                    //按照10 words切割成多个section
                     List<Section> sectionList=pdfService.cut(txtFilePath,page);
                     pdfService.enrichSection(sectionList);
                 }

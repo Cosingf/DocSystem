@@ -90,12 +90,10 @@ public class PdfService {
     {
         pageMapper.insert(page);
     }
+
     /**
-         * 读取PDF文件内容到txt文件
-         *
-         * @param writer
-         * @param pdfPath
-         */
+     * 读取PDF文件内容到txt文件
+     */
     public Page readPdfToTxt(String pdfPath,String txtfilePath,long id,int n) throws IOException {
         // 读取pdf所使用的输出流
         Page page=new Page();
@@ -425,5 +423,42 @@ public class PdfService {
         //Warning: You did not close a PDF Document
         pdDocument.close();
         return "/uploadFile/"+filePath.substring(filePath.lastIndexOf( '/' )+1,filePath.lastIndexOf('.'))+".png";
+    }
+
+    //wiki keyword匹配预处理
+    public void mathchWikiCorpus(String txtFilePath, Long legalDocId, Long pageId) throws IOException {
+        //读取TXT内容
+        InputStreamReader read = null;//考虑到编码格式
+        String encoding = "utf-8";
+        try {
+            read = new InputStreamReader(new FileInputStream(txtFilePath), encoding);  //输入流
+        } catch (UnsupportedEncodingException | FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        assert read != null;
+        BufferedReader bufferedReader = new BufferedReader(read);
+        String lineTxt;
+        StringBuilder content=new StringBuilder();
+        while ((lineTxt = bufferedReader.readLine()) != null) {
+            content.append(lineTxt).append("\n");
+        }
+        logger.info(content.toString());
+        //调用python分词
+        String sysPath = System.getProperty("user.dir");
+        String myPath = sysPath+"/file/process_legal_doc.py";
+        try {
+            String[] args = new String[] { "python", myPath,content.toString()};
+            Process proc = Runtime.getRuntime().exec(args);// 执行py文件
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+            String line = null;
+            while ((line = in.readLine()) != null) {
+                System.out.println(line);
+            }
+            in.close();
+            proc.waitFor();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

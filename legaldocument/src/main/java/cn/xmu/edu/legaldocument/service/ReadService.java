@@ -31,6 +31,8 @@ public class ReadService {
     SelectionMapper selectionMapper;
     @Autowired
     QAMapper qaMapper;
+    @Autowired
+    WikiMapper wikiMapper;
 
 
     public List<QA> getHighLightResult(String highLight,Long bookid,Integer pagenum) throws Exception {
@@ -143,4 +145,11 @@ public class ReadService {
         return Distance;
     }
 
+    public WikiAnnotation getWikiByMatchingKeywords(String keyword) {
+        return wikiMapper.getWikiByMatchingKeywords(keyword);
+    }
+
+    public void insertWikiList(List<WikiAnnotation> wikiList) {
+        wikiMapper.insertWikiList(wikiList);
+    }
 }

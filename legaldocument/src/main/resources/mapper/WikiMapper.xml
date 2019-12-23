@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.xmu.edu.legaldocument.mapper.WikiMapper" >
+  <resultMap id="BaseResultMap" type="cn.xmu.edu.legaldocument.entity.WikiAnnotation" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="summary" property="summary" jdbcType="LONGVARCHAR" />
+    <result column="path" property="path" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, title,url, summary,path
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from wiki_corpus
+    where title = #{title,jdbcType=VARCHAR}
+  </select>
+  <insert id="insertWikiList" parameterType="cn.xmu.edu.legaldocument.entity.WikiAnnotation" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    insert into wiki_corpus (title,url,path,summary)
+    values  <foreach collection="list" item="item" index= "index" separator =",">
+    (
+    #{item.title,jdbcType=VARCHAR},
+    #{item.url,jdbcType=VARCHAR},
+    #{item.path,jdbcType=VARCHAR},
+    #{item.summary,jdbcType=LONGVARCHAR}
+    )
+  </foreach>
+  </insert>
+</mapper>

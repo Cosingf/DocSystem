@@ -28,4 +28,16 @@
     )
   </foreach>
   </insert>
+  <select id="matchWikiCorpusByKeyword" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from wiki_corpus
+    where title = #{keyword,jdbcType=VARCHAR}
+  </select>
+  <select id="getWikiByWikiId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from wiki_corpus
+    where id = #{wikiId,jdbcType=BIGINT}
+  </select>
 </mapper>

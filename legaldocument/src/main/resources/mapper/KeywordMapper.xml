@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.xmu.edu.legaldocument.mapper.KeywordMapper" >
+  <resultMap id="BaseResultMap" type="cn.xmu.edu.legaldocument.entity.Keyword" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="keyword" property="keyword" jdbcType="VARCHAR" />
+    <result column="book_id" property="bookId" jdbcType="BIGINT" />
+    <result column="page_id" property="pageId" jdbcType="BIGINT" />
+    <result column="is_matched" property="isMatched" jdbcType="TINYINT" />
+    <result column="wiki_corpus_id" property="wikiCorpusId" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id,keyword,book_id,page_id,is_matched,wiki_corpus_id
+  </sql>
+  <insert id="insertKeywordList" parameterType="cn.xmu.edu.legaldocument.entity.Keyword" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    insert into keyword (keyword,book_id,page_id,is_matched,wiki_corpus_id)
+    values  <foreach collection="list" item="item" index= "index" separator =",">
+    (
+    #{item.keyword,jdbcType=VARCHAR},
+    #{item.bookId,jdbcType=BIGINT},
+    #{item.pageId,jdbcType=BIGINT},
+    #{item.isMatched,jdbcType=TINYINT},
+    #{item.wikiCorpusId,jdbcType=BIGINT}
+    )
+  </foreach>
+  </insert>
+  <select id="getLastId" resultType="java.lang.Long">
+    select id
+    from keyword
+    order by id DESC limit 1
+  </select>
+  <select id="getKeywordByBookId" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from keyword
+    where  book_id =#{bookId} and is_matched=1
+  </select>
+</mapper>

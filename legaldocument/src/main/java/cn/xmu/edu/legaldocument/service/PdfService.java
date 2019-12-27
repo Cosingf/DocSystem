@@ -1,10 +1,7 @@
 package cn.xmu.edu.legaldocument.service;
 
 import cn.xmu.edu.legaldocument.entity.*;
-import cn.xmu.edu.legaldocument.mapper.LegalDocMapper;
-import cn.xmu.edu.legaldocument.mapper.PageMapper;
-import cn.xmu.edu.legaldocument.mapper.QAMapper;
-import cn.xmu.edu.legaldocument.mapper.SectionMapper;
+import cn.xmu.edu.legaldocument.mapper.*;
 import cn.xmu.edu.legaldocument.entity.QA;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
@@ -42,6 +39,10 @@ public class PdfService {
     SectionMapper sectionMapper;
     @Autowired
     QAMapper qaMapper;
+    @Autowired
+    WikiMapper wikiMapper;
+    @Autowired
+    KeywordMapper keywordMapper;
 
     /**
      * 文件存储到file_path目录
@@ -169,7 +170,7 @@ public class PdfService {
         logger.info("文本增强结果"+result);
         //store enrich result
 
-        List<List<Integer>> resultLists=new ArrayList<>();
+        List<List<Integer>> resultLists;
         resultLists = JSON.parseObject(result,new TypeReference<List<List<Integer>>>(){});
         System.out.println(resultLists);
         List<QASection> qaSectionList=new ArrayList<>();
@@ -426,7 +427,7 @@ public class PdfService {
     }
 
     //wiki keyword匹配预处理
-    public void mathchWikiCorpus(String txtFilePath, Long legalDocId, Long pageId) throws IOException {
+    public void mathchWikiCorpus(String txtFilePath, Long bookId, Long pageId) throws IOException {
         //读取TXT内容
         InputStreamReader read = null;//考虑到编码格式
         String encoding = "utf-8";
@@ -442,23 +443,56 @@ public class PdfService {
         while ((lineTxt = bufferedReader.readLine()) != null) {
             content.append(lineTxt).append("\n");
         }
-        logger.info(content.toString());
+//        logger.info(content.toString());
         //调用python分词
+        List<String> res=new ArrayList<>();
         String sysPath = System.getProperty("user.dir");
-        String myPath = sysPath+"/file/process_legal_doc.py";
+        String myPath = sysPath+"\\file\\legal_doc_process.py";
+        String splitRes=null;
         try {
-            String[] args = new String[] { "python", myPath,content.toString()};
+            String[] args = new String[] { "python", myPath, content.toString()};
             Process proc = Runtime.getRuntime().exec(args);// 执行py文件
-
             BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-            String line = null;
-            while ((line = in.readLine()) != null) {
-                System.out.println(line);
-            }
+            splitRes = in.readLine();
             in.close();
             proc.waitFor();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+        //处理分词结果
+        List<String> splitList;
+        splitList = JSON.parseObject(splitRes,new TypeReference<List<String>>(){});
+        //取出重复单词
+        assert splitList != null;
+        HashSet<String> splitSet = new HashSet<>(splitList);
+        List<Keyword> keywordList=new ArrayList<>();
+
+        int matchCount=1;
+        Long lastKeywordId=keywordMapper.getLastId();
+        if(lastKeywordId==null){
+            lastKeywordId=1L;
+        }
+        for(String keyword:splitSet){
+            //与数据库wiki_corpus匹配关键词
+            WikiAnnotation wiki=wikiMapper.matchWikiCorpusByKeyword(keyword);
+            //匹配结果存数据库，方便再次读取
+            Keyword keyword1=new Keyword();
+            keyword1.setKeyword(keyword);
+            keyword1.setBookId(bookId);
+            keyword1.setPageId(pageId);
+            Long keywordId=lastKeywordId+matchCount;
+            matchCount++;
+            keyword1.setId(keywordId);
+            if(wiki!=null){
+//                logger.info("match title："+wiki.getTitle()+"\n"+wiki.getSummary());
+                keyword1.setWikiCorpusId(wiki.getId());
+                keyword1.setIsMatched(1);
+
+            }else{
+                keyword1.setIsMatched(0);
+            }
+            keywordList.add(keyword1);
+        }
+        keywordMapper.insertKeywordList(keywordList);
     }
 }

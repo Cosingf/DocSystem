@@ -38,12 +38,15 @@
     values ( #{bookId,jdbcType=BIGINT},#{orderNum,jdbcType=TINYINT}
       )
   </insert>
-
-
   <update id="updateByPrimaryKey" parameterType="cn.xmu.edu.legaldocument.entity.Page" >
     update page
     set book_id = #{bookId,jdbcType=BIGINT},
       order_num=#{orderNum,jdbcType=TINYINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="getPageNumByPageId" resultType="java.lang.Integer" parameterType="java.lang.Long">
+    select order_num
+    from page
+    where  id = #{pageId,jdbcType=BIGINT}
+  </select>
 </mapper>

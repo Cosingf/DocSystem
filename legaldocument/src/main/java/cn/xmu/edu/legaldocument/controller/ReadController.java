@@ -1,5 +1,6 @@
 package cn.xmu.edu.legaldocument.controller;
 
+import cn.xmu.edu.legaldocument.VO.KeywordWikiVO;
 import cn.xmu.edu.legaldocument.VO.PageSectionVO;
 import cn.xmu.edu.legaldocument.entity.QA;
 import cn.xmu.edu.legaldocument.entity.QASection;
@@ -50,19 +51,24 @@ public class ReadController {
         return readService.getWikiByMatchingKeywords(keyword);
     }
 
-
+    /**
+     * 新增Wiki Annotation
+     */
     @PostMapping("/read/{bookid}")
-    public void getAllPageResult(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @PathVariable("bookid") Long bookid ) throws Exception
+    public void getAllPageResult(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @PathVariable("bookid") Long bookId ) throws Exception
     {
         httpServletResponse.setContentType("application/json;charset=utf-8");
 
-       List<PageSectionVO> relusts =readService.getBookEnrich(bookid);
+       List<PageSectionVO> relusts =readService.getBookEnrich(bookId);
+        //读取wiki匹配结果
+        List<KeywordWikiVO> matchResList=readService.getMatchResult(bookId);
         if (relusts==null)
             httpServletResponse.setStatus(404);
         else {
             httpServletResponse.setStatus(200);
             httpServletResponse.getWriter().write(JSON.toJSONString(relusts));
         }
+        httpServletResponse.getWriter().write(JSON.toJSONString(matchResList));
     }
 
 

@@ -1,9 +1,6 @@
 package cn.xmu.edu.legaldocument.controller;
 
-import cn.xmu.edu.legaldocument.entity.LegalDoc;
-import cn.xmu.edu.legaldocument.entity.Page;
-import cn.xmu.edu.legaldocument.entity.PersonalLegaldocStack;
-import cn.xmu.edu.legaldocument.entity.Section;
+import cn.xmu.edu.legaldocument.entity.*;
 import cn.xmu.edu.legaldocument.service.PdfService;
 import com.google.common.util.concurrent.*;
 import org.slf4j.Logger;
@@ -15,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 
@@ -84,9 +82,9 @@ public class PdfController {
                     pdfService.mathchWikiCorpus(txtFilePath,legalDoc.getId(),page.getId());
                     //按照10 words切割成多个section
                     List<Section> sectionList=pdfService.cut(txtFilePath,page);
-                    pdfService.enrichSection(sectionList);
+//                    pdfService.enrichSection(sectionList);
                 }
-                pdfService.setLegalDocEnriched(bookId);
+//                pdfService.setLegalDocEnriched(bookId);
                 return true;
             }
         });
@@ -94,7 +92,7 @@ public class PdfController {
         Futures.addCallback(booleanTask, new FutureCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean result) {
-                System.out.println("enrichTime："+ (System.currentTimeMillis() - t1));
+                System.out.println("total time："+ (System.currentTimeMillis() - t1));
             }
 
             @Override

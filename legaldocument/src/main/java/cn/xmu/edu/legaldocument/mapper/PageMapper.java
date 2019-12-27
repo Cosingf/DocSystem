@@ -19,4 +19,6 @@ public interface PageMapper {
 
     List<Page> selectByBookId(@Param("bookId") Long bookId);
     int updateByPrimaryKey(Page record);
+
+    Integer getPageNumByPageId(Long pageId);
 }

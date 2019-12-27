@@ -1,6 +1,7 @@
 package cn.xmu.edu.legaldocument.service;
 
 
+import cn.xmu.edu.legaldocument.VO.KeywordWikiVO;
 import cn.xmu.edu.legaldocument.VO.PageSectionVO;
 import cn.xmu.edu.legaldocument.VO.QASectionVO;
 import cn.xmu.edu.legaldocument.entity.*;
@@ -30,6 +31,8 @@ public class ReadService {
     QAMapper qaMapper;
     @Autowired
     WikiMapper wikiMapper;
+    @Autowired
+    KeywordMapper keywordMapper;
 
 
     public List<QA> getHighLightResult(String highLight,Long bookid,Integer pagenum) throws Exception {
@@ -148,5 +151,26 @@ public class ReadService {
 
     public void insertWikiList(List<WikiAnnotation> wikiList) {
         wikiMapper.insertWikiList(wikiList);
+    }
+
+    public List<KeywordWikiVO> getMatchResult(Long bookId) {
+        List<KeywordWikiVO> keywordWikiVOList=new ArrayList<>();
+        //获取bookId对应的KeywordList
+        List<Keyword> keywordList=keywordMapper.getKeywordByBookId(bookId);
+        //找到keyword对应的pageNum和wiki
+        for(Keyword keyword:keywordList){
+            Long pageId=keyword.getPageId();
+            Long wikiId=keyword.getWikiCorpusId();
+            Integer pageNum=pageMapper.getPageNumByPageId(pageId);
+            WikiAnnotation wiki=wikiMapper.getWikiByWikiId(wikiId);
+            KeywordWikiVO wikiVO=new KeywordWikiVO();
+            wikiVO.setKeyword(keyword.getKeyword());
+            wikiVO.setPageNum(pageNum);
+            wikiVO.setSummary(wiki.getSummary());
+            wikiVO.setTitle(wiki.getTitle());
+            wikiVO.setUrl(wiki.getUrl());
+            keywordWikiVOList.add(wikiVO);
+        }
+        return keywordWikiVOList;
     }
 }

@@ -84,7 +84,7 @@ public class PdfController {
 //                    pdfService.enrichSection(sectionList);
                 }
 //                pdfService.setLegalDocEnriched(bookId);
-                pdfService.matchRemainingKeywords(legalDoc.getId());
+//                pdfService.matchRemainingKeywords(legalDoc.getId());
                 return true;
             }
         });

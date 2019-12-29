@@ -17,9 +17,11 @@
         <div class="white-panel">
             <el-upload
             class="upload-demo"
+            ref="upload"
             accept=".pdf,.PDF"
             drag
             action="https://jsonplaceholder.typicode.com/posts/"
+            :auto-upload="false"
             :before-upload="beforeUpload"
             multiple>
             <i class="el-icon-upload"></i>
@@ -52,7 +54,8 @@ export default {
         name: '',
         file: '',
         isPublic: false
-      }
+      },
+      fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}]
     }
   },
   methods: {
@@ -79,6 +82,7 @@ export default {
       })
     },
     uploadBook () {
+      this.$refs.upload.submit()
       let formData = new FormData()
       var isPublic = 1
       this.form.isPublic ? isPublic = 1 : isPublic = 0

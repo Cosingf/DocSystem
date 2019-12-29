@@ -21,8 +21,8 @@
                 <el-button type="primary" @click="uploadBook" plain>Upload more books</el-button>
                 <el-divider></el-divider>
             </div>
-          <el-row :gutter="20" style="margin:30px;" v-for="item , index in books">
-            <el-col :span="6">
+          <el-row :gutter="20" style="margin:30px;" >
+            <el-col :span="6" v-for="item , index in books">
                 <BookInfo :item="item" :key="index"></BookInfo>
                 <el-button type="danger"  @click="deleteBook(item.id)" plain>Delete from my library</el-button>
             </el-col>
@@ -38,7 +38,7 @@ export default {
   data () {
     return {
       input: '',
-      activeIndex: '1',
+      activeIndex: '2',
       currentPage: 1,
       userId: localStorage.getItem('userId'),
       books: [{

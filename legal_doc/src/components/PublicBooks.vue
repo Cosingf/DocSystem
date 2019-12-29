@@ -20,8 +20,8 @@
         <a style="font-weight: 600;font-size:20px;margin:0 50px;color:#586069;">Public books</a>
         <el-divider></el-divider>
       </div>
-      <el-row :gutter="20" style="margin:30px;" v-for="item , index in books">
-        <el-col :span="6">
+      <el-row :gutter="20" style="margin:30px;" >
+        <el-col :span="6" v-for="item , index in books">
           <BookInfo :item="item" :key="index"></BookInfo>
           <el-button type="primary" @click="addToMyLibrary(item.id)" plain>Add to my library</el-button>
         </el-col>

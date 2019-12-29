@@ -495,4 +495,49 @@ public class PdfService {
         }
         keywordMapper.insertKeywordList(keywordList);
     }
+
+    //TODO 调用word embedding算法，处理未匹配的keyword
+    public void matchRemainingKeywords(Long bookId) throws IOException {
+        List<Keyword> keywordList=keywordMapper.getUnmatchedKeywordByBookId(bookId);
+        //获取待匹配keyword
+        String[] queryText=new String[keywordList.size()];
+        for(int i=0;i<keywordList.size();i++){
+            queryText[i]=keywordList.get(i).getKeyword();
+        }
+        //获取待匹配wiki title
+        List<WikiAnnotation> wikiList=wikiMapper.getAllWiki();
+        String[] docText=new String[wikiList.size()];
+        for(int i=0;i<wikiList.size();i++){
+            docText[i]=wikiList.get(i).getTitle();
+        }
+        //调用匹配算法
+        List<String> command = new ArrayList<String>();
+        command.add("python");
+        command.add("main.py");
+        for(int i=0;i<queryText.length;i++){
+            command.add("\""+queryText[i]+"\"");
+        }
+        command.add("and");
+        for(int i=0;i<docText.length;i++){
+            command.add("\""+docText[i]+"\"");
+        }
+        ProcessBuilder builder = new ProcessBuilder(command);
+        String sysPath = System.getProperty("user.dir");
+        File dir = new File("/home/lf/桌面/qa_project/");
+        builder.directory(dir);
+        Process proc = builder.start();
+
+        BufferedReader in = new BufferedReader((new InputStreamReader((proc.getInputStream()))));
+        String result = in.readLine();
+        in.close();
+        if (result==null||result.length()==0){
+            logger.info("no available result");
+            return;
+        }
+        logger.info("Wiki match result:"+result);
+        //store enrich result
+        List<List<Integer>> resultLists;
+        resultLists = JSON.parseObject(result,new TypeReference<List<List<Integer>>>(){});
+        logger.info(resultLists.toString());
+    }
 }

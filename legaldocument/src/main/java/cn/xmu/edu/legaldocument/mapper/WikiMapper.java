@@ -17,4 +17,6 @@ public interface WikiMapper {
     WikiAnnotation matchWikiCorpusByKeyword(@Param("keyword")String keyword);
 
     WikiAnnotation getWikiByWikiId(Long wikiId);
+
+    List<WikiAnnotation> getAllWiki();
 }

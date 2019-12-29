@@ -35,4 +35,10 @@
     from keyword
     where  book_id =#{bookId} and is_matched=1
   </select>
+  <select id="getUnmatchedKeywordByBookId" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from keyword
+    where  book_id =#{bookId} and is_matched=0
+  </select>
 </mapper>

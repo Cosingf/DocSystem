@@ -40,4 +40,9 @@
     from wiki_corpus
     where id = #{wikiId,jdbcType=BIGINT}
   </select>
+   <select id="getAllWiki" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from wiki_corpus
+   </select>
 </mapper>

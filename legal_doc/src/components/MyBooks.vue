@@ -246,7 +246,7 @@ export default {
     margin-top:20px;
     color:#586069;
 }
-.panel-tips >>> .el-col {
-    padding-bottom: 30px;
+.white-panel >>> .el-col {
+    padding-bottom: 50px;
 }
 </style>

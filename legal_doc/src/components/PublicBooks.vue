@@ -257,4 +257,7 @@ export default {
     margin-top:20px;
     color:#586069;
   }
+  .white-panel >>> .el-col {
+    padding-bottom: 50px;
+  }
   </style>

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,28 +48,29 @@ public class ReadController {
         }
     }
 
-    public WikiAnnotation getWikiByMatchingKeywords(HttpServletResponse httpServletResponse, @RequestParam("keyword") String keyword){
-        return readService.getWikiByMatchingKeywords(keyword);
-    }
-
     /**
      * 新增Wiki Annotation
      */
+    @GetMapping("/read/wiki/{bookid}")
+    public void getWikiByMatchingKeywords(HttpServletResponse httpServletResponse, @PathVariable("bookid") Long bookId) throws IOException {
+        //读取wiki匹配结果
+        httpServletResponse.setContentType("application/json;charset=utf-8");
+        List<KeywordWikiVO> matchResList=readService.getMatchResult(bookId);
+        httpServletResponse.getWriter().write(JSON.toJSONString(matchResList));
+    }
+
+
     @PostMapping("/read/{bookid}")
     public void getAllPageResult(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @PathVariable("bookid") Long bookId ) throws Exception
     {
         httpServletResponse.setContentType("application/json;charset=utf-8");
-
         List<PageSectionVO> relusts =readService.getBookEnrich(bookId);
-        //读取wiki匹配结果
-        List<KeywordWikiVO> matchResList=readService.getMatchResult(bookId);
         if (relusts==null)
             httpServletResponse.setStatus(404);
         else {
             httpServletResponse.setStatus(200);
             httpServletResponse.getWriter().write(JSON.toJSONString(relusts));
         }
-        httpServletResponse.getWriter().write(JSON.toJSONString(matchResList));
     }
 
 

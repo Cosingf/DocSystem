@@ -35,13 +35,13 @@ public class PdfController {
      **/
     @RequestMapping(value = "/upload/{userId}",method = RequestMethod.POST)
     public LegalDoc upload(HttpServletRequest httpServletRequest,HttpServletResponse httpServletResponse,
-                           @PathVariable("userId")Long userId, @RequestParam("file") MultipartFile file,
+                           @PathVariable("userId")Long userId, @RequestParam("file") final MultipartFile file,
                            @RequestParam("author")String author,@RequestParam("isPublic")Integer isPublic) throws Exception{
-        LegalDoc legalDoc=new LegalDoc();
+        final LegalDoc legalDoc=new LegalDoc();
         PersonalLegaldocStack personalLegaldocStack=new PersonalLegaldocStack();
         String path=pdfService.upload(file);
 //        System.out.println("文件路径："+path);
-        int page=pdfService.getPages(path);
+        final int page=pdfService.getPages(path);
 
         //更新总书库
         legalDoc.setAuthor(author);
@@ -62,7 +62,7 @@ public class PdfController {
         pdfService.insertPersonalLegalDoc(personalLegaldocStack);
 
         //另起一个线程处理文本增强，wiki关键词匹配
-        long t1 = System.currentTimeMillis();
+        final long t1 = System.currentTimeMillis();
         final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
         ListenableFuture<Boolean> booleanTask = service.submit(new Callable<Boolean>() {
             @Override
@@ -84,7 +84,8 @@ public class PdfController {
 //                    pdfService.enrichSection(sectionList);
                 }
 //                pdfService.setLegalDocEnriched(bookId);
-//                pdfService.matchRemainingKeywords(legalDoc.getId());
+                pdfService.matchRemainingKeywordsByTerm(legalDoc.getId());
+//                pdfService.matchRemainingKeywordsByAlgorithm(legalDoc.getId());
                 return true;
             }
         });

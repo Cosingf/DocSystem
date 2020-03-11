@@ -7,6 +7,19 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfTextExtractor;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.*;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.BytesRef;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
@@ -25,6 +38,7 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.FileSystems;
 import java.util.*;
 
 @Service
@@ -44,6 +58,11 @@ public class PdfService {
     @Autowired
     KeywordMapper keywordMapper;
 
+    Directory directory;
+
+    public PdfService() throws IOException {
+        this.directory= FSDirectory.open(FileSystems.getDefault().getPath("F:\\wikiIndex"));
+    }
     /**
      * 文件存储到file_path目录
      **/
@@ -497,7 +516,7 @@ public class PdfService {
     }
 
     //TODO 调用word embedding算法，处理未匹配的keyword
-    public void matchRemainingKeywords(Long bookId) throws IOException {
+    public void matchRemainingKeywordsByAlgorithm(Long bookId) throws IOException {
         List<Keyword> keywordList=keywordMapper.getUnmatchedKeywordByBookId(bookId);
         //获取待匹配keyword
         String[] queryText=new String[keywordList.size()];
@@ -539,5 +558,51 @@ public class PdfService {
         List<List<Integer>> resultLists;
         resultLists = JSON.parseObject(result,new TypeReference<List<List<Integer>>>(){});
         logger.info(resultLists.toString());
+    }
+    //读取未匹配的keywords,利用wiki 倒排索引进行匹配
+    public void matchRemainingKeywordsByTerm(Long bookId) throws IOException, ParseException {
+        List<Keyword> keywordList=keywordMapper.getUnmatchedKeywordByBookId(bookId);
+        for(Keyword keyword:keywordList){
+            matchKeywordsByTerm(keyword);
+        }
+    }
+
+    //利用倒排索引匹配keyword
+    private void matchKeywordsByTerm(Keyword keyword) throws IOException, ParseException {
+        String key=keyword.getKeyword();
+
+        IndexReader indexReader = DirectoryReader.open(this.directory);
+        // 创建indexsearcher对象
+        IndexSearcher indexSearcher = new IndexSearcher(indexReader);
+        //指定分词技术，这里采用的语言处理模块要和创建索引的时候一致，否则检索的结果很不理想
+        Analyzer analyzer = new EnglishAnalyzer();
+        //创建查询query，搜索词为“空间向量”
+        QueryParser parse = new QueryParser("fileContent", analyzer);
+        Query query = parse.parse(key);
+        // 执行查询
+        // 第一个参数是查询对象，第二个参数是查询结果返回的最大值
+        TopDocs topDocs = indexSearcher.search(query,3);
+
+        // 遍历查询结果
+        // topDocs.scoreDocs存储了document对象的id
+        for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
+            // scoreDoc.doc属性就是document对象的id
+            // 根据document的id找到document对象
+            Document document = indexSearcher.doc(scoreDoc.doc);
+            if(scoreDoc.score>0.7){
+                keyword.setWikiCorpusId(Long.parseLong(document.get("wikiId")));
+                keyword.setIsMatched(1);
+                logger.info(scoreDoc.toString());
+                logger.info("keyword:"+key);
+                logger.info("查询结果的总条数：" + topDocs.totalHits);
+                logger.info("filename:"+document.get("fileName"));
+                logger.info("wikiId:"+document.get("wikiId"));
+                logger.info("fileContent:\n"+document.get("fileContent"));
+                logger.info("-----------------------------------");
+                keywordMapper.updateKeywordById(keyword);
+                break;
+            }
+        }
+        indexReader.close();
     }
 }

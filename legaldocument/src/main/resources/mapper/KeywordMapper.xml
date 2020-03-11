@@ -41,4 +41,10 @@
     from keyword
     where  book_id =#{bookId} and is_matched=0
   </select>
+  <update id="updateKeywordById" parameterType="cn.xmu.edu.legaldocument.entity.Keyword" >
+    update keyword
+    set is_matched = #{isMatched,jdbcType=TINYINT},
+      wiki_corpus_id = #{wikiCorpusId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
 </mapper>

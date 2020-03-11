@@ -7,6 +7,7 @@ import cn.xmu.edu.legaldocument.VO.QASectionVO;
 import cn.xmu.edu.legaldocument.entity.*;
 import cn.xmu.edu.legaldocument.mapper.*;
 import org.jetbrains.annotations.NotNull;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -157,7 +158,8 @@ public class ReadService {
         List<KeywordWikiVO> keywordWikiVOList=new ArrayList<>();
         //获取bookId对应的KeywordList
         List<Keyword> keywordList=keywordMapper.getKeywordByBookId(bookId);
-        //找到keyword对应的pageNum和wiki
+        //way1:直接match wiki keyword和keyword
+        // 返回keyword对应的pageNum和wiki
         for(Keyword keyword:keywordList){
             Long pageId=keyword.getPageId();
             Long wikiId=keyword.getWikiCorpusId();
@@ -171,6 +173,7 @@ public class ReadService {
             wikiVO.setUrl(wiki.getUrl());
             keywordWikiVOList.add(wikiVO);
         }
+        //way2:查询lucene索引库，返回最相关的文章
         return keywordWikiVOList;
     }
 }

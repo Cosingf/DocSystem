@@ -37,6 +37,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <version>1.5.9.RELEASE</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -121,11 +122,11 @@
             <version>2.0.14</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-            <version>6.0.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.lucene</groupId>-->
+<!--            <artifactId>lucene-core</artifactId>-->
+<!--            <version>6.0.0</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.apache.lucene</groupId>
@@ -134,11 +135,11 @@
         </dependency>
 
         <!-- http://mvnrepository.com/artifact/org.apache.lucene/lucene-analyzers-common -->
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-analyzers-common</artifactId>
-            <version>6.0.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.lucene</groupId>-->
+<!--            <artifactId>lucene-analyzers-common</artifactId>-->
+<!--            <version>6.0.0</version>-->
+<!--        </dependency>-->
 
         <!-- http://mvnrepository.com/artifact/org.apache.lucene/lucene-memory -->
         <dependency>
@@ -153,12 +154,12 @@
             <version>4.9</version>
         </dependency>
 
-        <!-- http://mvnrepository.com/artifact/org.apache.lucene/lucene-queryparser -->
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-queryparser</artifactId>
-            <version>6.0.0</version>
-        </dependency>
+<!--        &lt;!&ndash; http://mvnrepository.com/artifact/org.apache.lucene/lucene-queryparser &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.lucene</groupId>-->
+<!--            <artifactId>lucene-queryparser</artifactId>-->
+<!--            <version>6.0.0</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.itextpdf</groupId>
@@ -166,6 +167,29 @@
             <version>5.5.10</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>6.6.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-queryparser -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-queryparser</artifactId>
+            <version>6.6.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-analyzers-common -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers-common</artifactId>
+            <version>6.6.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-analyzers-smartcn -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers-smartcn</artifactId>
+            <version>6.6.1</version>
+        </dependency>
 
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -188,6 +212,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>7</source>
+                    <target>7</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>

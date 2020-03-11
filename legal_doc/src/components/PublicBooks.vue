@@ -22,7 +22,7 @@
       </div>
       <el-row :gutter="20" style="margin:30px;" >
         <el-col :span="6" v-for="item , index in books">
-          <BookInfo :item="item" :key="index"></BookInfo>
+          <BookInfo :item="item" :key="index" ></BookInfo>
           <el-button type="primary" @click="addToMyLibrary(item.id)" plain>Add to my library</el-button>
         </el-col>
       </el-row>

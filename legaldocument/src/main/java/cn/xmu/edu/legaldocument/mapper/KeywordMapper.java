@@ -18,4 +18,6 @@ public interface KeywordMapper {
     List<Keyword> getKeywordByBookId(@Param("bookId") Long bookId);
 
     List<Keyword> getUnmatchedKeywordByBookId(Long bookId);
+
+    void updateKeywordById(Keyword keyword);
 }

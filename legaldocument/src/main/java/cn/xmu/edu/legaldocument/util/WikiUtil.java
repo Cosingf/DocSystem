@@ -2,45 +2,66 @@ package cn.xmu.edu.legaldocument.util;
 
 import cn.xmu.edu.legaldocument.entity.WikiAnnotation;
 import cn.xmu.edu.legaldocument.service.ReadService;
+import org.apache.commons.io.FileUtils;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.FieldType;
+import org.apache.lucene.index.*;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.*;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.BytesRef;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.wltea.analyzer.lucene.IKAnalyzer;
 
 import java.io.*;
+import java.nio.file.FileSystems;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 
 @RestController
-public class WikiTxtImporter {
-    public static Logger log = LoggerFactory.getLogger(WikiTxtImporter.class);
+public class WikiUtil {
+    public static Logger logger = LoggerFactory.getLogger(WikiUtil.class);
 
     @Autowired
     ReadService readService;
 
+    Directory directory;
+
+    public WikiUtil() throws IOException {
+        this.directory= FSDirectory.open(FileSystems.getDefault().getPath("F:\\wikiIndex"));
+    }
+    /*
+    **导入维基数据集，并建立倒排索引
+     */
     @RequestMapping("/importWiki")
     public void importTxt() throws IOException, ParseException {
-        log.info("开始导入数据");
+        logger.info("开始导入数据");
 
         String encoding = "utf-8";
         List<WikiAnnotation> wikiList = new ArrayList<>();
-        String dir = "F:\\wikidata";
+        String dir = "F:\\data";
         File[] files = new File(dir).listFiles();
         assert files != null;
         for (File file : files){//循环文件夹中的文件
             if (file.isFile() && file.exists()) { //判断文件是否存在
                 importFile(file, encoding, wikiList);  //将文件中的数据读取出来，并存放进集合中
             } else {
-                log.info("文件不存在");
+                logger.info("文件不存在");
             }
         }
-        readService.insertWikiList(wikiList);   //将集合中的数据批量入库
+        directory.close();
+        readService.insertWikiList(wikiList);   //将集合中的wiki数据批量入库
     }
 
 
@@ -101,7 +122,6 @@ public class WikiTxtImporter {
         wiki.setUrl("https://en.wikipedia.org/wiki/"+urlTitle);
         wikiList.add(wiki);
         read.close();  //输入流关闭
-
     }
 
 }

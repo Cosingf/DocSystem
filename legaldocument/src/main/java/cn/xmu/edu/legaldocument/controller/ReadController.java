@@ -59,7 +59,7 @@ public class ReadController {
     {
         httpServletResponse.setContentType("application/json;charset=utf-8");
 
-       List<PageSectionVO> relusts =readService.getBookEnrich(bookId);
+        List<PageSectionVO> relusts =readService.getBookEnrich(bookId);
         //读取wiki匹配结果
         List<KeywordWikiVO> matchResList=readService.getMatchResult(bookId);
         if (relusts==null)

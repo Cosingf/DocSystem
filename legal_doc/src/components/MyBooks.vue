@@ -22,8 +22,8 @@
                 <el-divider></el-divider>
             </div>
           <el-row :gutter="20" style="margin:30px;" >
-            <el-col :span="6" v-for="item , index in books">
-                <BookInfo :item="item" :key="index"></BookInfo>
+            <el-col :span="6" v-for="item , index in books" >
+                <BookInfo :item="item" :key="index" ></BookInfo>
                 <el-button type="danger"  @click="deleteBook(item.id)" plain>Delete from my library</el-button>
             </el-col>
           </el-row>
@@ -245,5 +245,8 @@ export default {
     margin-left: 570px;
     margin-top:20px;
     color:#586069;
+}
+.panel-tips >>> .el-col {
+    padding-bottom: 30px;
 }
 </style>

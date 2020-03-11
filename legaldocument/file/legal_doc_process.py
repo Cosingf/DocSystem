@@ -4,10 +4,7 @@ import jieba
 import logging
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
-from nltk.stem.lancaster import LancasterStemmer
 
-def func(a,b):
-    return (a+b)
 
 def pre_process_en(corpora, low_freq_filter=False):
     """
@@ -28,9 +25,16 @@ def pre_process_en(corpora, low_freq_filter=False):
     texts_tokenized = word_tokenize(corpora)
 
     # 去除停用词
-    texts_filtered_stopwords = [word for word in texts_tokenized
-                                 if word not in stopwords.words('english')]
+    texts_filtered_first = [word for word in texts_tokenized
+                            if word not in stopwords.words('english')]
+    #再次过滤自定义停用词
+    stopwords_cn = []
+    with open(r'F:\DocSystem\legaldocument\file\stopword.txt', 'r', encoding="UTF8") as reader:
+        for line in reader.readlines():
+            stopwords_cn.append(line.strip())
 
+    texts_filtered_stopwords = [word for word in texts_tokenized
+                                if word not in stopwords_cn]
     # 去除标点
     english_punctuations = \
         [',', '.', ':', ';', '?', '(', ')', '[', ']', '&', '!', '*', '@', '#', '$', '%','-','0','1','2','3','4','5','6','7','8','9']
@@ -49,6 +53,11 @@ def pre_process_en(corpora, low_freq_filter=False):
     # else:
     #     texts = texts_stemmed
     return texts_filtered
+
+
+# if __name__ == '__main__':
+#     print(pre_process_en("I have a sister. She is younger than me. My sister has a special talent. She sings"))
+
 
 if __name__ == '__main__':
     a = sys.argv[1]

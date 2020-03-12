@@ -18,7 +18,8 @@
       <div style="height: 20px;"></div>
       <p style="font-weight:normal;font-size:24px;margin:0 70px;color:#586069;">{{this.bookname}}</p>
       <p style="color:#909399;margin:5px 72px;">{{this.author}}</p>
-      <el-button type="success" @click="enhance" style="margin-top: -45px;margin-left: 800px;" plaindata-toggle="modal" data-target="#myModal">Enhancn text</el-button>
+      <el-button type="success" @click="showWiki" style="margin-top: -45px;margin-left: 600px;" plain>Show Wiki Annotation</el-button>
+      <el-button type="success" @click="enhance" style="margin-top: -45px;margin-left: 800px;" plaindata-toggle="modal" data-target="#myModal" plain>Enhancn text</el-button>
       <el-divider></el-divider>
       <div class="drag-box" id="dragBox" >
         <el-scrollbar style="height: 200% ">
@@ -29,7 +30,35 @@
           </div>
         </el-scrollbar>
       </div>
+       <!--显示文本测试内容，正式运行时注释掉这段，用上一段-->
+       <!-- <div @mouseup="tooltip($event)"  class="pdf-canvas" id="pdf-canvas" >
+        Now the Spring Festival has passed and the new semester is coming soon.</span> 
+      Looking back on the past year, I have finished my small plans, but haven’t made
+      any breakthrough. So I make up my mind that I must finish the tasks for the new
+      semester. The first plan is to take regular exercise. I like to play computer games
+      and sometimes I can't help staying up late, which makes me feel sleepy next day
+      in class, so I need to sleep early and then do some sports to improve my efficiency.
+      The second plan is to focus more attention to learn English. English is the
+      international language, so I must learn it well, not only to make the way
+      for study abroad someday, but also for travelling abroad. I need to have the
+      strong will to fulfill my goals.
 
+      I have a sister. She is younger than me. My sister has a special talent. She sings
+      very well. Every time when she starts to sing, people will be quiet and listen to her
+      singing. Sometimes I feel jealous, but I have to admit that her voice is so nice. I
+      am so proud of being her sister, because we share the same families.
+      Now the Spring Festival has passed and the new semester is coming soon.
+      Looking back on the past year, I have finished my small plans, but haven’t made
+      any breakthrough. So I make up my mind that I must finish the tasks for the new
+      semester. The first plan is to take regular exercise. I like to play computer games
+      and sometimes I can't help staying up late, which makes me feel sleepy next day
+      in class, so I need to sleep early and then do some sports to improve my efficiency.
+      The second plan is to focus more attention to learn English. English is the
+      international language, so I must learn it well, not only to make the way 
+      for study abroad someday, but also for travelling abroad. I need to have the
+      strong will to fulfill my goals      
+    
+    </div> -->
       <!--划词搜索的弹出框-->
       <div id="tooltip"  ref="tip">
         <el-button @click="selectSearch()" icon="el-icon-search" circle></el-button>
@@ -85,6 +114,7 @@ export default {
       bookId: localStorage.getItem('id'),
       bookname: localStorage.getItem('bookname'),
       author: localStorage.getItem('author'),
+      textContent:'',
       drawer: false,
       direction: 'rtl',
       modal: false,
@@ -95,6 +125,13 @@ export default {
         answer: '',
         link: '',
         sectionContent: ''
+      }],
+      wikiAnnotaion: [{
+        keyword: '',
+        title: '',
+        url: '',
+        summary: '',
+        pageNum:''
       }],
       enhancedResults: [
         {
@@ -117,6 +154,7 @@ export default {
   mounted () {
     this.renderPdf(this.scale)
     this.$refs.tip.style.display = 'none'
+    this.initWiki()
   },
   watch: {
     scale (val) {
@@ -133,6 +171,52 @@ export default {
     },
     goToPublicLibrary () {
       this.$router.push({ name: 'PublicBooks' })
+    },
+    initWiki () {
+      this.$axios({
+        method: 'GET',
+        url: '/apis/read/wiki/' + this.bookId
+      })
+        .then(response => {
+          {
+            this.wikiAnnotaion = response.data
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+    },
+    // 显示wiki Annotation
+    showWiki () {
+      let doc=$("#pdf-canvas").html()
+      console.log("doc:"+doc)
+      console.log(this.wikiAnnotaion.length)
+      this.wikiAnnotaion.forEach(function(element) {
+        if(element.pageNum==1){
+          console.log("wiki:"+element.keyword)
+          let key=element.keyword
+          let replaceReg = new RegExp(key, 'g');
+          let replaceString = '<span style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;" name="test">'+key+'</span>'
+          
+          doc=doc.replace(replaceReg,replaceString)
+        }
+        // console.log("replaceReg"+replaceReg)
+      });
+      $("#pdf-canvas").html(doc)
+      $("#pdf-canvas").on("click","span",function(){
+        console.log("on click")
+      });
+      // let canvas = document.getElementById(this.idName + 1)
+      // let ctx = canvas.getContext('2d')
+      // ctx.font = 'bold 16px Arial' //文字样式：加粗 16像素 字体Arial
+      // ctx.fillStyle = '#F09000' //字体颜色
+      // ctx.fillText('The', 40, 35) //fillText里面的可填写的值(文本内容, x坐标, y坐标, 文本最大宽度)
+      // for (let i = 1; i <= this.textContent.items.length; i++) {
+      //   let txt=this.textContent.items[i].str
+      //   ctx.fillText(txt)
+      //   console.log(txt)
+      //   console.log(txt.length)
+      // }
+      // console.log(this.textContent.items.length)
     },
     // 打开弹框
     tooltip (event) {
@@ -212,6 +296,8 @@ export default {
             viewport: viewport
           })
           textLayer.setTextContent(textContent)
+          //储存文本数据
+          this.textContent=textContent
           textLayer.render()
         })
       })

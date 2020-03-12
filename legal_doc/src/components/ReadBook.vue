@@ -18,7 +18,7 @@
       <div style="height: 20px;"></div>
       <p style="font-weight:normal;font-size:24px;margin:0 70px;color:#586069;">{{this.bookname}}</p>
       <p style="color:#909399;margin:5px 72px;">{{this.author}}</p>
-      <el-button type="success" @click="enhance" style="margin-top: -45px;margin-left: 800px;" plain>Enhancn text</el-button>
+      <el-button type="success" @click="enhance" style="margin-top: -45px;margin-left: 800px;" plaindata-toggle="modal" data-target="#myModal">Enhancn text</el-button>
       <el-divider></el-divider>
       <div class="drag-box" id="dragBox" >
         <el-scrollbar style="height: 200% ">
@@ -29,37 +29,33 @@
           </div>
         </el-scrollbar>
       </div>
-      <!--显示文本测试内容，正式运行时注释掉这段，用上一段-->
-      <!--<div @mouseup="tooltip($event)"  class="pdf-canvas">
-          测试文本内容，对接好接口，可以显示文本后，注释掉这段，用code中上一段注释掉的代码
-           -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
-          -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
-          -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
-          &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
-          &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
-          -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
-          &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
-      </div>-->
+
       <!--划词搜索的弹出框-->
       <div id="tooltip"  ref="tip">
         <el-button @click="selectSearch()" icon="el-icon-search" circle></el-button>
         <!-- <el-button @click="selectSearch()" type="primary">Search</el-button> -->
       </div>
-      <el-drawer title="" :visible.sync="drawer" :direction="direction" :modal="modal" size="30%">
+
+      <el-drawer
+        title=""
+        :visible.sync="drawer"
+        :direction="direction"
+        :modal="modal"
+        size="30%"
+      >
         <div class="sku-box store-content">
-          <el-card class="box-card">
-            <div slot="header" class="clearfix">
-              <span>QA Name</span>
-              <el-button style="float: right; padding: 8px 12px" type="success" plain>Edit</el-button>
+          <el-scrollbar style="height: 47% ">
+            <div class="gray-box" >
+              <!--Q&A折叠面板-->
+              <el-collapse v-model="activeName"  :accordion="accordion" >
+                <SearchResult  v-for="item , index in results" :item="item" :index="index"  v-if="selectShown===true"></SearchResult>
+                <EnhanceResult  v-for="item , index in enhancedResults" :item="item"  :index="index" v-if="enhancedShown===true"></EnhanceResult>
+              </el-collapse>
             </div>
-            <el-collapse v-model="activeName"  :accordion="accordion" >
-             <SearchResult class="text item" v-for="item , index in results" :item="item" :index="index"  v-if="selectShown===true"></SearchResult>
-            <EnhanceResult class="text item" v-for="item , index in enhancedResults" :item="item"  :index="index" v-if="enhancedShown===true"></EnhanceResult>
-            </el-collapse>
-          </el-card>
+          </el-scrollbar>
         </div>
-    </el-drawer>
-    <div style="height: 70px;"></div>
+      </el-drawer>
+      <div style="height: 70px;"></div>
     </div>
     <div class="pagination"><el-pagination layout="prev, pager, next" :total="100"></el-pagination></div>
   </div>
@@ -102,17 +98,14 @@ export default {
       }],
       enhancedResults: [
         {
-          qa: { answer: '',
-            question: '',
-            link: '',
-            sectionContent: '',
-            sectionId: '',
-            sectionNum: '',
-            questionId: '',
-            answerId: ''
-          },
-          pageId: '',
-          pageNum: ''
+          answer: '',
+          question: '',
+          link: '',
+          sectionContent: '',
+          sectionId: '',
+          sectionNum: '',
+          questionId: '',
+          answerId: ''
         }
       ]
     }
@@ -124,7 +117,6 @@ export default {
   mounted () {
     this.renderPdf(this.scale)
     this.$refs.tip.style.display = 'none'
-    this.initialEnhance()
   },
   watch: {
     scale (val) {
@@ -244,28 +236,28 @@ export default {
           console.log(error)
         })
     },
-    // 预调用增强接口
-    initialEnhance () {
-      this.$refs.tip.style.display = 'none'// 隐藏弹框
-      // this.enhancedShown = true;
-      // this.selectShown = false;
-      this.$axios({
-        method: 'POST',
-        url: '/apis/read/' + this.bookId
-      }).then(response => {
-        this.enhancedResults = response.data[this.i]
-      }).catch(error => {
-        console.log(error)
-      })
-    },
+
     // 显示增强结果
     enhance () {
       this.$refs.tip.style.display = 'none'// 隐藏弹框
       this.enhancedShown = true
       this.selectShown = false
+      this.$axios({
+        method: 'POST',
+        url: '/apis/read/enhance',
+        params: {
+          bookId: localStorage.getItem('id'),
+          pageNum: this.currentPageNo
+        }
+      })
+        .then(response => {
+          this.enhancedResults = response.data
+        }).catch(error => {
+          console.log(error)
+        })
       this.drawer = true// 弹出抽屉
     },
-    searchBooks () {
+    searchBooks: function () {
       var searchContent = this.input
       this.$axios({
         method: 'POST',
@@ -273,9 +265,7 @@ export default {
 
       })
         .then(response => {
-          {
-            this.books = response.data
-          }
+          this.books = response.data
         }).catch(error => {
           console.log(error)
         })
@@ -284,94 +274,94 @@ export default {
 }
 </script>
 <style scoped>
- .el-menu-item{
+  .el-menu-item{
     font-weight:500;
     font-size:17px;
     padding:0px 10px;
-}
-.el-menu--horizontal>.el-menu-item {
+  }
+  .el-menu--horizontal>.el-menu-item {
     line-height:50px;
     height:50px;
-}
-.el-icon-collection{
+  }
+  .el-icon-collection{
     font-size:15px;
-}
-.el-menu-demo {
+  }
+  .el-menu-demo {
     padding-left: 450px;;
-}
-.myicon{
+  }
+  .myicon{
     position: absolute;
     margin-top: 6px;
     font-size: 24px;
     font-weight: 500;
     margin-left: -135px;
-}
-.read-book >>> .el-input {
+  }
+  .read-book >>> .el-input {
     position: absolute;
     width:250px;
     margin-top:9px;
     margin-left:30px;
-}
-.read-book >>> .el-input__inner{
+  }
+  .read-book >>> .el-input__inner{
     background: #f6f6f6;
     height:33px;
-}
-.read-book >>> .el-button {
+  }
+  .read-book >>> .el-button {
     position:absolute;
     font-size:14px;
     padding: 10px 10px;
     margin-top:8px;
     margin-left:290px;
     line-height:13px;
-}
-.white-panel  >>> .el-button {
+  }
+  .white-panel  >>> .el-button {
     position:absolute;
     font-size:14px;
     padding: 10px 10px;
     margin-top:-5px;
     margin-left:0px;
     line-height:13px;
-}
-.panel-tips >>> .el-button {
+  }
+  .panel-tips >>> .el-button {
     position:absolute;
     font-size:14px;
     padding: 10px 10px;
     margin-top:3px;
     margin-left:460px;
     line-height:13px;
-}
-.el-avatar{
+  }
+  .el-avatar{
     position: absolute;
     margin-top:9px;
     margin-left:510px;
-}
-.el-avatar--medium {
+  }
+  .el-avatar--medium {
     width: 34px;
     height: 34px;
     line-height: 34px;
     cursor: pointer;
-}
-.el-dropdown-link {
+  }
+  .el-dropdown-link {
     cursor: pointer;
-}
-.el-icon-arrow-down {
+  }
+  .el-icon-arrow-down {
     font-size: 12px;
-}
-.el-dropdown{
+  }
+  .el-dropdown{
     position:absolute;
-}
-.el-popper[x-placement^=bottom] {
+  }
+  .el-popper[x-placement^=bottom] {
     margin-top:48px;
     margin-left: 1145px;
-}
-.router-link{
+  }
+  .router-link{
     color: #606266;
     text-decoration: none;
-}
-.router-link:hover{
+  }
+  .router-link:hover{
     color: #66b1ff;
-}
-.white-panel{
+  }
+  .white-panel{
     width:1000px;
     margin:0 auto;
     margin-top: 13px;
@@ -382,185 +372,194 @@ export default {
     box-shadow: 0 1px 3px rgba(26,26,26,.1);
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-}
-.white-panel>>>.el-divider--horizontal {
+  }
+  .white-panel>>>.el-divider--horizontal {
     display: block;
     height: 1px;
     width: 850px;
     margin: 15px 65px;
-}
-.white-panel>>>.el-drawer__header{
-  margin-bottom:0px;
-}
-.pagination >>> .el-pagination{
+  }
+  .white-panel>>>.el-drawer__header{
+    margin-bottom:0px;
+  }
+  .pagination >>> .el-pagination{
     margin-left: 570px;
     margin-top:20px;
     color:#586069;
-}
+  }
 
-.sku-box{
-  position: relative;
-}
+  .sku-box{
+    position: relative;
+  }
 
-.gray-box{
-  overflow: visible;
-  background: #fff;
-  border-radius: 8px;
-  border: 1px solid #dcdcdc;
-  border-color: rgba(0,0,0,.14);
-  box-shadow: 0 3px 8px -6px rgba(0,0,0,.1);
-}
-.sku-box .item-box{
-  clear: both;
-  overflow: hidden;
-  margin: 0 -1px -1px -1px;
-}
+  .gray-box{
+    overflow: visible;
+    background: #fff;
+    border-radius: 2px;
+    border: 1px solid #dcdcdc;
+    border-color: rgba(0,0,0,.14);
+  }
+  .sku-box .item-box{
+    clear: both;
+    overflow: hidden;
+    margin: 0 -1px -1px -1px;
+  }
 
-.sku-box .item .item-img img{
-  display: block;
-  width: 206px;
-  height: 206px;
-  margin: 50px auto 10px;
-}
-.sku-box .item h3, .sku-box .item h6{
-  overflow: hidden;
-  text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.sku-box .item h6{
-  line-height: 1.2;
-  font-size: 16px;
-  color: #424242;
-  margin: 0 auto;
-  padding: 0 14px;
-}
-.sku-box .item h3{
-  line-height: 1.2;
-  font-size: 12px;
-  color: #d0d0d0;
-  margin: 8px auto 14px;
-}
-.sku-box .item .params-colors{
-  margin-top: 23px;
-  text-align: center;
-}
-.sku-box .item .colors-list{
-  display: inline-block;
-  overflow: hidden;
-}
-.sku-box .item .colors-list li{
-  float: left;
-  margin: 0 5px;
-}
-.sku-box .item .colors-list>li a{
-  width: 8px;
-  height: 8px;
-  border: 1px solid #e5e5e5;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
-  padding: 2px;
-  display: block;
-}
-.sku-box .item .colors-list>li a.active{
-  box-shadow: inset 0 0 0 1px #b2b2b2;
-  border-color: #b2b2b2;
-}
-.sku-box .item .colors-list>li img{
-  width: inherit;
-  height: inherit;
-  border-radius: 50%;
-  display: block;
-}
-.sku-box .item .item-btns{
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 29px;
-  text-align: center;
-  opacity: 0;
-  z-index: 10;
-}
-.sku-box .item:hover .item-btns{
-  opacity: 1;
-  transition: all .2s ease-in;
-}
-.sku-box .item .item-btns .item-blue-btn, .sku-box .item .item-btns .item-disabled-btn, .sku-box .item .item-btns .item-gray-btn, .sku-box .item .item-btns .item-green-btn{
-  display: inline-block;
-  box-sizing: border-box;
-  width: 100px;
-  height: 30px;
-  font-size: 12px;
-  line-height: 28px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 200;
-  transition: all .1s ease;
-}
-.sku-box .item .item-btns .item-gray-btn{
-  border: 1px solid #d5d5d5;
-  color: #646464;
-}
-.sku-box .item .item-btns .item-gray-btn a{
-  display: block;
-  color: #a1a1a1;
-}
-.sku-box .item .item-btns .item-gray-btn:hover{
-  background-image: linear-gradient(#f6f6f6,#ededed);
-}
-.sku-box .item .item-btns .item-blue-btn{
-  background-color: #5c85e5;
-  background-image: linear-gradient(#779ae9,#5078df);
-  border: 1px solid #5c81e3;
-  color: #fff;
-  margin-left: 10px;
-}
-.sku-box .item .item-btns .item-blue-btn:hover{
-  border: 1px solid #5374c8;
-  background-color: #5074db;
-  background-image: linear-gradient(#6e8ed5,#4769c2);
-}
-.sku-box .item .item-btns .item-blue-btn:active{
-  border: 1px solid #3e61d7;
-  background-color: #5c85e5;
-  background-image: linear-gradient(#4d72de,#6189e6);
-}
+  .sku-box .item .item-img img{
+    display: block;
+    width: 206px;
+    height: 206px;
+    margin: 50px auto 10px;
+  }
+  .sku-box .item h3, .sku-box .item h6{
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .sku-box .item h6{
+    line-height: 1.2;
+    font-size: 16px;
+    color: #424242;
+    margin: 0 auto;
+    padding: 0 14px;
+  }
+  .sku-box .item h3{
+    line-height: 1.2;
+    font-size: 12px;
+    color: #d0d0d0;
+    margin: 8px auto 14px;
+  }
+  .sku-box .item .params-colors{
+    margin-top: 23px;
+    text-align: center;
+  }
+  .sku-box .item .colors-list{
+    display: inline-block;
+    overflow: hidden;
+  }
+  .sku-box .item .colors-list li{
+    float: left;
+    margin: 0 5px;
+  }
+  .sku-box .item .colors-list>li a{
+    width: 8px;
+    height: 8px;
+    border: 1px solid #e5e5e5;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    padding: 2px;
+    display: block;
+  }
+  .sku-box .item .colors-list>li a.active{
+    box-shadow: inset 0 0 0 1px #b2b2b2;
+    border-color: #b2b2b2;
+  }
+  .sku-box .item .colors-list>li img{
+    width: inherit;
+    height: inherit;
+    border-radius: 50%;
+    display: block;
+  }
+  .sku-box .item .item-btns{
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 29px;
+    text-align: center;
+    opacity: 0;
+    z-index: 10;
+  }
+  .sku-box .item:hover .item-btns{
+    opacity: 1;
+    transition: all .2s ease-in;
+  }
+  .sku-box .item .item-btns .item-blue-btn, .sku-box .item .item-btns .item-disabled-btn, .sku-box .item .item-btns .item-gray-btn, .sku-box .item .item-btns .item-green-btn{
+    display: inline-block;
+    box-sizing: border-box;
+    width: 100px;
+    height: 30px;
+    font-size: 12px;
+    line-height: 28px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 200;
+    transition: all .1s ease;
+  }
+  .sku-box .item .item-btns .item-gray-btn{
+    border: 1px solid #d5d5d5;
+    color: #646464;
+  }
+  .sku-box .item .item-btns .item-gray-btn a{
+    display: block;
+    color: #a1a1a1;
+  }
+  .sku-box .item .item-btns .item-gray-btn:hover{
+    background-image: linear-gradient(#f6f6f6,#ededed);
+  }
+  .sku-box .item .item-btns .item-blue-btn{
+    background-color: #5c85e5;
+    background-image: linear-gradient(#779ae9,#5078df);
+    border: 1px solid #5c81e3;
+    color: #fff;
+    margin-left: 10px;
+  }
+  .sku-box .item .item-btns .item-blue-btn:hover{
+    border: 1px solid #5374c8;
+    background-color: #5074db;
+    background-image: linear-gradient(#6e8ed5,#4769c2);
+  }
+  .sku-box .item .item-btns .item-blue-btn:active{
+    border: 1px solid #3e61d7;
+    background-color: #5c85e5;
+    background-image: linear-gradient(#4d72de,#6189e6);
+  }
 
-.sku-box .item:hover .item-price{
-  opacity: 0;
-  transition: all .1s ease-out;
-}
-.sku-box .item .discount-icon{
-  display: none;
-}
-.sku-box .item .item-cover a{
-  display: block;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 20;
-  width: 100%;
-  height: 310px;
-}
-.sort-option{
-  border-top: 1px solid #D8D8D8;
-  color: #999;
-}
-.store-content {
-  width: 580px;
-  height: 1300px;
-  padding: 0 0 25px;
-  top: 2%;
-  left: 2%;
-  position: relative;
-}
-.pdf-canvas{
-  margin:20px 70px;
-  color:#586069;
-}
-.box-card>>>.el-button{
-  margin-top:-2px;
-  margin-left:280px;
-}
+  .sku-box .item:hover .item-price{
+    opacity: 0;
+    transition: all .1s ease-out;
+  }
+  .sku-box .item .discount-icon{
+    display: none;
+  }
+  .sku-box .item .item-cover a{
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 20;
+    width: 100%;
+    height: 310px;
+  }
+  .sort-option{
+    border-top: 1px solid #D8D8D8;
+    color: #999;
+  }
+  .store-content {
+    width: 580px;
+    height: 10000px;
+    padding: 0 0 25px;
+    left: 2%;
+    position: relative;
+  }
+  .pdf-canvas{
+    margin:20px 70px;
+    color:#586069;
+  }
+  .box-card>>>.el-button{
+    margin-top:-2px;
+    margin-left:280px;
+  }
+  .sku-box .item {
+    position: relative;
+    float: left;
+    border-right: 1px solid #efefef;
+    border-bottom: 1px solid #efefef;
+    width: 500px;
+    height:200px;
+    background: #fff;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+  }
 </style>

@@ -1,22 +1,17 @@
 package cn.xmu.edu.legaldocument.controller;
 
 import cn.xmu.edu.legaldocument.VO.KeywordWikiVO;
-import cn.xmu.edu.legaldocument.VO.PageSectionVO;
+import cn.xmu.edu.legaldocument.VO.QASectionVO;
 import cn.xmu.edu.legaldocument.entity.QA;
-import cn.xmu.edu.legaldocument.entity.QASection;
-import cn.xmu.edu.legaldocument.entity.WikiAnnotation;
 import cn.xmu.edu.legaldocument.service.ReadService;
 import com.alibaba.fastjson.JSON;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class ReadController {
@@ -60,11 +55,12 @@ public class ReadController {
     }
 
 
-    @PostMapping("/read/{bookid}")
-    public void getAllPageResult(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @PathVariable("bookid") Long bookId ) throws Exception
+    @PostMapping("/read/enhance")
+    public void getAllPageResult(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @RequestParam("bookId") Long bookId,@RequestParam("pageNum") Integer pageNum ) throws Exception
     {
         httpServletResponse.setContentType("application/json;charset=utf-8");
-        List<PageSectionVO> relusts =readService.getBookEnrich(bookId);
+
+        List<QASectionVO> relusts =readService.getBookEnrich(bookId,pageNum);
         if (relusts==null)
             httpServletResponse.setStatus(404);
         else {
@@ -72,6 +68,5 @@ public class ReadController {
             httpServletResponse.getWriter().write(JSON.toJSONString(relusts));
         }
     }
-
 
 }

@@ -2,7 +2,6 @@ package cn.xmu.edu.legaldocument.service;
 
 
 import cn.xmu.edu.legaldocument.VO.KeywordWikiVO;
-import cn.xmu.edu.legaldocument.VO.PageSectionVO;
 import cn.xmu.edu.legaldocument.VO.QASectionVO;
 import cn.xmu.edu.legaldocument.entity.*;
 import cn.xmu.edu.legaldocument.mapper.*;
@@ -10,8 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-
 import java.util.*;
 
 
@@ -69,30 +66,24 @@ public class ReadService {
     }
 
 
-    public List<PageSectionVO> getBookEnrich(Long bookid) throws Exception {
-        List<Page> pages =pageMapper.selectByBookId(bookid);
-        List<PageSectionVO> pageSectionVOs = new ArrayList<>();
-        if (pages!=null) {
-            for (Page page : pages) {
-                List<Section> sections = sectionMapper.selectByPageId(page.getId());
-                List<QASectionVO> qaSectionVOs = new ArrayList<>();
-                PageSectionVO pageSectionVO = new PageSectionVO();
-                pageSectionVO.setPageId(page.getId());
-                pageSectionVO.setPageNum(page.getOrderNum());
-                for (Section section : sections) {
-                    List<QA> qas = qaMapper.selectQASectionBySectionId(section.getId());
-                    for (QA qa:qas)
-                    {
-                        QASectionVO qaSectionVO = new QASectionVO(qa,section.getId(),section.getOrderNum(),section.getSectionContent());
-                        qaSectionVOs.add(qaSectionVO);
-                    }
+    public List<QASectionVO> getBookEnrich(Long bookid,Integer pageNum) throws Exception {
+        Page page =pageMapper.selectByBookIdAndPageNum(bookid,pageNum);
+        List<QASectionVO> qaSectionVOs = new ArrayList<>();
+        if (page!=null) {
+            List<Section> sections = sectionMapper.selectByPageId(page.getId());
+            for (Section section : sections) {
+                List<QA> qas = qaMapper.selectQASectionBySectionId(section.getId());
+                for (QA qa:qas)
+                {
+                    QASectionVO qaSectionVO = new QASectionVO(qa,section.getId(),section.getOrderNum(),section.getSectionContent());
+                    qaSectionVOs.add(qaSectionVO);
                 }
-                pageSectionVO.setQaSectionVOS(qaSectionVOs);
-                pageSectionVOs.add(pageSectionVO);
             }
         }
-        return  pageSectionVOs;
+        return  qaSectionVOs;
     }
+
+
 
 
     private static int calculateStringDistance(@NotNull String s1, String s2) {

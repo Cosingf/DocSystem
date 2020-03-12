@@ -1,38 +1,11 @@
 <template>
 
-  <div :id="'main-' + index" class="item" >
+  <div class="item"  @mouseover="selectStyle(item) ">
 
-      <!--编辑及删除Q&A-->
-     <el-button v-on:click="deleteQA()"size="medium" style="float: right;margin-top: 5px;margin-right: 10px;" type="danger" icon="el-icon-delete" circle></el-button>
-      <el-button  v-on:click="editAnswer()" size="medium" style="float: right;margin-top: 5px;margin-right: 5px;" type="primary" icon="el-icon-edit" circle></el-button>
-
-    <div class="intro" >
-      <div class="text" >
-
-        <!--启用编辑后的遮罩层-->
-        <div ref="bg"  style="opacity: 0.7; position:fixed; left: 0px; top:0px; background-color: lightgrey; z-index: 99998;display: none"></div>
-
-       <!-- &lt;!&ndash;保存和取消编辑&ndash;&gt;
-        <el-button v-if="showEditBox==true"  type="primary" round style="left: 30%;top: -80%;position: absolute;z-index: 99999;" v-on:click="save()">save</el-button>
-        <el-button v-if="showEditBox==true"  type="primary" round style="left: 60%;top: -80%;position: absolute;z-index: 99999;" v-on:click="cancel()">cancel</el-button>
--->
-        <!--编辑框-->
-        <el-input  v-model="textarea"  v-if="showEditBox==true" style="font-size:15px;position: absolute;z-index: 99999;left: 4%;top: 30%;background: #fff;" type="textarea" autosize >
-        </el-input>
-
-       <!--Q&A折叠面板-->
-       <el-collapse-item  :name=index  >
-         <!--自定义标题-->
-        <template slot="title">
-          <h6>{{item.question}}<br><br>
-            original link: {{item.link}}<br>
-            {{item.answer.substring(0,87)}}</h6>
-        </template>
-         <!--隐藏面板-->
-        <div style="background-color:lightgoldenrodyellow;font-size:15px;position: absolute;z-index: 9999;left: 5%;width:100%;top: 125%;">{{item.answer.substring(87,item.answer.length)}}</div>
-      </el-collapse-item>
-
-      </div>
+    <div class="text">
+      <h6 style="text-align: left;">{{item.question}}</h6>
+      <h6 style="text-align: left;margin-top: 20px;">{{item.answer}}</h6>
+      <h6 style="text-align: left;margin-top: 20px;">{{item.link}}</h6>
     </div>
   </div>
 
@@ -92,18 +65,15 @@ export default {
   html{
     width: 100%;
   }
-
   .button-list li {
     float: left;
     margin: 0 50px 0 0;
   }
-
   li a{
     color: #000000;
     text-align: center;
     padding: 0;
   }
-
   .bottom ul{
     width: 1400px;
   }
@@ -112,7 +82,6 @@ export default {
     width: 200px;
     float: left;
   }
-
   * {
     list-style:none;
     padding:0;
@@ -120,7 +89,6 @@ export default {
     text-decoration:none;
     font-family:'Microsoft YaHei';
   }
-
   .type li {
     border-right: 1px solid #888;
     position:relative;
@@ -133,7 +101,6 @@ export default {
     line-height:50px;
     color: #000;
   }
-
   .type li.active{
     color: #ed757a;
     font-weight: bold;
@@ -145,38 +112,20 @@ export default {
     margin-top: 20px;
     text-align: center;
   }
-
-  .sku-box .item {
-
-    float: top;
-    border-right: 1px solid #efefef;
-    border-bottom: 1px solid #efefef;
-    width: 100%;
+  .item {
+    width: 350px;
     height: 200px;
-    background: #fff;
-    box-sizing: border-box;
+    border-radius: 1px;
     position: relative;
-
-  }
-
-  .intro{
-    width: 500px;
-    height: auto;
-    border-radius: 15px;
-    position: absolute;
-    left: 3%;
-    top: 40%;
-
+    top: 10%;
   }
   .text{
     float: left;
-    height:auto;
-    width: 500px;
-    margin-right: 25px;
-    margin-left: 25px;
-    overflow: visible;
+    width: 350px;
+    height: 200px;
+    margin-left: 4%;
+    overflow-y: auto
   }
-
   .page a,.page span{
     margin-left: 12px;
   }
@@ -212,5 +161,4 @@ export default {
     color: #999;
     cursor: text;
   }
-
 </style>

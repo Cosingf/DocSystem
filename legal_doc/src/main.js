@@ -8,6 +8,7 @@ import router from './router'
 import "bootstrap";
 import $ from 'jquery'
 import './plugins/element.js'
+
 Vue.use(ElementUI);
 Vue.config.productionTip = false
 Vue.prototype.$ = $;

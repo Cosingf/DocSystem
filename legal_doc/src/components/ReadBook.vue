@@ -21,7 +21,7 @@
       <el-button type="success" @click="showWiki" style="margin-top: -45px;margin-left: 600px;" plain>Show Wiki Annotation</el-button>
       <el-button type="success" @click="enhance" style="margin-top: -45px;margin-left: 800px;" plaindata-toggle="modal" data-target="#myModal" plain>Enhancn text</el-button>
       <el-divider></el-divider>
-      <div class="drag-box" id="dragBox" >
+      <!-- <div class="drag-box" id="dragBox" >
         <el-scrollbar style="height: 200% ">
           <div class="wrapper" id="pdf-container" @mouseup="tooltip($event)" >
             <div  v-for="i in totals" :id="`page-${i}`" :key="i" class="pdf-box" >
@@ -29,36 +29,35 @@
             </div>
           </div>
         </el-scrollbar>
+      </div> -->
+      <!--显示文本测试内容，正式运行时注释掉这段，用上一段-->
+    </el-popover>
+      <div @mouseup="tooltip($event)"  class="pdf-canvas" id="pdf-canvas" >
+        <!-- 测试按钮 -->
+        <!-- <el-popover placement="bottom" title="标题" width="200" trigger="click"content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+          <el-button slot="reference" style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;">
+            hhhh
+          </el-button>
+        </el-popover> -->
+        <!-- 测试弹出框 -->
+        <!-- Now the Spring
+        <el-button  class="popover popover-1" style=" position:relative;cursor:pointer;background-color: #fdf6ec;color: #e6a23c;">Festival</el-button>
+        <div  role="tooltip" aria-hidden="false" class="my-popover my-popover-1 el-popover el-popper el-popover--plain" tabindex="0" style="display:none" x-placement="top">
+          <div class="el-popover__title">element.title</div>
+          111111111111111111111111</br>
+          <link type="primary">'+element.url+'</link>
+          <div x-arrow="" class="popper__arrow" style="left: 113.5px;"></div>
+        </div>
+        has passed and the new semester is coming soon. Looking back on the past year, I have finished my small plans, but haven’t made any breakthrough. So I make up my mind that I must finish the tasks for the new semester. The first plan is to take regular exercise. I like to play
+        <el-button  class="popover popover-2" style=" position:relative;cursor:pointer;background-color: #fdf6ec;color: #e6a23c;">games</el-button>
+        <div  role="tooltip" aria-hidden="false" class="my-popover my-popover-2 el-popover el-popper el-popover--plain" tabindex="0" style="display:none" x-placement="top">
+          <div class="el-popover__title">element.title</div>
+          222222222222222222222222222</br>
+          <link type="primary">'+element.url+'</link>
+          <div x-arrow="" class="popper__arrow" style="left: 113.5px;"></div>
+        </div> -->
+          {{legalDoc}}
       </div>
-       <!--显示文本测试内容，正式运行时注释掉这段，用上一段-->
-       <!-- <div @mouseup="tooltip($event)"  class="pdf-canvas" id="pdf-canvas" >
-        Now the Spring Festival has passed and the new semester is coming soon.</span> 
-      Looking back on the past year, I have finished my small plans, but haven’t made
-      any breakthrough. So I make up my mind that I must finish the tasks for the new
-      semester. The first plan is to take regular exercise. I like to play computer games
-      and sometimes I can't help staying up late, which makes me feel sleepy next day
-      in class, so I need to sleep early and then do some sports to improve my efficiency.
-      The second plan is to focus more attention to learn English. English is the
-      international language, so I must learn it well, not only to make the way
-      for study abroad someday, but also for travelling abroad. I need to have the
-      strong will to fulfill my goals.
-
-      I have a sister. She is younger than me. My sister has a special talent. She sings
-      very well. Every time when she starts to sing, people will be quiet and listen to her
-      singing. Sometimes I feel jealous, but I have to admit that her voice is so nice. I
-      am so proud of being her sister, because we share the same families.
-      Now the Spring Festival has passed and the new semester is coming soon.
-      Looking back on the past year, I have finished my small plans, but haven’t made
-      any breakthrough. So I make up my mind that I must finish the tasks for the new
-      semester. The first plan is to take regular exercise. I like to play computer games
-      and sometimes I can't help staying up late, which makes me feel sleepy next day
-      in class, so I need to sleep early and then do some sports to improve my efficiency.
-      The second plan is to focus more attention to learn English. English is the
-      international language, so I must learn it well, not only to make the way 
-      for study abroad someday, but also for travelling abroad. I need to have the
-      strong will to fulfill my goals      
-    
-    </div> -->
       <!--划词搜索的弹出框-->
       <div id="tooltip"  ref="tip">
         <el-button @click="selectSearch()" icon="el-icon-search" circle></el-button>
@@ -90,6 +89,7 @@
   </div>
 </template>
 <script>
+import Vue from 'vue'
 import PDFJS from 'pdfjs-dist'
 import { TextLayerBuilder } from 'pdfjs-dist/web/pdf_viewer'
 import 'pdfjs-dist/web/pdf_viewer.css'
@@ -99,6 +99,7 @@ import EnhanceResult from './EnhanceResult'
 export default {
   data () {
     return {
+      show:false,
       input: '',
       activeName: '0',
       activeIndex: '0',
@@ -126,6 +127,7 @@ export default {
         link: '',
         sectionContent: ''
       }],
+      legalDoc:'Now the Spring Festival has passed and the new semester is coming soon. Looking back on the past year, I have finished my small plans, but haven’t made any breakthrough. So I make up my mind that I must finish the tasks for the new semester. The first plan is to take regular exercise. I like to play computer games and sometimes I cannott help staying up late, which makes me feel sleepy next day in class, so I need to sleep early and then do some sports to improve my efficiency. ',
       wikiAnnotaion: [{
         keyword: '',
         title: '',
@@ -152,7 +154,7 @@ export default {
     SearchResult
   },
   mounted () {
-    this.renderPdf(this.scale)
+    // this.renderPdf(this.scale)
     this.$refs.tip.style.display = 'none'
     this.initWiki()
   },
@@ -163,6 +165,12 @@ export default {
     }
   },
   methods: {
+    showPopper(){
+      this.show=true
+    },
+    closePopper(){
+      this.show=false
+    },
     handleCommand (command) {
       this.$message('click on item ' + command)
     },
@@ -174,12 +182,13 @@ export default {
     },
     initWiki () {
       this.$axios({
-        method: 'GET',
+        method: 'POST',
         url: '/apis/read/wiki/' + this.bookId
       })
         .then(response => {
           {
             this.wikiAnnotaion = response.data
+            console.log(this.wikiAnnotaion.length)
           }
         }).catch(error => {
           console.log(error)
@@ -188,35 +197,54 @@ export default {
     // 显示wiki Annotation
     showWiki () {
       let doc=$("#pdf-canvas").html()
-      console.log("doc:"+doc)
-      console.log(this.wikiAnnotaion.length)
+      // console.log("doc:"+doc)
+      let flag=new Array()
+      let count=0
       this.wikiAnnotaion.forEach(function(element) {
         if(element.pageNum==1){
-          console.log("wiki:"+element.keyword)
+          console.log("wiki:"+element.keyword+" 对应count:"+count)
           let key=element.keyword
           let replaceReg = new RegExp(key, 'g');
-          let replaceString = '<span style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;" name="test">'+key+'</span>'
-          
+          if(!replaceReg.test(doc)){
+            return true;//终止本次循环
+          } 
+          // let replaceString = '<span style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;" name="test">'+key+'</span>'
+          let replaceString=
+            '<el-button  class="popover popover-'+count+'" style=" position:relative;cursor:pointer;background-color: #fdf6ec;color: #e6a23c;">'+key+'</el-button>'+
+              '<div  role="tooltip" aria-hidden="false" class="my-popover my-popover-'+count+' el-popover el-popper el-popover--plain" tabindex="0" style="visibility:hidden;" x-placement="top">'+
+              '<div class="el-popover__title">'+element.title+'</div>'+
+              element.summary.substring(0,300)+'...</br>'+
+              'Read more: <el-link href="'+element.url+'" class="my-link-'+count+' el-link el-link--primary is-underline">'+element.url+'</el-link>'+
+              '<div x-arrow="" class="popper__arrow" style="left: 113.5px;"></div>'+
+            '</div>'
           doc=doc.replace(replaceReg,replaceString)
+          count=count+1
         }
-        // console.log("replaceReg"+replaceReg)
       });
       $("#pdf-canvas").html(doc)
-      $("#pdf-canvas").on("click","span",function(){
-        console.log("on click")
-      });
-      // let canvas = document.getElementById(this.idName + 1)
-      // let ctx = canvas.getContext('2d')
-      // ctx.font = 'bold 16px Arial' //文字样式：加粗 16像素 字体Arial
-      // ctx.fillStyle = '#F09000' //字体颜色
-      // ctx.fillText('The', 40, 35) //fillText里面的可填写的值(文本内容, x坐标, y坐标, 文本最大宽度)
-      // for (let i = 1; i <= this.textContent.items.length; i++) {
-      //   let txt=this.textContent.items[i].str
-      //   ctx.fillText(txt)
-      //   console.log(txt)
-      //   console.log(txt.length)
-      // }
-      // console.log(this.textContent.items.length)
+      for(let i=0;i<count;i++){
+        //获取位置
+        console.log("count: "+i)
+        console.log("父元素位置："+$('.popover-'+i).offset().left+","+$('.popover-'+i).offset().top)
+        console.log("子元素位置："+$('.my-popover-'+i).offset().left+","+$('.my-popover-'+i).offset().top)
+        //设置提示框位置
+        let left=$('.popover-'+i).offset().left-100
+        let top=$('.popover-'+i).offset().top+30
+        $('.my-popover-'+i).attr("style","visibility:hidden;"+"top:"+top+"px;left:"+left+"px;")
+        //使url link生效
+        let url=$('.my-link-'+i).attr("href")
+        $('.my-link-'+i).click(function() {
+          window.location.href=url
+        })
+        $('.popover-'+i).click(function() {
+          let style=$('.my-popover-'+i).attr("style")
+          if(style=="visibility:visible;"+"top:"+top+"px;left:"+left+"px;"){
+            $('.my-popover-'+i).attr("style","visibility:hidden;"+"top:"+top+"px;left:"+left+"px;")
+          }else{
+            $('.my-popover-'+i).attr("style","visibility:visible;"+"top:"+top+"px;left:"+left+"px;")
+          }  
+        })
+      }
     },
     // 打开弹框
     tooltip (event) {
@@ -648,4 +676,60 @@ export default {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
   }
+
+.white-panel>>>.el-popper .popper__arrow, .el-popper .popper__arrow::after {
+    position: absolute;
+    display: block;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+}
+.white-panel>>>.el-popper .popper__arrow {
+    border-width: 6px;
+    -webkit-filter: drop-shadow(0 2px 12px rgba(0, 0, 0, .03));
+    filter: drop-shadow(0 2px 12px rgba(0, 0, 0, .03));
+}
+.white-panel>>>.el-popper[x-placement^=top] .popper__arrow {
+    top: -6px;
+    left: 50%;
+    margin-right: 3px;
+    border-top-width: 0;
+    border-bottom-color: #ebeef5;
+}
+.white-panel>>>.el-popper[x-placement^=top] .popper__arrow::after {
+    top: 1px;
+    margin-left: -6px;
+    border-top-width: 0;
+    border-bottom-color: #fff;
+}
+.white-panel>>>.el-popper .popper__arrow::after {
+    content: " ";
+    border-width: 6px;
+}
+.white-panel>>>.el-popper .popper__arrow, .el-popper .popper__arrow::after {
+    position: absolute;
+    display: block;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+}
+.pdf-canvas  >>> .el-button {
+    border:none;
+    font-size: 16px;
+    padding:10px 5px;
+} 
+.pdf-canvas >>> .el-popover{
+  max-width: 40%;
+}
+.my-popover{
+  width: 200px; 
+  transform-origin: center top; 
+  z-index: 2027; 
+  position: absolute; 
+  top: 207px; 
+  left: 244px;
+  
+}
 </style>

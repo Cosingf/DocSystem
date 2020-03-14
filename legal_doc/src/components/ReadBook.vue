@@ -21,7 +21,7 @@
       <el-button type="success" @click="showWiki" style="margin-top: -45px;margin-left: 600px;" plain>Show Wiki Annotation</el-button>
       <el-button type="success" @click="enhance" style="margin-top: -45px;margin-left: 800px;" plaindata-toggle="modal" data-target="#myModal" plain>Enhancn text</el-button>
       <el-divider></el-divider>
-      <!-- <div class="drag-box" id="dragBox" >
+      <div class="drag-box" id="dragBox" >
         <el-scrollbar style="height: 200% ">
           <div class="wrapper" id="pdf-container" @mouseup="tooltip($event)" >
             <div  v-for="i in totals" :id="`page-${i}`" :key="i" class="pdf-box" >
@@ -29,35 +29,11 @@
             </div>
           </div>
         </el-scrollbar>
-      </div> -->
-      <!--显示文本测试内容，正式运行时注释掉这段，用上一段-->
-    </el-popover>
-      <div @mouseup="tooltip($event)"  class="pdf-canvas" id="pdf-canvas" >
-        <!-- 测试按钮 -->
-        <!-- <el-popover placement="bottom" title="标题" width="200" trigger="click"content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
-          <el-button slot="reference" style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;">
-            hhhh
-          </el-button>
-        </el-popover> -->
-        <!-- 测试弹出框 -->
-        <!-- Now the Spring
-        <el-button  class="popover popover-1" style=" position:relative;cursor:pointer;background-color: #fdf6ec;color: #e6a23c;">Festival</el-button>
-        <div  role="tooltip" aria-hidden="false" class="my-popover my-popover-1 el-popover el-popper el-popover--plain" tabindex="0" style="display:none" x-placement="top">
-          <div class="el-popover__title">element.title</div>
-          111111111111111111111111</br>
-          <link type="primary">'+element.url+'</link>
-          <div x-arrow="" class="popper__arrow" style="left: 113.5px;"></div>
-        </div>
-        has passed and the new semester is coming soon. Looking back on the past year, I have finished my small plans, but haven’t made any breakthrough. So I make up my mind that I must finish the tasks for the new semester. The first plan is to take regular exercise. I like to play
-        <el-button  class="popover popover-2" style=" position:relative;cursor:pointer;background-color: #fdf6ec;color: #e6a23c;">games</el-button>
-        <div  role="tooltip" aria-hidden="false" class="my-popover my-popover-2 el-popover el-popper el-popover--plain" tabindex="0" style="display:none" x-placement="top">
-          <div class="el-popover__title">element.title</div>
-          222222222222222222222222222</br>
-          <link type="primary">'+element.url+'</link>
-          <div x-arrow="" class="popper__arrow" style="left: 113.5px;"></div>
-        </div> -->
-          {{legalDoc}}
       </div>
+      <!--txr文本测试高亮+提示框用-->
+      <!-- <div @mouseup="tooltip($event)"  class="pdf-canvas" id="pdf-canvas" >
+          {{legalDoc}}
+      </div> -->
       <!--划词搜索的弹出框-->
       <div id="tooltip"  ref="tip">
         <el-button @click="selectSearch()" icon="el-icon-search" circle></el-button>
@@ -154,7 +130,7 @@ export default {
     SearchResult
   },
   mounted () {
-    // this.renderPdf(this.scale)
+    this.renderPdf(this.scale)
     this.$refs.tip.style.display = 'none'
     this.initWiki()
   },

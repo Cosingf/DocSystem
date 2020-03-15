@@ -46,14 +46,13 @@ public class ReadController {
     /**
      * 新增Wiki Annotation
      */
-    @GetMapping("/read/wiki/{bookid}")
+    @PostMapping("/read/wiki/{bookid}")
     public void getWikiByMatchingKeywords(HttpServletResponse httpServletResponse, @PathVariable("bookid") Long bookId) throws IOException {
         //读取wiki匹配结果
         httpServletResponse.setContentType("application/json;charset=utf-8");
         List<KeywordWikiVO> matchResList=readService.getMatchResult(bookId);
         httpServletResponse.getWriter().write(JSON.toJSONString(matchResList));
     }
-
 
     @PostMapping("/read/enhance")
     public void getAllPageResult(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @RequestParam("bookId") Long bookId,@RequestParam("pageNum") Integer pageNum ) throws Exception
@@ -68,5 +67,6 @@ public class ReadController {
             httpServletResponse.getWriter().write(JSON.toJSONString(relusts));
         }
     }
+
 
 }

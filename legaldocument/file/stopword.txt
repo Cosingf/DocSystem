@@ -98,6 +98,11 @@ W
 X
 Y
 Z
+class
+Class
+div
+span
+link
 n't
 The
 a's

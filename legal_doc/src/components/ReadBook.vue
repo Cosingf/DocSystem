@@ -1,5 +1,6 @@
 <template>
-  <div class="read-book">
+  <body style="overflow:visible;">
+  <div class="read-book" >
     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="">
       <a class="myicon" style="color:#007bff">Reedpeer</a>
       <el-menu-item index="1" @click="goToPublicLibrary">Public library</el-menu-item>
@@ -14,7 +15,7 @@
         </el-dropdown-menu>
       </el-dropdown>
     </el-menu>
-    <div class="white-panel">
+    <div class="white-panel" >
       <div style="height: 20px;"></div>
       <p style="font-weight:normal;font-size:24px;margin:0 70px;color:#586069;">{{this.bookname}}</p>
       <p style="color:#909399;margin:5px 72px;">{{this.author}}</p>
@@ -63,6 +64,7 @@
     </div>
     <div class="pagination"><el-pagination @current-change="currentChangeHandle" :current-page="currentPageNo" layout="prev, pager, next" :total="100"></el-pagination></div>
   </div>
+</body>
 </template>
 <script>
 import Vue from 'vue'

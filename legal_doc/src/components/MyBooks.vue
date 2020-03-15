@@ -208,7 +208,7 @@ export default {
     margin:0 auto;
     margin-top: 13px;
     background: #fff;
-    overflow: hidden;
+    overflow: auto;
     border-radius: 2px;
     -webkit-box-shadow: 0 1px 3px rgba(26,26,26,.1);
     box-shadow: 0 1px 3px rgba(26,26,26,.1);

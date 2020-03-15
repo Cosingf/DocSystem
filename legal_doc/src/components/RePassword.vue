@@ -13,11 +13,11 @@
                 <br>
                 <div style="color:#606266;font-weight: 400;">123456@qq.com</div>
             </el-form-item>
-            <el-form-item label="Vrification code" label-width="100px;" style="font-weight: bold;" prop="verificationCode">
+            <!-- <el-form-item label="Vrification code" label-width="100px;" style="font-weight: bold;" prop="verificationCode">
                 <br>
                 <el-input style="width:45%;" v-model="ruleForm.verificationCode" autocomplete="off"></el-input>
                 <el-button type="primary" style="margin-left: 50px;" plain>Send verification code</el-button>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="New password" label-width="100px;" style="font-weight: bold;" prop="pass">
                 <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
             </el-form-item>

@@ -129,11 +129,11 @@ export default {
         padding-left: 450px;;
     }
     .myicon{
-        position: absolute;
-        margin-top: 6px;
-        font-size: 24px;
-        font-weight: 500;
-        margin-left: -200px;
+      position: absolute;
+      margin-top: 6px;
+      font-size: 24px;
+      font-weight: 500;
+      margin-left: -135px;
     }
     .upload-book >>> .el-input {
         position: absolute;
@@ -205,7 +205,7 @@ export default {
     margin:0 auto;
     margin-top: 13px;
     background: #fff;
-    overflow: hidden;
+    overflow: auto;
     border-radius: 2px;
     -webkit-box-shadow: 0 1px 3px rgba(26,26,26,.1);
     box-shadow: 0 1px 3px rgba(26,26,26,.1);

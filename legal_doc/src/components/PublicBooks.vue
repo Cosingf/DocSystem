@@ -1,5 +1,5 @@
 <template>
-    <body class="public-book">
+    <body class="public-book" >
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="">
         <a class="myicon" style="color:#007bff">Reedpeer</a>
         <el-menu-item index="1">Public library</el-menu-item>
@@ -219,7 +219,7 @@ export default {
     margin:0 auto;
     margin-top: 13px;
     background: #fff;
-    overflow: hidden;
+    overflow: auto;
     border-radius: 2px;
     -webkit-box-shadow: 0 1px 3px rgba(26,26,26,.1);
     box-shadow: 0 1px 3px rgba(26,26,26,.1);

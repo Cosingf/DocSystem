@@ -9,7 +9,7 @@
         <div class="register">
         <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="80px" style="margin-left:20px;margin-top:10px;" class="demo-ruleForm">
             <el-form-item label="Username" label-width="100px;" style="font-weight: bold;" prop="name">
-                <el-input vregi-model.number="ruleForm.name"></el-input>
+                <el-input v-model="ruleForm.name" autocomplete="off" ></el-input>
             </el-form-item>
             <el-form-item label="Password" label-width="100px;" style="font-weight: bold;" prop="pass">
                 <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
@@ -94,6 +94,9 @@ export default {
     }
   },
   methods: {
+    change(e){
+      this.$forceUpdate()
+    },
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {

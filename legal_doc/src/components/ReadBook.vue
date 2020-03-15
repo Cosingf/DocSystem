@@ -57,7 +57,7 @@
       </el-drawer>
       <div style="height: 70px;"></div>
     </div>
-    <div class="pagination"><el-pagination layout="prev, pager, next" :total="100"></el-pagination></div>
+    <div class="pagination"><el-pagination @current-change="currentChangeHandle" :current-page="currentPageNo" layout="prev, pager, next" :total="100"></el-pagination></div>
   </div>
 </template>
 <script>
@@ -78,6 +78,7 @@ export default {
       isCreatedPage: [],
       viewHeight: 0,
       currentPageNo: 1,
+      totalPage: 10,
       idName: 'canvas-pdf-',
       scale: 1.5,
       i: 1,
@@ -114,7 +115,7 @@ export default {
     EnhanceResult,
     SearchResult
   },
-  mounted () {
+  created () {
     this.renderPdf(this.scale)
     this.$refs.tip.style.display = 'none'
   },
@@ -127,6 +128,18 @@ export default {
   methods: {
     handleCommand (command) {
       this.$message('click on item ' + command)
+    },
+    currentChangeHandle (val) {
+      var p = this.currentPageNo
+      if (val > 0 || val <= this.totalPage) {
+        let pageDiv = document.getElementById(`page-${p}`)
+        pageDiv.style.display = 'none'
+        p = val
+      }
+      this.currentPageNo = p
+      if (this.isCreatedPage[p] === 0) { this.createPage(p, this.scale); this.isCreatedPage[p] = 1 }
+      let curPageDiv = document.getElementById(`page-${p}`)
+      curPageDiv.style.display = 'block'
     },
     goToMyLibrary () {
       this.$router.push({ name: 'MyBooks' })
@@ -145,7 +158,7 @@ export default {
         this.content = window.getSelection().toString()
       }
       // 弹框
-      if (this.content != '') {
+      if (this.content !== '') {
         this.$refs.tip.style.top = (event.pageY + y) + 'px'
         this.$refs.tip.style.left = (event.pageX + x) + 'px'
         this.$refs.tip.style.opacity = '1'
@@ -166,7 +179,7 @@ export default {
       } }).then(pdf => {
         this.pdf = pdf
         // 得到PDF的总的页数
-        this.totalPage = pdf.numPages
+        this.totalPage = parseInt(pdf.numPages)
         // 根据总的页数创建相同数量的canvas
         this.createCanvas(this.totalPage, this.idName)
         this.createPage(1, scale)

@@ -9,9 +9,9 @@
         <div class="register">
         <!--邮箱（不允许修改），验证码，密码，确认密码，提交-->
         <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="80px" style="margin-left:20px;margin-top:10px;" class="demo-ruleForm">
-            <el-form-item label="Eamil" label-width="100px;" style="font-weight: bold;" prop="email">
+            <el-form-item label="Username" label-width="100px;" style="font-weight: bold;" prop="email">
                 <br>
-                <div style="color:#606266;font-weight: 400;">123456@qq.com</div>
+                <div style="color:#606266;font-weight: 400;">{{account}}</div>
             </el-form-item>
             <!-- <el-form-item label="Vrification code" label-width="100px;" style="font-weight: bold;" prop="verificationCode">
                 <br>
@@ -76,10 +76,10 @@ export default {
     }
     return {
       ruleForm: {
-        verificationCode: '',
         pass: '',
         checkPass: ''
       },
+      account:localStorage.getItem('user'),
       rules: {
         verificationCode: [
           { trigger: 'blur' }
@@ -97,7 +97,28 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!')
+          this.$axios({
+            method: 'post',
+            url: '/apis/reset',
+            params: {
+              userId:window.localStorage['userId'],
+              pass: this.$data.ruleForm.pass
+            }
+          })
+            .then(response => {
+              if (response.status === 200) {
+                this.$message({
+                  message: 'Successfully reset pasword, please login again!',
+                  type: 'success'
+                });
+                this.$router.push({ name: 'Login' })
+              }
+            }).catch(error => {
+              this.$notify.error({
+                title: 'fail！',
+                message: 'Reset password failed！'
+              })
+            })
         } else {
           console.log('error submit!!')
           return false

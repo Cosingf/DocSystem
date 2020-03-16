@@ -3,6 +3,7 @@ package cn.xmu.edu.legaldocument.controller;
 
 import cn.xmu.edu.legaldocument.entity.User;
 import cn.xmu.edu.legaldocument.service.UserService;
+import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -56,12 +58,23 @@ public class UserController
 
     }
 
-    @RequestMapping(value = "/getInfo/{username}",method = RequestMethod.GET)
-    public User getInfo(@PathVariable("username")String username){
-        User user=new User();
-        user.setAccount(username);
-        user=userService.getUser(user.getAccount());
-        System.out.println(user.getEmail());
-        return user;
+    @PostMapping("/reset")
+    public void resetPassword(HttpServletResponse httpServletResponse, @RequestParam("pass")String password,@RequestParam("userId")Long userId){
+        User user=userService.getUserById(userId);
+        user.setPassword(password);
+        userService.updateUser(user);
+    }
+
+    @RequestMapping(value = "/getInfo/{userId}",method = RequestMethod.GET)
+    public void getInfo(@PathVariable("userId")Long userId,HttpServletResponse httpServletResponse) throws IOException {
+        User user=userService.getUserById(userId);
+        httpServletResponse.setContentType("application/json;charset=utf-8");
+        if (user!=null) {
+            httpServletResponse.setStatus(200);
+            httpServletResponse.getWriter().write(JSON.toJSONString(user));
+        }
+        else {
+            httpServletResponse.setStatus(404);
+        }
     }
 }

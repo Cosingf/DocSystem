@@ -17,7 +17,7 @@
       <div class="white-panel">
         <div class="panel-tips">
           <div style="height: 80px;"></div>
-          <a style="font-weight: 500;font-size:23px;margin-left:400px;color:#586069;">Userinfo</a>
+          <a style="font-weight: 500;font-size:23px;margin-left:400px;color:#586069;">User info</a>
         </div>
         <el-table :data="tableData" style="width: 100%;margin-top:0px;margin-left:300px;">
           <el-table-column prop="item" label="" width="180"></el-table-column>
@@ -31,6 +31,7 @@
 export default {
   data () {
     return {
+      input:'',
       activeIndex: '0',
       tableData: [{
         item: 'Username',
@@ -38,21 +39,30 @@ export default {
       },
       {
         item: 'Email',
-        value: '123456@qq.com'
-      }]
+        value: ''
+      }],
+      user:{
+        id:'',
+        account:'',
+        password:' ',
+        sex:' ',
+        age:' ',
+        email:' '
+      },
     }
   },
   created () {
     this.$data.tableData[0].value = localStorage.getItem('user')
-    this.$axios.get('/apis/getInfo/' + this.$data.user.username)
+    let userId=localStorage.getItem('userId')
+    // console.log("userId:"+userId)
+    // console.log("userName:"+localStorage.getItem('user'))
+    this.$axios.get('/apis/getInfo/' +  localStorage.getItem('userId'))
       .then(response => {
-        if (response.status === 200) {
-          this.$data.tableData[1].value = response.data.user.email
-        }
+          this.$data.tableData[1].value = response.data.email
       }).catch(error => {
         this.$notify.error({
           title: 'error！',
-          message: 'error'
+          message: error
         })
       })
   },

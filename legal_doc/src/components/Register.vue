@@ -112,7 +112,7 @@ export default {
             if (response.status === 200) {
               this.$notify({
                 title: 'success',
-                message: 'success',
+                message: 'Successfully registered, please login',
                 type: 'success',
                 duration: 2000
               })

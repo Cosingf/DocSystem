@@ -215,6 +215,7 @@ export default {
     color: #66b1ff;
   }
   .white-panel{
+    min-height: 550px;
     width:1000px;
     margin:0 auto;
     margin-top: 13px;

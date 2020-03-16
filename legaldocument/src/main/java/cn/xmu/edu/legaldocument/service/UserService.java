@@ -50,4 +50,12 @@ public class UserService {
     public User getUser(String account){
         return userDao.selectByAccount(account);
     }
+
+    public User getUserById(Long userId){
+        return userDao.selectByPrimaryKey(userId);
+    }
+
+    public void updateUser(User user){
+        userDao.updateByPrimaryKey(user);
+    }
 }

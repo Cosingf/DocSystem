@@ -150,104 +150,104 @@ public class IndexUtil {
         indexReader.close();
     }
 
-    @RequestMapping("/queryTerm")
-    public void queryIndex() throws Exception{
-        // 创建一个indexReader对象，需要指定Directory对象。
-        IndexReader indexReader = DirectoryReader.open(this.directory);
-        // 创建indexsearcher对象
-        IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-
-        //指定分词技术，这里采用的语言处理模块要和创建索引的时候一致，否则检索的结果很不理想
-        Analyzer analyzer = new EnglishAnalyzer();
-
-        QueryParser parse = new QueryParser("fileContent", analyzer);
-        Terms terms = MultiFields.getTerms(indexReader, "fileContent");
-        TermsEnum termsEnums = terms.iterator(null);
-        BytesRef byteRef = null;
-        while((byteRef = termsEnums.next()) != null) {
-            String term = new String(byteRef.bytes, byteRef.offset, byteRef.length);
-            Term t=new Term("fileContent",term);
-            if(termsEnums.totalTermFreq()>5){
-                System.out.println("term is : " + term+" Freq is:"+termsEnums.totalTermFreq()+"doc Freq:"+termsEnums.docFreq());
-                //查询每个term 最相关的doc
-                Query queryT= parse.parse(term);
-                TopDocs topDocsT = indexSearcher.search(queryT, 2);
-                for (ScoreDoc scoreDoc : topDocsT.scoreDocs) {
-                    // scoreDoc.doc属性就是document对象的id
-                    // 根据document的id找到document对象
-                    Document document = indexSearcher.doc(scoreDoc.doc);
-                    System.out.println(scoreDoc.toString());
-                    System.out.println("filename:"+document.get("fileName"));
-                    System.out.println("WikiId:\n"+document.get("wikiId"));
-                    System.out.println("-----------------------------------");
-                }
-            }
-
-        }
-
-        // 第七步：关闭IndexReader对象
-        indexReader.close();
-    }
+//    @RequestMapping("/queryTerm")
+//    public void queryIndex() throws Exception{
+//        // 创建一个indexReader对象，需要指定Directory对象。
+//        IndexReader indexReader = DirectoryReader.open(this.directory);
+//        // 创建indexsearcher对象
+//        IndexSearcher indexSearcher = new IndexSearcher(indexReader);
+//
+//        //指定分词技术，这里采用的语言处理模块要和创建索引的时候一致，否则检索的结果很不理想
+//        Analyzer analyzer = new EnglishAnalyzer();
+//
+//        QueryParser parse = new QueryParser("fileContent", analyzer);
+//        Terms terms = MultiFields.getTerms(indexReader, "fileContent");
+//        TermsEnum termsEnums = terms.iterator(null);
+//        BytesRef byteRef = null;
+//        while((byteRef = termsEnums.next()) != null) {
+//            String term = new String(byteRef.bytes, byteRef.offset, byteRef.length);
+//            Term t=new Term("fileContent",term);
+//            if(termsEnums.totalTermFreq()>5){
+//                System.out.println("term is : " + term+" Freq is:"+termsEnums.totalTermFreq()+"doc Freq:"+termsEnums.docFreq());
+//                //查询每个term 最相关的doc
+//                Query queryT= parse.parse(term);
+//                TopDocs topDocsT = indexSearcher.search(queryT, 2);
+//                for (ScoreDoc scoreDoc : topDocsT.scoreDocs) {
+//                    // scoreDoc.doc属性就是document对象的id
+//                    // 根据document的id找到document对象
+//                    Document document = indexSearcher.doc(scoreDoc.doc);
+//                    System.out.println(scoreDoc.toString());
+//                    System.out.println("filename:"+document.get("fileName"));
+//                    System.out.println("WikiId:\n"+document.get("wikiId"));
+//                    System.out.println("-----------------------------------");
+//                }
+//            }
+//
+//        }
+//
+//        // 第七步：关闭IndexReader对象
+//        indexReader.close();
+//    }
 
     // 查询索引
-    public void query(Long wikiId) throws Exception {
-
-        // 创建一个indexReader对象，需要指定Directory对象。
-        IndexReader indexReader = DirectoryReader.open(this.directory);
-
-        // 创建indexsearcher对象
-        IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-
-        // 创建查询
-//        Query query = new TermQuery(new Term("wikiId", String.valueOf(wikiId)));
-
-        //指定分词技术，这里采用的语言处理模块要和创建索引的时候一致，否则检索的结果很不理想
-        Analyzer analyzer = new IKAnalyzer();
-        //创建查询query，搜索词为“空间向量”
-        QueryParser parse = new QueryParser("fileContent", analyzer);
-        Query query = parse.parse("Aalen");
-
-
-        // 执行查询
-        // 第一个参数是查询对象，第二个参数是查询结果返回的最大值
-        TopDocs topDocs = indexSearcher.search(query,2);
-
-        // 查询结果的总条数
-        System.out.println("查询结果的总条数：" + topDocs.totalHits);
-
-        // 遍历查询结果
-        // topDocs.scoreDocs存储了document对象的id
-        for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
-            // scoreDoc.doc属性就是document对象的id
-            // 根据document的id找到document对象
-            Document document = indexSearcher.doc(scoreDoc.doc);
-            System.out.println(scoreDoc.toString());
-            System.out.println("filename:"+document.get("fileName"));
-            System.out.println("fileContent:\n"+document.get("fileContent"));
-            System.out.println("-----------------------------------");
-        }
-        //遍历所有term，获取每个term最相关的3篇文章
-        Terms terms = MultiFields.getTerms(indexReader, "fileContent");
-        TermsEnum termsEnums = terms.iterator(null);
-        BytesRef byteRef = null;
-        while((byteRef = termsEnums.next()) != null) {
-            String term = new String(byteRef.bytes, byteRef.offset, byteRef.length);
-            System.out.println("term is : " + term+" Freq is:"+termsEnums.totalTermFreq());
-            Query queryT= parse.parse(term);
-            TopDocs topDocsT = indexSearcher.search(queryT, 3);
-            for (ScoreDoc scoreDoc : topDocsT.scoreDocs) {
-                // scoreDoc.doc属性就是document对象的id
-                // 根据document的id找到document对象
-                Document document = indexSearcher.doc(scoreDoc.doc);
-                System.out.println(scoreDoc.toString());
-                System.out.println("filename:"+document.get("fileName"));
-//                System.out.println("fileContent:\n"+document.get("fileContent"));
-                System.out.println("-----------------------------------");
-            }
-        }
-
-        // 第七步：关闭IndexReader对象
-        indexReader.close();
-    }
+//    public void query(Long wikiId) throws Exception {
+//
+//        // 创建一个indexReader对象，需要指定Directory对象。
+//        IndexReader indexReader = DirectoryReader.open(this.directory);
+//
+//        // 创建indexsearcher对象
+//        IndexSearcher indexSearcher = new IndexSearcher(indexReader);
+//
+//        // 创建查询
+////        Query query = new TermQuery(new Term("wikiId", String.valueOf(wikiId)));
+//
+//        //指定分词技术，这里采用的语言处理模块要和创建索引的时候一致，否则检索的结果很不理想
+//        Analyzer analyzer = new IKAnalyzer();
+//        //创建查询query，搜索词为“空间向量”
+//        QueryParser parse = new QueryParser("fileContent", analyzer);
+//        Query query = parse.parse("Aalen");
+//
+//
+//        // 执行查询
+//        // 第一个参数是查询对象，第二个参数是查询结果返回的最大值
+//        TopDocs topDocs = indexSearcher.search(query,2);
+//
+//        // 查询结果的总条数
+//        System.out.println("查询结果的总条数：" + topDocs.totalHits);
+//
+//        // 遍历查询结果
+//        // topDocs.scoreDocs存储了document对象的id
+//        for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
+//            // scoreDoc.doc属性就是document对象的id
+//            // 根据document的id找到document对象
+//            Document document = indexSearcher.doc(scoreDoc.doc);
+//            System.out.println(scoreDoc.toString());
+//            System.out.println("filename:"+document.get("fileName"));
+//            System.out.println("fileContent:\n"+document.get("fileContent"));
+//            System.out.println("-----------------------------------");
+//        }
+//        //遍历所有term，获取每个term最相关的3篇文章
+//        Terms terms = MultiFields.getTerms(indexReader, "fileContent");
+//        TermsEnum termsEnums = terms.iterator(null);
+//        BytesRef byteRef = null;
+//        while((byteRef = termsEnums.next()) != null) {
+//            String term = new String(byteRef.bytes, byteRef.offset, byteRef.length);
+//            System.out.println("term is : " + term+" Freq is:"+termsEnums.totalTermFreq());
+//            Query queryT= parse.parse(term);
+//            TopDocs topDocsT = indexSearcher.search(queryT, 3);
+//            for (ScoreDoc scoreDoc : topDocsT.scoreDocs) {
+//                // scoreDoc.doc属性就是document对象的id
+//                // 根据document的id找到document对象
+//                Document document = indexSearcher.doc(scoreDoc.doc);
+//                System.out.println(scoreDoc.toString());
+//                System.out.println("filename:"+document.get("fileName"));
+////                System.out.println("fileContent:\n"+document.get("fileContent"));
+//                System.out.println("-----------------------------------");
+//            }
+//        }
+//
+//        // 第七步：关闭IndexReader对象
+//        indexReader.close();
+//    }
 
 }

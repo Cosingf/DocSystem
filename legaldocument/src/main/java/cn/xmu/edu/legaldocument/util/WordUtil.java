@@ -1,6 +1,5 @@
 package cn.xmu.edu.legaldocument.util;
 
-import cn.xmu.edu.legaldocument.entity.QASection;
 import cn.xmu.edu.legaldocument.mapper.QAMapper;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;

@@ -715,6 +715,9 @@ export default {
 .pdf-canvas >>> .el-popover{
   max-width: 40%;
 }
+.pdf-canvas{
+  line-height:30px;
+}
 .my-popover{
   width: 200px; 
   transform-origin: center top; 

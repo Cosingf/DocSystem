@@ -10,6 +10,8 @@ import java.util.List;
 public interface PersonalLegaldocStackMapper {
     int deleteByPrimaryKey(Long id);
 
+    int deleteByBookIdAndUserId(@Param("bookId") Long bookId, @Param("userId") Long userId);
+
     int insert(PersonalLegaldocStack record);
 
     PersonalLegaldocStack selectByPrimaryKey(Long id);

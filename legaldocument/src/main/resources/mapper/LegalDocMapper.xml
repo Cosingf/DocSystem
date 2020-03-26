@@ -28,11 +28,12 @@
     select COUNT(id)
     from legal_doc
   </select>
-  <select id="selectPublicBooksByName" resultMap="BaseResultMap" >
+  <select id="selectPublicBooksByContent" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />
     from legal_doc
-    where  is_public =1 and bookname like concat ('%',#{selectName},'%')
+    where  is_public =1 and
+    (bookname like concat ('%',#{content},'%') or author like concat ('%',#{content},'%'))
   </select>
 
   <select id="selectPublicPage" resultMap="BaseResultMap" >

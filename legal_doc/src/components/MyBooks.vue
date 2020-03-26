@@ -5,7 +5,7 @@
         <el-menu-item index="1" @click="goToPublicLibrary">Public library</el-menu-item>
         <el-menu-item index="2">My library</el-menu-item>
         <el-input placeholder="Please enter keywords" prefix-icon="el-icon-search" class="my-input" v-model="input"></el-input>
-        <el-button type="primary">Find books</el-button>
+        <el-button type="primary" v-on:click="searchBooks()">Find books</el-button>
         <el-dropdown  trigger="click" >
             <el-avatar icon="el-icon-user-solid"  class="el-dropdown-link" shape="square" size="medium"></el-avatar>
             <el-dropdown-menu slot="dropdown">
@@ -85,7 +85,7 @@ export default {
       var searchContent = this.input
       this.$axios({
         method: 'POST',
-        url: '/apis/mybooks/' + searchContent + '/' + localStorage.getItem('userId')
+        url: '/apis/searchMybooks/' + searchContent + '/' + localStorage.getItem('userId')
 
       })
         .then(response => {
@@ -99,12 +99,19 @@ export default {
     deleteBook (bookid) {
       this.$axios({
         method: 'DELETE',
-        url: '/mybooks/delete',
-        data: {
-          userId: window.localStorage['userId'],
-          bookId: bookid
-        }
+        url: '/apis/mybooks/delete/' + bookid + '/' + localStorage.getItem('userId')
       })
+        .then(response => {
+          {
+            this.$notify.success({
+              title: 'Successfully delete！',
+              message: 'Successfully delete！'
+            })
+            this.currentChangeHandle(this.currentPage)
+          }
+        }).catch(error => {
+          console.log(error)
+        })
     },
     goToPublicLibrary () {
       this.$router.push({ name: 'PublicBooks' })

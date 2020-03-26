@@ -21,7 +21,7 @@ public interface LegalDocMapper {
 
     List<LegalDoc> selectPublicPage(@Param("num1") Integer num1,@Param("num2") Integer num2);
 
-    List<LegalDoc>  selectPublicBooksByName(@Param("selectName") String selectName);
+    List<LegalDoc>  selectPublicBooksByContent(@Param("content") String content);
 
     int updateByPrimaryKey(LegalDoc record);
 

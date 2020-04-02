@@ -44,12 +44,12 @@ public class BookService
         return legalDocs;
     }
 
-    public List<LegalDoc> searchPublicBooksByName(String name){
-        List<LegalDoc> legalDocs=legalDocMapper.selectPublicBooksByName(name);
+    public List<LegalDoc> searchPublicBooksByContent(String content){
+        List<LegalDoc> legalDocs=legalDocMapper.selectPublicBooksByContent(content);
         return legalDocs;
     }
 
-    public List<LegalDoc> searchMybooksByNameAndUserId(String name,Long userId){
+    public List<LegalDoc> searchMybooksByContentAndUserId(String content,Long userId){
 
         List<LegalDoc> legalDocs=new ArrayList<>();
         List<PersonalLegaldocStack> personalLegaldocStacks= personalLegaldocStackMapper.selectByUserId(userId);
@@ -63,7 +63,7 @@ public class BookService
         List<LegalDoc> books = new ArrayList<>();
         for (LegalDoc legalDoc:legalDocs)
         {
-            if (legalDoc.getName().contains(name))
+            if (legalDoc.getName().contains(content) || legalDoc.getAuthor().contains(content))
                 books.add(legalDoc);
         }
         return books;
@@ -78,5 +78,11 @@ public class BookService
         if (personalLegaldocStackMapper.selectByBookIdAndUserId(bookId,userId)!=null) return true;
         personalLegaldocStackMapper.insert(personalLegaldocStack);
         return true;
+    }
+
+    public boolean deleteBook(long bookId,long userId){
+        int result = personalLegaldocStackMapper.deleteByBookIdAndUserId(bookId,userId);
+        if (result >0 )return true;
+        return false;
     }
 }

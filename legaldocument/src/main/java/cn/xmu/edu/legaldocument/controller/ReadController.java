@@ -68,5 +68,11 @@ public class ReadController {
         }
     }
 
-
+    @PostMapping("/read/chrome/wiki")
+    public void getChromeWiki(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest,@RequestParam("bookId") Long bookId) throws Exception
+    {
+        httpServletResponse.setContentType("application/json;charset=utf-8");
+        List<KeywordWikiVO> matchResList=readService.getMatchResult(bookId);
+        httpServletResponse.getWriter().write(JSON.toJSONString(matchResList));
+    }
 }

@@ -341,7 +341,6 @@ export default {
           console.log(error)
         })
     },
-
     // 显示增强结果
     enhance () {
       this.$refs.tip.style.display = 'none'// 隐藏弹框
@@ -367,7 +366,6 @@ export default {
       this.$axios({
         method: 'POST',
         url: '/apis/publicbooks/search/' + searchContent
-
       })
         .then(response => {
           this.books = response.data
@@ -493,11 +491,9 @@ export default {
     margin-top:20px;
     color:#586069;
   }
-
   .sku-box{
     position: relative;
   }
-
   .gray-box{
     overflow: visible;
     background: #fff;
@@ -510,7 +506,6 @@ export default {
     overflow: hidden;
     margin: 0 -1px -1px -1px;
   }
-
   .sku-box .item .item-img img{
     display: block;
     width: 206px;
@@ -621,7 +616,6 @@ export default {
     background-color: #5c85e5;
     background-image: linear-gradient(#4d72de,#6189e6);
   }
-
   .sku-box .item:hover .item-price{
     opacity: 0;
     transition: all .1s ease-out;
@@ -668,7 +662,6 @@ export default {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
   }
-
 .white-panel>>>.el-popper .popper__arrow, .el-popper .popper__arrow::after {
     position: absolute;
     display: block;

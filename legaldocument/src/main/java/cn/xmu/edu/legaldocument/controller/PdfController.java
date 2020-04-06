@@ -49,9 +49,9 @@ public class PdfController {
         legalDoc.setPath(path);
         legalDoc.setIsEnrich(0);//0代表未增强
         legalDoc.setIsPublic(isPublic);
-        //pdf首页生成封面
+        //TODO pdf首页生成封面
         String coverImg=pdfService.createCoverImg(path);
-        legalDoc.setCoverImg(coverImg);
+        legalDoc.setCoverImg(null);
         pdfService.insertLegalDoc(legalDoc);
 
         //更新关系书库

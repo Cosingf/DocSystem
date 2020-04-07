@@ -16,12 +16,40 @@
       </el-dropdown>
     </el-menu>
     <div class="white-panel" >
+      <el-tabs v-model="selectName" type="card" @tab-click="handleClick">
+        <el-tab-pane label="Enhance Text" name="first" @click="enhance">
+          <div style="height: 20px;"></div>
+          <p style="font-weight:normal;font-size:24px;margin:0 70px;color:#586069;">{{this.bookname}}</p>
+          <p style="color:#909399;margin:5px 72px;">{{this.author}}</p>
+          <!-- <el-button type="success" @click="showWikiPdf" style="margin-top: -45px;margin-left: 600px;" plain>Show Wiki Annotation</el-button>
+          <el-button type="success" @click="enhance" style="margin-top: -45px;margin-left: 800px;" plaindata-toggle="modal" data-target="#myModal" plain>Enhancn text</el-button> -->
+          <el-divider></el-divider>
+          <div class="drag-box" id="dragBox" >
+            <el-scrollbar style="height: 200% ">
+              <div class="wrapper" id="pdf-container" @mouseup="tooltip($event)" >
+                <div  v-for="i in totals" :id="`page-${i}`" :key="i" class="pdf-box" >
+                  <canvas :id="'canvas-pdf-' + i" class="canvas-pdf" ></canvas>
+                </div>
+              </div>
+            </el-scrollbar>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="Show Wiki Annotaion" name="second" @click="showWikiPdf">
+          <div style="height: 20px;"></div>
+          <p style="font-weight:normal;font-size:24px;margin:0 70px;color:#586069;">{{this.bookname}}</p>
+          <p style="color:#909399;margin:5px 72px;">{{this.author}}</p>
+          <el-divider></el-divider>
+          <div @mouseup="tooltip($event)"  class="pdf-canvas" id="pdf-canvas" >
+            {{legalDoc}}
+          </div>
+        </el-tab-pane>
+      </el-tabs>
       <div style="height: 20px;"></div>
-      <p style="font-weight:normal;font-size:24px;margin:0 70px;color:#586069;">{{this.bookname}}</p>
-      <p style="color:#909399;margin:5px 72px;">{{this.author}}</p>
-      <el-button type="success" @click="showWiki" style="margin-top: -45px;margin-left: 600px;" plain>Show Wiki Annotation</el-button>
-      <el-button type="success" @click="enhance" style="margin-top: -45px;margin-left: 800px;" plaindata-toggle="modal" data-target="#myModal" plain>Enhancn text</el-button>
-      <el-divider></el-divider>
+      <!-- <p style="font-weight:normal;font-size:24px;margin:0 70px;color:#586069;">{{this.bookname}}</p>
+      <p style="color:#909399;margin:5px 72px;">{{this.author}}</p> -->
+      <!-- <el-button type="success" @click="showWikiPdf" style="margin-top: -45px;margin-left: 600px;" plain>Show Wiki Annotation</el-button>
+      <el-button type="success" @click="enhance" style="margin-top: -45px;margin-left: 800px;" plaindata-toggle="modal" data-target="#myModal" plain>Enhancn text</el-button> -->
+      <!-- <el-divider></el-divider>
       <div class="drag-box" id="dragBox" >
         <el-scrollbar style="height: 200% ">
           <div class="wrapper" id="pdf-container" @mouseup="tooltip($event)" >
@@ -30,7 +58,7 @@
             </div>
           </div>
         </el-scrollbar>
-      </div>
+      </div> -->
       <!--txr文本测试高亮+提示框用-->
       <!-- <div @mouseup="tooltip($event)"  class="pdf-canvas" id="pdf-canvas" >
           {{legalDoc}}
@@ -79,6 +107,7 @@ export default {
     return {
       show:false,
       input: '',
+      selectName:'first',
       activeName: '0',
       activeIndex: '0',
       accordion: true,
@@ -106,7 +135,9 @@ export default {
         link: '',
         sectionContent: ''
       }],
-      legalDoc:'Now the Spring Festival has passed and the new semester is coming soon. Looking back on the past year, I have finished my small plans, but haven’t made any breakthrough. So I make up my mind that I must finish the tasks for the new semester. The first plan is to take regular exercise. I like to play computer games and sometimes I cannott help staying up late, which makes me feel sleepy next day in class, so I need to sleep early and then do some sports to improve my efficiency. ',
+      legalDoc:'Now the Spring Festival has passed and the new semester is coming soon. Looking back on the past year, I have finished my small plans, but haven’t made any breakthrough. So I make up my mind that I must finish the tasks for the new semester. The first plan is to take regular exercise. I like to play computer games and sometimes I cannott help staying up late, which makes me feel sleepy next day in class, so I need to sleep early and then do some sports to improve my efficiency.\n'+
+      ' Now the Spring Festival has passed and the new semester is coming soon. Looking back on the past year, I have finished my small plans, but haven’t made any breakthrough. So I make up my mind that I must finish the tasks for the new semester. The first plan is to take regular exercise. I like to play computer games and sometimes I cannott help staying up late, which makes me feel sleepy next day in class, so I need to sleep early and then do some sports to improve my efficiency.\n'+
+      '  Now the Spring Festival has passed and the new semester is coming soon. Looking back on the past year, I have finished my small plans, but haven’t made any breakthrough. So I make up my mind that I must finish the tasks for the new semester. The first plan is to take regular exercise. I like to play computer games and sometimes I cannott help staying up late, which makes me feel sleepy next day in class, so I need to sleep early and then do some sports to improve my efficiency.',
       wikiAnnotaion: [{
         keyword: '',
         title: '',
@@ -133,9 +164,10 @@ export default {
     SearchResult
   },
   created () {
+    this.initWiki()
+    console.log("test created")
     this.renderPdf(this.scale)
     this.$refs.tip.style.display = 'none'
-    this.initWiki()
   },
   watch: {
     scale (val) {
@@ -179,11 +211,72 @@ export default {
         .then(response => {
           {
             this.wikiAnnotaion = response.data
-            console.log(this.wikiAnnotaion.length)
+            console.log("get wiki length:"+this.wikiAnnotaion.length)
           }
         }).catch(error => {
           console.log(error)
         })
+    },
+    
+    //处理pdf canvas，显示 wiki Annotaion
+    showWikiPdf(){
+      var count=0;
+      // var keywords=[];
+	    // this.wikiAnnotaion.forEach(function (element) {
+		  //   keywords.push(element);
+		  //   // console.log("content keyword:"+element.keyword);
+      // });
+      let doc=$("#pdf-container").html();
+      console.log("doc:"+doc)
+
+      this.wikiAnnotaion.forEach(function(element) {
+        if(element.pageNum==1){
+          console.log("wiki:"+element.keyword+" 对应count:"+count)
+          let key=element.keyword
+          let replaceReg = new RegExp(key, 'g');
+          if(!replaceReg.test(doc)){
+            return true;//终止本次循环
+          } 
+          // let replaceString = '<span style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;" name="test">'+key+'</span>'
+          let replaceString=
+            '<span style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;">'+key+'</span>'
+          doc=doc.replace(replaceReg,replaceString)
+          count=count+1
+        }
+      });
+
+
+      function highlight(node,pos,element){
+        var span = document.createElement("span");
+		    span.className = "highlighted";
+		    span.style.color = "black";
+		    span.style.backgroundColor = "yellow";
+
+        var highlighted = node.innerText.splitText(pos);
+        console.log("Highlighted:"+highlighted);
+        var afterHighlighted = highlighted.splitText(keyword.length);
+        console.log("afterHighlighted:"+afterHighlighted);
+		    var highlightedClone = highlighted.cloneNode(true);
+
+		    span.appendChild(highlightedClone);
+		    highlighted.parentNode.replaceChild(span, highlighted);
+      }
+
+      function addHighlights(node){ 
+        var i;
+			  keywords.forEach(function (element) {
+				  var keyword=element.keyword.toLowerCase();
+          var pos = node.innerText.toLowerCase().indexOf(keyword);
+          console.log("document:"+node.innerText+"\nkeyword:"+keyword+" pos:"+pos);
+				  if (0 <= pos) {
+					  highlight(node, pos,element);
+					  count=count+1;
+          }
+        });
+      }
+      
+      // addHighlights(document.body);
+      
     },
     // 显示wiki Annotation
     showWiki () {
@@ -719,5 +812,8 @@ export default {
   top: 207px; 
   left: 244px;
   
+}
+.white-panel >>> .el-tabs__nav{
+  margin-left:690px;
 }
 </style>

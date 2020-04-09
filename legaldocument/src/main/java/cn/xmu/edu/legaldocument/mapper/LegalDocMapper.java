@@ -30,4 +30,6 @@ public interface LegalDocMapper {
     void insertPersonalLegalDoc(PersonalLegaldocStack personalLegaldocStack);
 
     void setLegalDocEnriched(Long id);
+
+    String getPathByBookId(Long id);
 }

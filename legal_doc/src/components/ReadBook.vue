@@ -34,7 +34,7 @@
             </el-scrollbar>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="Show Wiki Annotaion" name="second" @click="showWikiPdf">
+        <el-tab-pane label="Show Wiki Annotaion" name="second" @tab-click="showWiki">
           <div style="height: 20px;"></div>
           <p style="font-weight:normal;font-size:24px;margin:0 70px;color:#586069;">{{this.bookname}}</p>
           <p style="color:#909399;margin:5px 72px;">{{this.author}}</p>
@@ -107,7 +107,7 @@ export default {
     return {
       show:false,
       input: '',
-      selectName:'first',
+      selectName:'second',
       activeName: '0',
       activeIndex: '0',
       accordion: true,
@@ -135,9 +135,7 @@ export default {
         link: '',
         sectionContent: ''
       }],
-      legalDoc:'Now the Spring Festival has passed and the new semester is coming soon. Looking back on the past year, I have finished my small plans, but haven’t made any breakthrough. So I make up my mind that I must finish the tasks for the new semester. The first plan is to take regular exercise. I like to play computer games and sometimes I cannott help staying up late, which makes me feel sleepy next day in class, so I need to sleep early and then do some sports to improve my efficiency.\n'+
-      ' Now the Spring Festival has passed and the new semester is coming soon. Looking back on the past year, I have finished my small plans, but haven’t made any breakthrough. So I make up my mind that I must finish the tasks for the new semester. The first plan is to take regular exercise. I like to play computer games and sometimes I cannott help staying up late, which makes me feel sleepy next day in class, so I need to sleep early and then do some sports to improve my efficiency.\n'+
-      '  Now the Spring Festival has passed and the new semester is coming soon. Looking back on the past year, I have finished my small plans, but haven’t made any breakthrough. So I make up my mind that I must finish the tasks for the new semester. The first plan is to take regular exercise. I like to play computer games and sometimes I cannott help staying up late, which makes me feel sleepy next day in class, so I need to sleep early and then do some sports to improve my efficiency.',
+      legalDoc: '',
       wikiAnnotaion: [{
         keyword: '',
         title: '',
@@ -164,8 +162,8 @@ export default {
     SearchResult
   },
   created () {
+    this.initDocument()
     this.initWiki()
-    console.log("test created")
     this.renderPdf(this.scale)
     this.$refs.tip.style.display = 'none'
   },
@@ -176,6 +174,12 @@ export default {
     }
   },
   methods: {
+    handleClick(tab, event) {
+      if(tab.name=='second'){
+        console.log("click tab show wiki");
+        // this.$options.methods.showWiki(this.wikiAnnotaion);
+      }
+    },
     showPopper(){
       this.show=true
     },
@@ -203,6 +207,20 @@ export default {
     goToPublicLibrary () {
       this.$router.push({ name: 'PublicBooks' })
     },
+    initDocument(){
+      this.$axios({
+        method: 'POST',
+        url: '/apis/read/doc/' + this.bookId
+      })
+        .then(response => {
+          {
+            this.legalDoc = response.data
+            console.log("legalDoc:"+this.legalDoc)
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+    },
     initWiki () {
       this.$axios({
         method: 'POST',
@@ -210,14 +228,15 @@ export default {
       })
         .then(response => {
           {
-            this.wikiAnnotaion = response.data
-            console.log("get wiki length:"+this.wikiAnnotaion.length)
+            // this.wikiAnnotaion = response.data
+            this.$set(this,'wikiAnnotaion',response.data)
+            console.log("get wiki length 1:"+this.wikiAnnotaion.length)
+            this.$options.methods.showWiki(this.wikiAnnotaion)
           }
         }).catch(error => {
           console.log(error)
         })
     },
-    
     //处理pdf canvas，显示 wiki Annotaion
     showWikiPdf(){
       var count=0;
@@ -279,57 +298,83 @@ export default {
       
     },
     // 显示wiki Annotation
-    showWiki () {
+    showWiki (wikiAnnotaion) {
+      function replacePos(doc, pos, replacetext,len){
+        var str = doc.substr(0, pos) + replacetext + doc.substring(pos+len, doc.length);
+        return str;
+      }
+      let that=this
       let doc=$("#pdf-canvas").html()
-      // console.log("doc:"+doc)
-      let flag=new Array()
-      let count=0
-      this.wikiAnnotaion.forEach(function(element) {
+      console.log("show wiki doc:"+doc)
+      // console.log("show wiki length:"+this.wikiAnnotaion.length)
+      console.log("wiki Annotation:"+wikiAnnotaion.length)
+      var position=[]
+      wikiAnnotaion.forEach(function(element) {
         if(element.pageNum==1){
-          console.log("wiki:"+element.keyword+" 对应count:"+count)
+          // console.log("wiki:"+element.keyword+" 对应count:"+count)
           let key=element.keyword
           let replaceReg = new RegExp(key, 'g');
-          if(!replaceReg.test(doc)){
-            return true;//终止本次循环
-          } 
-          // let replaceString = '<span style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;" name="test">'+key+'</span>'
-          let replaceString=
-            '<el-button  class="popover popover-'+count+'" style=" position:relative;cursor:pointer;background-color: #fdf6ec;color: #e6a23c;">'+key+'</el-button>'+
-              '<div  role="tooltip" aria-hidden="false" class="my-popover my-popover-'+count+' el-popover el-popper el-popover--plain" tabindex="0" style="visibility:hidden;" x-placement="top">'+
+          var start=0
+          let len=doc.length;
+          console.log("doc len:"+len)
+          var pos=0
+          while(start<len&&doc.indexOf(key,start)!=-1){
+            pos=doc.indexOf(key,start);
+            position.push(pos)
+            console.log("start:"+start+" keyword:"+key+" position:"+pos)
+            var textlen=element.summary.length-5;
+		        var minlen=Math.min(textlen,290);
+		        var index=element.summary.indexOf(' ',minlen);
+		        if(index!=-1) var text=element.summary.substring(0,index);
+		        else text=element.summary.substring(0,300);
+            let replaceString=
+            '<el-button  class="popover popover-'+pos+'" style=" position:relative;cursor:pointer;background-color: #fdf6ec;color: #e6a23c;">'+key+'</el-button>'+
+              '<div  role="tooltip" aria-hidden="false" class="my-popover my-popover-'+pos+' el-popover el-popper el-popover--plain" tabindex="0" style="visibility:hidden;" x-placement="top">'+
               '<div class="el-popover__title">'+element.title+'</div>'+
-              element.summary.substring(0,300)+'...</br>'+
-              'Read more: <el-link href="'+element.url+'" class="my-link-'+count+' el-link el-link--primary is-underline">'+element.url+'</el-link>'+
-              '<div x-arrow="" class="popper__arrow" style="left: 113.5px;"></div>'+
+              text+'...</br>'+
+              'Read more: <el-link href="'+element.url+'" class="my-link-'+pos+' el-link el-link--primary is-underline">'+element.url+'</el-link>'+
+              '<div x-arrow="" class="popper__arrow" ></div>'+
             '</div>'
-          doc=doc.replace(replaceReg,replaceString)
-          count=count+1
+            // let replacetext = '<span style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;" name="test">'+key+'</span>'
+            // console.log("replacetext len:"+replacetext.length)
+            start=start+pos+replaceString.length+1
+            doc=replacePos(doc,pos,replaceString,key.length)
+            len=doc.length
+            // console.log("new doc:"+doc)
+          }
         }
       });
       $("#pdf-canvas").html(doc)
-      for(let i=0;i<count;i++){
+      position.forEach(function(pos){
+        // console.log("iteratre position:"+pos)
+        setTimeout(() => {
         //获取位置
-        console.log("count: "+i)
-        console.log("父元素位置："+$('.popover-'+i).offset().left+","+$('.popover-'+i).offset().top)
-        console.log("子元素位置："+$('.my-popover-'+i).offset().left+","+$('.my-popover-'+i).offset().top)
+        // console.log("count: "+i)
+        console.log("父元素位置："+$('.popover-'+pos).offset().left+","+$('.popover-'+pos).offset().top)
+        console.log("子元素位置："+$('.my-popover-'+pos).offset().left+","+$('.my-popover-'+pos).offset().top)
         //设置提示框位置
-        let left=$('.popover-'+i).offset().left-100
-        let top=$('.popover-'+i).offset().top+30
-        $('.my-popover-'+i).attr("style","visibility:hidden;"+"top:"+top+"px;left:"+left+"px;")
+        let left=$('.popover-'+pos).offset().left-450
+        let top=$('.popover-'+pos).offset().top-91
+        $('.my-popover-'+pos).attr("style","visibility:hidden;"+"top:"+top+"px;left:"+left+"px;")
         //使url link生效
-        let url=$('.my-link-'+i).attr("href")
-        $('.my-link-'+i).click(function() {
+        let url=$('.my-link-'+pos).attr("href")
+        $('.my-link-'+pos).click(function() {
           window.location.href=url
         })
-        $('.popover-'+i).click(function() {
-          let style=$('.my-popover-'+i).attr("style")
+        $('.popover-'+pos).click(function() {
+          let style=$('.my-popover-'+pos).attr("style")
           if(style=="visibility:visible;"+"top:"+top+"px;left:"+left+"px;"){
-            $('.my-popover-'+i).attr("style","visibility:hidden;"+"top:"+top+"px;left:"+left+"px;")
+            $('.my-popover-'+pos).attr("style","visibility:hidden;"+"top:"+top+"px;left:"+left+"px;")
           }else{
-            $('.my-popover-'+i).attr("style","visibility:visible;"+"top:"+top+"px;left:"+left+"px;")
+            $('.my-popover-'+pos).attr("style","visibility:visible;"+"top:"+top+"px;left:"+left+"px;")
           }  
         })
-      }
+      },10000); 
+      })
+      
+      
     },
+
     // 打开弹框
     tooltip (event) {
       var x = 10
@@ -563,7 +608,7 @@ export default {
     margin:0 auto;
     margin-top: 13px;
     background: #fff;
-    overflow: hidden;
+    overflow: visible;
     border-radius: 2px;
     -webkit-box-shadow: 0 1px 3px rgba(26,26,26,.1);
     box-shadow: 0 1px 3px rgba(26,26,26,.1);
@@ -737,7 +782,7 @@ export default {
     position: relative;
   }
   .pdf-canvas{
-    margin:20px 70px;
+    margin:40px 80px;
     color:#586069;
   }
   .box-card>>>.el-button{
@@ -770,7 +815,7 @@ export default {
 }
 .white-panel>>>.el-popper[x-placement^=top] .popper__arrow {
     top: -6px;
-    left: 50%;
+    left: 46%;
     margin-right: 3px;
     border-top-width: 0;
     border-bottom-color: #ebeef5;
@@ -799,10 +844,12 @@ export default {
     padding:10px 5px;
 } 
 .pdf-canvas >>> .el-popover{
-  max-width: 40%;
+  width:410px;
+  max-width: 42%;
 }
 .pdf-canvas{
-  line-height:30px;
+  line-height:40px;
+  font-size:17px;
 }
 .my-popover{
   width: 200px; 
@@ -815,5 +862,8 @@ export default {
 }
 .white-panel >>> .el-tabs__nav{
   margin-left:690px;
+}
+.white-panel >>> .el-tabs__content{
+  overflow: visible;
 }
 </style>

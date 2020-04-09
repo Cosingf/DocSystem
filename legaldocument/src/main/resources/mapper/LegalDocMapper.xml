@@ -78,4 +78,9 @@
     set is_enrich = 1
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="getPathByBookId" parameterType="java.lang.Long" resultType="java.lang.String">
+    select path
+    from legal_doc
+    where id = #{id,jdbcType=BIGINT}
+  </select>
 </mapper>

@@ -5,10 +5,14 @@ import cn.xmu.edu.legaldocument.VO.KeywordWikiVO;
 import cn.xmu.edu.legaldocument.VO.QASectionVO;
 import cn.xmu.edu.legaldocument.entity.*;
 import cn.xmu.edu.legaldocument.mapper.*;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 import java.util.*;
 
 
@@ -31,6 +35,8 @@ public class ReadService {
     WikiMapper wikiMapper;
     @Autowired
     KeywordMapper keywordMapper;
+    @Autowired
+    LegalDocMapper legalDocMapper;
 
 
     public List<QA> getHighLightResult(String highLight,Long bookid,Integer pagenum) throws Exception {
@@ -166,5 +172,16 @@ public class ReadService {
         }
         //way2:查询lucene索引库，返回最相关的文章
         return keywordWikiVOList;
+    }
+
+    public String getDocById(Long bookId) throws IOException {
+        String pdfPath=legalDocMapper.getPathByBookId(bookId);
+        PdfReader reader = new PdfReader(pdfPath);
+        int num = reader.getNumberOfPages();// 获得页数
+        StringBuilder doc=new StringBuilder();
+        for (int i = 1; i <= num; i++) {
+            doc.append(PdfTextExtractor.getTextFromPage(reader, i)) ;
+        }
+        return doc.toString();
     }
 }

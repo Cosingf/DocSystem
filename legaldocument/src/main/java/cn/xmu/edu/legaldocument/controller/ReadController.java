@@ -54,6 +54,15 @@ public class ReadController {
         httpServletResponse.getWriter().write(JSON.toJSONString(matchResList));
     }
 
+    @PostMapping("/read/doc/{bookid}")
+    public void getDocById(HttpServletResponse httpServletResponse, @PathVariable("bookid") Long bookId) throws IOException {
+        //读取doc txt
+        httpServletResponse.setContentType("application/json;charset=utf-8");
+        String document=readService.getDocById(bookId);
+        System.out.println("docuent"+document);
+        httpServletResponse.getWriter().write(JSON.toJSONString(document));
+    }
+
     @PostMapping("/read/enhance")
     public void getAllPageResult(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @RequestParam("bookId") Long bookId,@RequestParam("pageNum") Integer pageNum ) throws Exception
     {

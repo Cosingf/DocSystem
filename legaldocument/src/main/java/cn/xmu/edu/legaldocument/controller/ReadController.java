@@ -59,7 +59,6 @@ public class ReadController {
         //读取doc txt
         httpServletResponse.setContentType("application/json;charset=utf-8");
         String document=readService.getDocById(bookId);
-        System.out.println("docuent"+document);
         httpServletResponse.getWriter().write(JSON.toJSONString(document));
     }
 

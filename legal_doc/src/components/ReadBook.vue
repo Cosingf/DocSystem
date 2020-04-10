@@ -17,7 +17,16 @@
     </el-menu>
     <div class="white-panel" >
       <el-tabs v-model="selectName" type="card" @tab-click="handleClick">
-        <el-tab-pane label="Enhance Text" name="first" @click="enhance">
+        <el-tab-pane label="Show Wiki Annotaion" name="first" @tab-click="showWiki">
+          <div style="height: 20px;"></div>
+          <p style="font-weight:normal;font-size:24px;margin:0 70px;color:#586069;">{{this.bookname}}</p>
+          <p style="color:#909399;margin:5px 72px;">{{this.author}}</p>
+          <el-divider></el-divider>
+          <div @mouseup="tooltip($event)"  class="pdf-canvas" id="pdf-canvas" >
+            {{legalDoc}}
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="Enhance Text" name="second" @click="enhance">
           <div style="height: 20px;"></div>
           <p style="font-weight:normal;font-size:24px;margin:0 70px;color:#586069;">{{this.bookname}}</p>
           <p style="color:#909399;margin:5px 72px;">{{this.author}}</p>
@@ -32,15 +41,6 @@
                 </div>
               </div>
             </el-scrollbar>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="Show Wiki Annotaion" name="second" @tab-click="showWiki">
-          <div style="height: 20px;"></div>
-          <p style="font-weight:normal;font-size:24px;margin:0 70px;color:#586069;">{{this.bookname}}</p>
-          <p style="color:#909399;margin:5px 72px;">{{this.author}}</p>
-          <el-divider></el-divider>
-          <div @mouseup="tooltip($event)"  class="pdf-canvas" id="pdf-canvas" >
-            {{legalDoc}}
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -107,7 +107,7 @@ export default {
     return {
       show:false,
       input: '',
-      selectName:'second',
+      selectName:'first',
       activeName: '0',
       activeIndex: '0',
       accordion: true,
@@ -215,7 +215,7 @@ export default {
         .then(response => {
           {
             this.legalDoc = response.data
-            console.log("legalDoc:"+this.legalDoc)
+            // console.log("legalDoc:"+this.legalDoc)
           }
         }).catch(error => {
           console.log(error)
@@ -232,70 +232,145 @@ export default {
             this.$set(this,'wikiAnnotaion',response.data)
             console.log("get wiki length 1:"+this.wikiAnnotaion.length)
             this.$options.methods.showWiki(this.wikiAnnotaion)
+            // this.$options.methods.showWikiPdf(this.wikiAnnotaion)
           }
         }).catch(error => {
           console.log(error)
         })
     },
     //处理pdf canvas，显示 wiki Annotaion
-    showWikiPdf(){
-      var count=0;
-      // var keywords=[];
-	    // this.wikiAnnotaion.forEach(function (element) {
-		  //   keywords.push(element);
-		  //   // console.log("content keyword:"+element.keyword);
+    showWikiPdf(wikiAnnotaion){
+      // var count=0;
+      // // var keywords=[];
+	    // // this.wikiAnnotaion.forEach(function (element) {
+		  // //   keywords.push(element);
+		  // //   // console.log("content keyword:"+element.keyword);
+      // // });
+      // let doc=$("#pdf-container").html();
+      // console.log("doc:"+doc)
+
+      // this.wikiAnnotaion.forEach(function(element) {
+      //   if(element.pageNum==1){
+      //     console.log("wiki:"+element.keyword+" 对应count:"+count)
+      //     let key=element.keyword
+      //     let replaceReg = new RegExp(key, 'g');
+      //     if(!replaceReg.test(doc)){
+      //       return true;//终止本次循环
+      //     } 
+      //     // let replaceString = '<span style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;" name="test">'+key+'</span>'
+      //     let replaceString=
+      //       '<span style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;">'+key+'</span>'
+      //     doc=doc.replace(replaceReg,replaceString)
+      //     count=count+1
+      //   }
       // });
-      let doc=$("#pdf-container").html();
-      console.log("doc:"+doc)
-
-      this.wikiAnnotaion.forEach(function(element) {
-        if(element.pageNum==1){
-          console.log("wiki:"+element.keyword+" 对应count:"+count)
-          let key=element.keyword
-          let replaceReg = new RegExp(key, 'g');
-          if(!replaceReg.test(doc)){
-            return true;//终止本次循环
-          } 
-          // let replaceString = '<span style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;" name="test">'+key+'</span>'
-          let replaceString=
-            '<span style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;">'+key+'</span>'
-          doc=doc.replace(replaceReg,replaceString)
-          count=count+1
-        }
-      });
 
 
-      function highlight(node,pos,element){
-        var span = document.createElement("span");
-		    span.className = "highlighted";
-		    span.style.color = "black";
-		    span.style.backgroundColor = "yellow";
+      // function highlight(node,pos,element){
+      //   var span = document.createElement("span");
+		  //   span.className = "highlighted";
+		  //   span.style.color = "black";
+		  //   span.style.backgroundColor = "yellow";
 
-        var highlighted = node.innerText.splitText(pos);
-        console.log("Highlighted:"+highlighted);
-        var afterHighlighted = highlighted.splitText(keyword.length);
-        console.log("afterHighlighted:"+afterHighlighted);
-		    var highlightedClone = highlighted.cloneNode(true);
+      //   var highlighted = node.innerText.splitText(pos);
+      //   console.log("Highlighted:"+highlighted);
+      //   var afterHighlighted = highlighted.splitText(keyword.length);
+      //   console.log("afterHighlighted:"+afterHighlighted);
+		  //   var highlightedClone = highlighted.cloneNode(true);
 
-		    span.appendChild(highlightedClone);
-		    highlighted.parentNode.replaceChild(span, highlighted);
-      }
+		  //   span.appendChild(highlightedClone);
+		  //   highlighted.parentNode.replaceChild(span, highlighted);
+      // }
 
-      function addHighlights(node){ 
-        var i;
-			  keywords.forEach(function (element) {
-				  var keyword=element.keyword.toLowerCase();
-          var pos = node.innerText.toLowerCase().indexOf(keyword);
-          console.log("document:"+node.innerText+"\nkeyword:"+keyword+" pos:"+pos);
-				  if (0 <= pos) {
-					  highlight(node, pos,element);
-					  count=count+1;
-          }
-        });
-      }
+      // function addHighlights(node){ 
+      //   var i;
+			//   keywords.forEach(function (element) {
+			// 	  var keyword=element.keyword.toLowerCase();
+      //     var pos = node.innerText.toLowerCase().indexOf(keyword);
+      //     console.log("document:"+node.innerText+"\nkeyword:"+keyword+" pos:"+pos);
+			// 	  if (0 <= pos) {
+			// 		  highlight(node, pos,element);
+			// 		  count=count+1;
+      //     }
+      //   });
+      // }
       
       // addHighlights(document.body);
       
+      function replacePos(doc, pos, replacetext,len){
+        var str = doc.substr(0, pos) + replacetext + doc.substring(pos+len, doc.length);
+        return str;
+      }
+      let that=this
+      let doc=$("#textLayer").html()
+      console.log("show wiki doc:"+doc)
+      // console.log("show wiki length:"+this.wikiAnnotaion.length)
+      console.log("wiki Annotation:"+wikiAnnotaion.length)
+      var position=[]
+      wikiAnnotaion.forEach(function(element) {
+        if(element.pageNum==1){
+          // console.log("wiki:"+element.keyword+" 对应count:"+count)
+          let key=element.keyword
+          let replaceReg = new RegExp(key, 'g');
+          var start=0
+          let len=doc.length;
+          console.log("doc len:"+len)
+          var pos=0
+          while(start<len&&doc.indexOf(key,start)!=-1){
+            pos=doc.indexOf(key,start);
+            position.push(pos)
+            console.log("start:"+start+" keyword:"+key+" position:"+pos)
+            var textlen=element.summary.length-5;
+		        var minlen=Math.min(textlen,290);
+		        var index=element.summary.indexOf(' ',minlen);
+		        if(index!=-1) var text=element.summary.substring(0,index);
+		        else text=element.summary.substring(0,300);
+            let replaceString=
+            '<el-button  class="popover popover-'+pos+'" style=" position:relative;cursor:pointer;background-color: #e6a23c;">'+key+'</el-button>'+
+              '<div  role="tooltip" aria-hidden="false" class="my-popover my-popover-'+pos+' el-popover el-popper el-popover--plain" tabindex="0" style="visibility:hidden;" x-placement="top">'+
+              '<div class="el-popover__title">'+element.title+'</div>'+
+              text+'...</br>'+
+              'Read more: <el-link href="'+element.url+'" class="my-link-'+pos+' el-link el-link--primary is-underline">'+element.url+'</el-link>'+
+              '<div x-arrow="" class="popper__arrow" ></div>'+
+            '</div>'
+            // let replacetext = '<span style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;" name="test">'+key+'</span>'
+            // console.log("replacetext len:"+replacetext.length)
+            start=start+pos+replaceString.length+1
+            doc=replacePos(doc,pos,replaceString,key.length)
+            len=doc.length
+            // console.log("new doc:"+doc)
+          }
+        }
+      });
+      $("#textLayer").html(doc)
+      position.forEach(function(pos){
+        // console.log("iteratre position:"+pos)
+        setTimeout(() => {
+        //获取位置
+        // console.log("count: "+i)
+        console.log("父元素位置："+$('.popover-'+pos).offset().left+","+$('.popover-'+pos).offset().top)
+        console.log("子元素位置："+$('.my-popover-'+pos).offset().left+","+$('.my-popover-'+pos).offset().top)
+        //设置提示框位置
+        let left=$('.popover-'+pos).offset().left-450
+        let top=$('.popover-'+pos).offset().top-320
+        $('.my-popover-'+pos).attr("style","visibility:hidden;"+"top:"+top+"px;left:"+left+"px;")
+        //使url link生效
+        let url=$('.my-link-'+pos).attr("href")
+        $('.my-link-'+pos).click(function() {
+          window.location.href=url
+        })
+        $('.popover-'+pos).click(function() {
+          let style=$('.my-popover-'+pos).attr("style")
+          if(style=="visibility:visible;"+"top:"+top+"px;left:"+left+"px;"){
+            $('.my-popover-'+pos).attr("style","visibility:hidden;"+"top:"+top+"px;left:"+left+"px;")
+          }else{
+            $('.my-popover-'+pos).attr("style","visibility:visible;"+"top:"+top+"px;left:"+left+"px;")
+          }  
+        })
+      },10000); 
+      })
+      
+
     },
     // 显示wiki Annotation
     showWiki (wikiAnnotaion) {

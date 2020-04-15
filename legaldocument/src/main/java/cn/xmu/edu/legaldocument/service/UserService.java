@@ -1,7 +1,6 @@
 package cn.xmu.edu.legaldocument.service;
 
 
-import cn.xmu.edu.legaldocument.dao.UserDao;
 import cn.xmu.edu.legaldocument.entity.User;
 import cn.xmu.edu.legaldocument.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;

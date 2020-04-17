@@ -122,11 +122,11 @@
             <version>2.0.14</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.apache.lucene</groupId>-->
-<!--            <artifactId>lucene-core</artifactId>-->
-<!--            <version>6.0.0</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.lucene</groupId>-->
+        <!--            <artifactId>lucene-core</artifactId>-->
+        <!--            <version>6.0.0</version>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>org.apache.lucene</groupId>
@@ -135,11 +135,11 @@
         </dependency>
 
         <!-- http://mvnrepository.com/artifact/org.apache.lucene/lucene-analyzers-common -->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.lucene</groupId>-->
-<!--            <artifactId>lucene-analyzers-common</artifactId>-->
-<!--            <version>6.0.0</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.lucene</groupId>-->
+        <!--            <artifactId>lucene-analyzers-common</artifactId>-->
+        <!--            <version>6.0.0</version>-->
+        <!--        </dependency>-->
 
         <!-- http://mvnrepository.com/artifact/org.apache.lucene/lucene-memory -->
         <dependency>
@@ -151,15 +151,15 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.9</version>
+            <version>4.12</version>
         </dependency>
 
-<!--        &lt;!&ndash; http://mvnrepository.com/artifact/org.apache.lucene/lucene-queryparser &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.lucene</groupId>-->
-<!--            <artifactId>lucene-queryparser</artifactId>-->
-<!--            <version>6.0.0</version>-->
-<!--        </dependency>-->
+        <!--        &lt;!&ndash; http://mvnrepository.com/artifact/org.apache.lucene/lucene-queryparser &ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.lucene</groupId>-->
+        <!--            <artifactId>lucene-queryparser</artifactId>-->
+        <!--            <version>6.0.0</version>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>com.itextpdf</groupId>
@@ -204,7 +204,8 @@
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
-<!--        外部jar包-->
+
+        <!--        外部jar包-->
 
         <dependency>
             <groupId>com.xxx.www</groupId>
@@ -255,13 +256,13 @@
             <systemPath>${project.basedir}/lib/lucene-analyzers-common-5.0.0.jar</systemPath>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>com.xxx.www</groupId>-->
-<!--            <artifactId>out-jar-7</artifactId>-->
-<!--            <version>5.0.0.</version>-->
-<!--            <scope>system</scope>-->
-<!--            <systemPath>${project.basedir}/lib/lucene-core-5.0.0.jar</systemPath>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.xxx.www</groupId>-->
+        <!--            <artifactId>out-jar-7</artifactId>-->
+        <!--            <version>5.0.0.</version>-->
+        <!--            <scope>system</scope>-->
+        <!--            <systemPath>${project.basedir}/lib/lucene-core-5.0.0.jar</systemPath>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>com.xxx.www</groupId>
@@ -306,14 +307,14 @@
                     <includeSystemScope>true</includeSystemScope>
                 </configuration>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-compiler-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <source>7</source>-->
-<!--                    <target>7</target>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-compiler-plugin</artifactId>-->
+            <!--                <configuration>-->
+            <!--                    <source>7</source>-->
+            <!--                    <target>7</target>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
         </plugins>
     </build>
 

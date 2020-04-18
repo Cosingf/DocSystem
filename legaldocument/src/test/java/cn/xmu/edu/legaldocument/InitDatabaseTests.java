@@ -1,12 +1,17 @@
 package cn.xmu.edu.legaldocument;
 
 
+import cn.xmu.edu.legaldocument.entity.Discuss;
 import cn.xmu.edu.legaldocument.mapper.DiscussMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = LegaldocumentApplication.class)
@@ -18,7 +23,7 @@ public class InitDatabaseTests {
 
     @Test
     public void contextLoads() {
-        
+
 //        for (int i = 0; i < 11; ++i) {
 //            Discuss discuss = new Discuss();
 //            discuss.setCommentCount(i);
@@ -30,7 +35,15 @@ public class InitDatabaseTests {
 //            discuss.setContent(String.format("Balaababalalalal Content %d", i));
 //            discussMapper.addDiscuss(discuss);
 //        }
-        System.out.println(discussMapper.selectLatestDiscuss(0,0,3));
+        List<Discuss> discussList=discussMapper.selectLatestDiscuss(1,0,10);
+        for(Discuss discuss:discussList){
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            Date d=discuss.getCreatedDate();
+            System.out.println("格林威治时间:"+d);
+            String s=df.format(d);
+            System.out.println("格式化后的时间:"+s);
+        }
+
     }
 
     /*

@@ -2,17 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.xmu.edu.legaldocument.mapper.DiscussMapper" >
   <sql id="table">discuss</sql>
-  <sql id="selectFields">id, title, content, comment_count,created_date,user_id
+  <sql id="selectFields">id, title, content,user_id,created_date, comment_count
     </sql>
-  <select id="selectLatestDiscuss" resultType="cn.xmu.edu.legaldocument.entity.Discuss">
+  <resultMap id="BaseResultMap" type="cn.xmu.edu.legaldocument.entity.Discuss" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="created_date" property="createdDate" jdbcType="DATE" />
+    <result column="comment_count" property="commentCount" jdbcType="INTEGER" />
+  </resultMap>
+  <select id="selectLatestDiscuss" resultMap="BaseResultMap">
     SELECT
     <include refid="selectFields"/>
     FROM
     <include refid="table"/>
-
-    <if test="userId != 0">
-      WHERE user_id = #{userId}
-    </if>
+    WHERE user_id = #{userId,jdbcType=INTEGER}
     ORDER BY id DESC
     LIMIT #{offset},#{limit}
   </select>

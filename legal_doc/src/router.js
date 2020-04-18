@@ -12,6 +12,10 @@ import UserPage from "./components/UserPage";
 import BookInfo from "./components/BookInfo"
 import ReadBook from "./components/ReadBook"
 import UploadBook from "./components/UploadBook"
+import DiscussHome from "./components/DiscussHome"
+import Discuss from "./components/Discuss"
+import DiscussDetail from "./components/DiscussDetail"
+import Comment from "./components/Comment"
 
 
 Vue.use(Router)
@@ -57,6 +61,26 @@ export default new Router({
       path: '/books/upload',
       name: 'UploadBook',
       component: UploadBook
+    },
+    {
+      path: '/discuss/home',
+      name: 'DiscussHome',
+      component: DiscussHome
+    },
+    {
+      path: '/discuss/single',
+      name: 'Discuss',
+      component: Discuss
+    },
+    {
+      path: '/discuss/detail',
+      name: 'DiscussDetail',
+      component: DiscussDetail
+    },
+    {
+      path: '/discuss/detail/comment',
+      name: 'Comment',
+      component: Comment
     }
   ]
 })

@@ -1,14 +1,18 @@
-package cn.xmu.edu.legaldocument.entity;
+package cn.xmu.edu.legaldocument.VO;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Discuss {
+public class UserDiscuss {
     private int id;
     private String title;
     private String content;
     private int userId;
-    private Date createdDate;
+    private String createdDate;
     private int commentCount;
+    private String account;
+    private String email;
 
     public int getId() {
         return id;
@@ -34,14 +38,6 @@ public class Discuss {
         this.content = content;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public int getUserId() {
         return userId;
     }
@@ -50,11 +46,35 @@ public class Discuss {
         this.userId = userId;
     }
 
+    public String getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(String createdDate) {
+        this.createdDate = createdDate;
+    }
+
     public int getCommentCount() {
         return commentCount;
     }
 
     public void setCommentCount(int commentCount) {
         this.commentCount = commentCount;
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

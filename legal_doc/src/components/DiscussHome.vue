@@ -17,6 +17,11 @@
       </el-menu>
       <div class="white-panel">
         <div style="height: 20px;"></div>
+        <div style="margin:0px 30px;font-size:18px;font-weight: 400;">
+          <i class="el-icon-document"></i>Latest Discussions
+          <el-button type="text" @click="open">Add New Discussion</el-button>
+        </div>
+        <el-divider></el-divider>
         <div v-for="item in userDiscuss">
           <Discuss   :item="item" ></Discuss>
           <el-divider></el-divider>
@@ -88,6 +93,24 @@ methods: {
         }).catch(error => {
           console.log(error)
         })
+    },
+  open() {
+      this.$prompt('请输入邮箱', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+        inputErrorMessage: '邮箱格式不正确'
+      }).then(({ value }) => {
+        this.$message({
+          type: 'success',
+          message: '你的邮箱是: ' + value
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入'
+        });       
+      });
     },
   goToPublicLibrary () {
     this.$router.push({ name: 'PublicBooks' })
@@ -238,5 +261,8 @@ methods: {
 }
 .white-panel >>> .el-col {
   padding-bottom: 50px;
+}
+.white-panel >>> .el-divider--horizontal {
+    margin: 16px 0;
 }
 </style>

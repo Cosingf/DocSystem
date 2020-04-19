@@ -33,7 +33,7 @@
 
 <style scoped>
   .discuss-item{
-    margin:10px 40px;
+    margin:0px 30px;
   }
   .my-title{
     font-size: 18px;

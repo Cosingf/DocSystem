@@ -80,7 +80,7 @@ public  class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(passportInterceptor);
-//        registry.addInterceptor(loginRequiredInterceptor).addPathPatterns("/user/*");
+//        registry.addInterceptor(loginRequiredInterceptor).addPathPatterns("/**").excludePathPatterns("/login","/register");;
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 

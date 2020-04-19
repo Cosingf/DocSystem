@@ -10,7 +10,7 @@
             <el-avatar icon="el-icon-user-solid"  class="el-dropdown-link" shape="square" size="medium"></el-avatar>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item ><router-link  to="/users/info" class="router-link">Settings</router-link></el-dropdown-item>
-              <el-dropdown-item > <router-link  to="/" class="router-link">Sign out</router-link></el-dropdown-item>
+              <el-dropdown-item > <a  @click="logout" class="router-link" >Sign out</a></el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
     </el-menu>
@@ -77,6 +77,17 @@ export default {
         .then(response => {
           that.books = response.data
           console.log(that.books)
+        }).catch(error => {
+          console.log(error)
+        })
+    },
+    logout(){
+      this.$axios({
+        method: 'GET',
+        url: '/apis/logout'
+      })
+        .then(response => {
+          this.$router.push({ name: 'Login' })
         }).catch(error => {
           console.log(error)
         })

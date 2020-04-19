@@ -7,11 +7,19 @@ public class User {
 
     private String password;
 
-    private String sex;
-
-    private Byte age;
+    private String salt;
 
     private String email;
+
+    public User() {
+    }
+
+    public User(String account) {
+        this.account = account;
+        this.password = "";
+        this.salt = "";
+        this.email= "";
+    }
 
     public Long getId() {
         return id;
@@ -37,27 +45,19 @@ public class User {
         this.password = password == null ? null : password.trim();
     }
 
-    public String getSex() {
-        return sex;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex == null ? null : sex.trim();
-    }
-
-    public Byte getAge() {
-        return age;
-    }
-
-    public void setAge(Byte age) {
-        this.age = age;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email == null ? null : email.trim();
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 }

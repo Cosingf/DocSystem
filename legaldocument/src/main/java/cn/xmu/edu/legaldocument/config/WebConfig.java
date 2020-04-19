@@ -1,5 +1,8 @@
 package  cn.xmu.edu.legaldocument.config;
 
+import cn.xmu.edu.legaldocument.interceptor.LoginRequiredInterceptor;
+import cn.xmu.edu.legaldocument.interceptor.PassportInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -11,10 +14,19 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.*;
 
+
 import java.util.List;
 
 @Configuration
 public  class WebConfig implements WebMvcConfigurer {
+
+
+    @Autowired
+    PassportInterceptor passportInterceptor;
+
+    @Autowired
+    LoginRequiredInterceptor loginRequiredInterceptor;
+
     @Override
     public void addFormatters(FormatterRegistry formatterRegistry) {
 
@@ -66,8 +78,10 @@ public  class WebConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public void addInterceptors(InterceptorRegistry interceptorRegistry) {
-
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(passportInterceptor);
+//        registry.addInterceptor(loginRequiredInterceptor).addPathPatterns("/user/*");
+        WebMvcConfigurer.super.addInterceptors(registry);
     }
 
     @Override

@@ -14,7 +14,10 @@ public class QASectionVO {
     private Long questionId;
     private Long answerId;
 
-    public  QASectionVO (QA qa,Long sectionId,Integer sectionNum,String sectionContent){
+
+    public  QASectionVO(){}
+
+   public  QASectionVO (QA qa,Long sectionId,Integer sectionNum,String sectionContent){
         this.sectionId=sectionId;
         this.sectionNum=sectionNum;
         this.sectionContent =sectionContent;

@@ -43,6 +43,21 @@ public class ReadController {
         }
     }
 
+    @PostMapping("/read/chrome/highlight")
+    public void getChromeHighLightResult(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @RequestParam("content") String content) throws Exception
+    {
+        httpServletResponse.setContentType("application/json;charset=utf-8");
+
+        List<QA>  qas =readService.getChromeHighLightResult(content);
+        if (qas!=null||qas.size()!=0) {
+            httpServletResponse.setStatus(200);
+            httpServletResponse.getWriter().write(JSON.toJSONString(qas));
+        }
+        else {
+            httpServletResponse.setStatus(404);
+        }
+    }
+
     /**
      * 新增Wiki Annotation
      */
@@ -68,6 +83,19 @@ public class ReadController {
         httpServletResponse.setContentType("application/json;charset=utf-8");
 
         List<QASectionVO> relusts =readService.getBookEnrich(bookId,pageNum);
+        if (relusts==null)
+            httpServletResponse.setStatus(404);
+        else {
+            httpServletResponse.setStatus(200);
+            httpServletResponse.getWriter().write(JSON.toJSONString(relusts));
+        }
+    }
+    @PostMapping("/read/chrome/enhance")
+    public void getChromeAllPageResult(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @RequestParam("content") String content ) throws Exception
+    {
+        httpServletResponse.setContentType("application/json;charset=utf-8");
+
+        List<QASectionVO> relusts =readService.getChromeEnrich(content);
         if (relusts==null)
             httpServletResponse.setStatus(404);
         else {

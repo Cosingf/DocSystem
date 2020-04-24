@@ -3,8 +3,10 @@ package cn.xmu.edu.legaldocument.service;
 
 import cn.xmu.edu.legaldocument.VO.KeywordWikiVO;
 import cn.xmu.edu.legaldocument.VO.QASectionVO;
+import cn.xmu.edu.legaldocument.dao.QADao;
 import cn.xmu.edu.legaldocument.entity.*;
 import cn.xmu.edu.legaldocument.mapper.*;
+import cn.xmu.edu.legaldocument.util.WordUtil;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +39,10 @@ public class ReadService {
     KeywordMapper keywordMapper;
     @Autowired
     LegalDocMapper legalDocMapper;
+    @Autowired
+    WordUtil wordUtil;
+    @Autowired
+    QADao qaDao;
 
 
     public List<QA> getHighLightResult(String highLight,Long bookid,Integer pagenum) throws Exception {
@@ -71,6 +77,35 @@ public class ReadService {
         return qas;
     }
 
+    public List<QA> getChromeHighLightResult(String highLight) throws Exception {
+        String[] keyWords = wordUtil.getKeywords(highLight,2);
+        return qaDao.findIndexDB(keyWords,3);
+    }
+
+    public List<QASectionVO> getChromeEnrich(String content) throws Exception {
+        List<Section> sections = new ArrayList<>();
+        List<QASectionVO> results = new ArrayList<>();
+        for (int i=0 ;i<content.length();i++)
+        {
+            Section section = new Section();
+            section.setOrderNum(i);
+            int start = i*50;
+            int end = start + 99;
+            section.setSectionContent(content.substring(start,end));
+        }
+            for (Section section:sections){
+                QASectionVO result = new QASectionVO();
+                String[] keyWords;
+                keyWords = wordUtil.getKeywords(section.getSectionContent(), 2);
+
+                List<QA> qas=qaDao.findIndexDB(keyWords,1);
+                result.setQuestion(qas.get(0).getQuestion());
+                result.setAnswer(qas.get(0).getAnswer());
+                result.setSectionContent(section.getSectionContent());
+                results.add(result);
+            }
+            return results;
+    }
 
     public List<QASectionVO> getBookEnrich(Long bookid,Integer pageNum) throws Exception {
         Page page =pageMapper.selectByBookIdAndPageNum(bookid,pageNum);

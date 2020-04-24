@@ -4,6 +4,7 @@
         <a class="myicon" style="color:#007bff">Reedpeer</a>
         <el-menu-item index="1">Public library</el-menu-item>
         <el-menu-item index="2" @click="goToMyLibrary">My library</el-menu-item>
+        <el-menu-item index="3" @click="goToDiscussHome">Discussion</el-menu-item>
         <el-input placeholder="Please enter keywords" prefix-icon="el-icon-search" class="my-input" v-model="input"></el-input>
         <el-button type="primary" v-on:click="searchBooks()">Find books</el-button>
         <el-dropdown  trigger="click" >
@@ -98,6 +99,9 @@ export default {
     goToMyLibrary () {
       this.$router.push({ name: 'MyBooks' })
     },
+    goToDiscussHome(){
+      this.$router.push({ name: 'DiscussHome' })
+    },
     searchBooks () {
       var searchContent = this.input
       this.$axios({
@@ -153,13 +157,14 @@ export default {
   .el-menu-demo {
     padding-left: 450px;;
   }
-  .myicon{
-    position: absolute;
-    margin-top: 6px;
-    font-size: 24px;
-    font-weight: 500;
-    margin-left: -135px;
-  }
+  /* change */
+.myicon{
+  position: absolute;
+  margin-top: 6px;
+  font-size: 24px;
+  font-weight: 500;
+  margin-left: -185px;
+}
   .public-book >>> .el-input {
     position: absolute;
     width:250px;
@@ -194,11 +199,12 @@ export default {
     margin-left:460px;
     line-height:13px;
   }
-  .el-avatar{
-    position: absolute;
-    margin-top:9px;
-    margin-left:510px;
-  }
+/* change */
+.el-avatar{
+  position: absolute;
+  margin-top:9px;
+  margin-left:440px;
+}
   .el-avatar--medium {
     width: 34px;
     height: 34px;
@@ -214,10 +220,11 @@ export default {
   .el-dropdown{
     position:absolute;
   }
-  .el-popper[x-placement^=bottom] {
-    margin-top:48px;
-    margin-left: 1145px;
-  }
+/* change */
+.el-popper[x-placement^=bottom] {
+  margin-top:48px;
+  margin-left: 1185px;
+}
   .router-link{
     color: #606266;
     text-decoration: none;

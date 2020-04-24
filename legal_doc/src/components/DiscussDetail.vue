@@ -1,5 +1,6 @@
 <template>
   <div class="discuss-home">
+    <div class="discuss-header">
       <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="">
       <a class="myicon" style="color:#007bff">Reedpeer</a>
       <el-menu-item index="1" @click="goToPublicLibrary">Public library</el-menu-item>
@@ -15,21 +16,32 @@
           </el-dropdown-menu>
       </el-dropdown>
       </el-menu>
+    </div>
       <div class="white-panel">
         <div style="margin:10px 30px;">
-          <div style="font-size: 20px;font-weight: 600;">Title</div>
-          <div style="font-size: 15px;line-height: 25px;">content content content content content content content content content content
-            content content content content content content content content
-            content content content content content content content content
-          </div>
+          <div style="font-size: 20px;font-weight: 600;">{{userDiscuss.title}}</div>
+          <div style="font-size: 15px;line-height: 25px;">{{userDiscuss.content}}</div>
+          <el-button type="primary"  @click="dialogFormVisible = true" plain>Add new comment</el-button> &emsp;
+          <span style="color: rgb(133, 144, 166);"><i class="el-icon-chat-round"></i>{{userDiscuss.commentCount}} comments</span>
         </div>
+        <el-dialog title="New Discussion" :visible.sync="dialogFormVisible">
+          <el-form :model="commentForm">
+            <el-form-item label="Content" :label-width="formLabelWidth">
+              <el-input type="textarea" v-model="commentForm.content" autocomplete="off" placeholder="Write down your comment"></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+              <el-button @click="dialogFormVisible = false">Cancel</el-button>
+              <el-button type="primary" @click="publishComment">Publish</el-button>
+          </div>
+        </el-dialog>
         <el-divider></el-divider>
-        <Comment></Comment>
-        <el-divider></el-divider>
-        <Comment></Comment>
-        <el-divider></el-divider>
+        <div v-for="item in userComment">
+          <Comment :item="item" ></Comment>
+          <el-divider></el-divider>
+        </div>
       </div>
-    <div class="pagination"><el-pagination  @current-change="currentChangeHandle" :current-page="currentPage" layout="prev, pager, next" :total="100"></el-pagination></div>
+    <!-- <div class="pagination"><el-pagination  @current-change="currentChangeHandle" :current-page="currentPage" layout="prev, pager, next" :total="100"></el-pagination></div> -->
   </div>
 </template>
 <script>
@@ -39,36 +51,83 @@ data () {
   return {
     input: '',
     activeIndex: '0',
-    userId: localStorage.getItem('userId')
+    discussId: localStorage.getItem('discussId'),
+    userDiscuss:{
+      id:'',
+      title:'',
+      content:'',
+      userId:'',
+      createdDate:'',
+      commentCount:'',
+      account:'',
+      email:''
+    },
+    userComment:[{
+      id:'',
+      userId:'',
+      entityId:'',
+      entityType:'',
+      content:'',
+      createdDate:'',
+      status:'',
+      account:'',
+      email:'',
+      likeCount:'',
+      likeStatus:''
+    }],
+    dialogTableVisible: false,
+    dialogFormVisible: false,
+    formLabelWidth: '100px',
+    commentForm:{
+      content:''
+    }
   }
 },
 components: {
   Comment
 },
 created () {
-  let that = this
-  that.$axios({
-    method: 'POST',
-    url: '/apis/mybooks/sixbooks/' + this.userId + '/' + this.currentPage
+  //获取当前discuss数据
+  this.$axios({
+    method: 'GET',
+    url: '/apis/discuss/' + this.discussId
   })
     .then(response => {
-      that.books = response.data
-      console.log(that.books)
+      this.userDiscuss = response.data
+      console.log("user discuss:"+this.userDiscuss)
     }).catch(error => {
       console.log(error)
-    })
+    });
+  //获取discuss对应的comment数据
+  this.$axios({
+    method: 'GET',
+    url: '/apis/comment/' + this.discussId
+  })
+    .then(response => {
+      this.userComment = response.data
+      // this.userComment.forEach(element => {
+      //   console.log("comment content:"+element.content)
+      // });
+    }).catch(error => {
+      console.log(error)
+    });
 },
 methods: {
-  currentChangeHandle (val) {
-    this.currentPage = val // 改变默认的页数
-    let that = this
-    that.$axios({
+  //todo
+  publishComment(){
+    this.dialogFormVisible = false;
+    this.userDiscuss.commentCount+=1
+    console.log("comment text:"+this.commentForm.content)
+    this.$axios({
       method: 'POST',
-      url: '/apis/mybooks/sixbooks/' + this.userId + '/' + this.currentPage
+      url: '/apis/addComment',
+      params: {
+        discussId: this.userDiscuss.id,
+        content: this.commentForm.content
+      }
     })
       .then(response => {
-        that.books = response.data
-        console.log(that.books)
+        this.userComment.push(response.data)
       }).catch(error => {
         console.log(error)
       })
@@ -153,7 +212,7 @@ methods: {
   background: #f6f6f6;
   height:33px;
 }
-.discuss-home >>> .el-button {
+.discuss-header >>> .el-button {
   position:absolute;
   font-size:14px;
   padding: 10px 10px;
@@ -162,12 +221,9 @@ methods: {
   line-height:13px;
 }
 .white-panel  >>> .el-button {
-  position:absolute;
-  font-size:14px;
-  padding: 10px 10px;
-  margin-top:-5px;
-  margin-left:0px;
-  line-height:13px;
+  padding: 8px 10px;
+  margin-top: 15px;
+  margin-bottom: -15px;
 }
 .panel-tips >>> .el-button {
   position:absolute;

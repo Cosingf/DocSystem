@@ -2,6 +2,7 @@ package cn.xmu.edu.legaldocument;
 
 
 import cn.xmu.edu.legaldocument.entity.Discuss;
+import cn.xmu.edu.legaldocument.mapper.CommentMapper;
 import cn.xmu.edu.legaldocument.mapper.DiscussMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +22,9 @@ public class InitDatabaseTests {
     @Autowired
     DiscussMapper discussMapper;
 
+    @Autowired
+    CommentMapper commentMapper;
+
     @Test
     public void contextLoads() {
 
@@ -35,15 +39,15 @@ public class InitDatabaseTests {
 //            discuss.setContent(String.format("Balaababalalalal Content %d", i));
 //            discussMapper.addDiscuss(discuss);
 //        }
-        List<Discuss> discussList=discussMapper.selectLatestDiscuss(1,0,10);
-        for(Discuss discuss:discussList){
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-            Date d=discuss.getCreatedDate();
-            System.out.println("格林威治时间:"+d);
-            String s=df.format(d);
-            System.out.println("格式化后的时间:"+s);
-        }
-
+//        List<Discuss> discussList=discussMapper.selectLatestDiscuss(1,0,10);
+//        for(Discuss discuss:discussList){
+//            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+//            Date d=discuss.getCreatedDate();
+//            System.out.println("格林威治时间:"+d);
+//            String s=df.format(d);
+//            System.out.println("格式化后的时间:"+s);
+//        }
+        System.out.println(commentMapper.getLatestComment(1,0,1).getContent());
     }
 
     /*

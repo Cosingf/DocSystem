@@ -4,6 +4,7 @@
       <a class="myicon" style="color:#007bff">Reedpeer</a>
       <el-menu-item index="1" @click="goToPublicLibrary">Public library</el-menu-item>
       <el-menu-item index="2">My library</el-menu-item>
+      <el-menu-item index="3" @click="goToDiscussHome">Discussion</el-menu-item>
       <el-input placeholder="Please enter keywords" prefix-icon="el-icon-search" class="my-input" v-model="input"></el-input>
       <el-button type="primary" v-on:click="searchBooks()">Find books</el-button>
       <el-dropdown  trigger="click" >
@@ -128,6 +129,9 @@ methods: {
   },
   uploadBook () {
     this.$router.push({ name: 'UploadBook' })
+  },
+  goToDiscussHome(){
+    this.$router.push({ name: 'DiscussHome' })
   }
 }
 }
@@ -148,12 +152,13 @@ methods: {
 .el-menu-demo {
   padding-left: 450px;;
 }
+/* change */
 .myicon{
   position: absolute;
   margin-top: 6px;
   font-size: 24px;
   font-weight: 500;
-  margin-left: -135px;
+  margin-left: -185px;
 }
 .private-book >>> .el-input {
   position: absolute;
@@ -189,10 +194,11 @@ methods: {
   margin-left:460px;
   line-height:13px;
 }
+/* change */
 .el-avatar{
   position: absolute;
   margin-top:9px;
-  margin-left:510px;
+  margin-left:440px;
 }
 .el-avatar--medium {
   width: 34px;
@@ -209,9 +215,10 @@ methods: {
 .el-dropdown{
   position:absolute;
 }
+/* change */
 .el-popper[x-placement^=bottom] {
   margin-top:48px;
-  margin-left: 1145px;
+  margin-left: 1185px;
 }
 .router-link{
   color: #606266;

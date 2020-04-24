@@ -22,6 +22,7 @@
       }),
       methods:{
         gotoDiscussDetail(){
+          localStorage.setItem('discussId',this.item.id)
           this.$router.push({name: 'DiscussDetail'});
         }
       },

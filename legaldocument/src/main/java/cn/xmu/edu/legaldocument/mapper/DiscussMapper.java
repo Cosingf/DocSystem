@@ -20,11 +20,11 @@ public interface DiscussMapper {
     List<Discuss> selectLatestDiscuss(@Param("userId") int userId, @Param("offset") int offset,
                                       @Param("limit") int limit);
 
-    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where id=#{id}"})
     Discuss getById(int id);
 
     @Update({"update ", TABLE_NAME, " set comment_count = #{commentCount} where id=#{id}"})
     int updateCommentCount(@Param("id") int id, @Param("commentCount") int commentCount);
 
+    Discuss getAddDiscuss(@Param("userId") int userId,@Param("offset") int offset,@Param("limit") int limit);
 }
 

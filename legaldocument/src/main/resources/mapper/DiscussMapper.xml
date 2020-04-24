@@ -21,4 +21,20 @@
     ORDER BY id DESC
     LIMIT #{offset},#{limit}
   </select>
+  <select id="getAddDiscuss" resultMap="BaseResultMap">
+    SELECT
+    <include refid="selectFields"/>
+    FROM
+    <include refid="table"/>
+    WHERE user_id = #{userId,jdbcType=INTEGER}
+    ORDER BY created_date DESC
+    LIMIT #{offset},#{limit}
+  </select>
+  <select id="getById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="selectFields"/>
+    FROM
+    <include refid="table"/>
+    where id = #{id,jdbcType=INTEGER}
+  </select>
 </mapper>

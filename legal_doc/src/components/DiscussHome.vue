@@ -1,5 +1,6 @@
 <template>
   <div class="discuss-home">
+    <div class="discuss-header">
       <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="">
       <a class="myicon" style="color:#007bff">Reedpeer</a>
       <el-menu-item index="1" @click="goToPublicLibrary">Public library</el-menu-item>
@@ -15,11 +16,26 @@
           </el-dropdown-menu>
       </el-dropdown>
       </el-menu>
+    </div>
       <div class="white-panel">
         <div style="height: 20px;"></div>
         <div style="margin:0px 30px;font-size:18px;font-weight: 400;">
-          <i class="el-icon-document"></i>Latest Discussions
-          <el-button type="text" @click="open">Add New Discussion</el-button>
+          <i class="el-icon-document"></i>&nbsp;Latest Discussions
+          <el-button type="text" @click="dialogFormVisible = true">Add New Discussion</el-button>
+          <el-dialog title="New Comment" :visible.sync="dialogFormVisible">
+            <el-form :model="discussionForm">
+              <el-form-item label="Title" :label-width="formLabelWidth">
+                <el-input v-model="discussionForm.title" autocomplete="off" placeholder="Write down your title"></el-input>
+              </el-form-item>
+              <el-form-item label="Discussion" :label-width="formLabelWidth">
+                <el-input type="textarea" v-model="discussionForm.content" autocomplete="off" placeholder="Write down your text"></el-input>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">Cancel</el-button>
+                <el-button type="primary" @click="publishDiscuss">Publish</el-button>
+            </div>
+          </el-dialog>
         </div>
         <el-divider></el-divider>
         <div v-for="item in userDiscuss">
@@ -48,7 +64,14 @@ data () {
       id: '',
       title: '',
       userId: ''
-    }]
+    }],
+    dialogTableVisible: false,
+    dialogFormVisible: false,
+    formLabelWidth: '100px',
+    discussionForm:{
+      title:'',
+      content:''
+    }
   }
 },
 components: {
@@ -61,9 +84,9 @@ created () {
   })
     .then(response => {
       this.userDiscuss = response.data
-      this.userDiscuss.forEach(element => {
-        console.log("createdDate :"+element.createdDate)
-      });
+      // this.userDiscuss.forEach(element => {
+      //   console.log("createdDate :"+element.createdDate)
+      // });
     }).catch(error => {
       console.log(error)
     })
@@ -83,6 +106,24 @@ methods: {
         console.log(error)
       })
   },
+  publishDiscuss(){
+    this.dialogFormVisible = false;
+
+    // console.log("discussion text:"+this.discussionForm.text)
+    this.$axios({
+      method: 'POST',
+      url: '/apis/addDiscuss',
+      params: {
+        title: this.discussionForm.title,
+        content: this.discussionForm.content
+      }
+    })
+      .then(response => {
+        this.userDiscuss.push(response.data)
+      }).catch(error => {
+        console.log(error)
+      })
+  },
   logout(){
       this.$axios({
         method: 'GET',
@@ -95,20 +136,20 @@ methods: {
         })
     },
   open() {
-      this.$prompt('请输入邮箱', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$prompt('Enter your title','Enter your text', 'Add Discussion', {
+        cancelButtonText: 'Cancel',
+        confirmButtonText: 'Publish',
         inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
         inputErrorMessage: '邮箱格式不正确'
       }).then(({ value }) => {
         this.$message({
           type: 'success',
-          message: '你的邮箱是: ' + value
+          message: 'Successfully published! ' 
         });
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '取消输入'
+          message: 'Publish Cancelled!'
         });       
       });
     },
@@ -148,38 +189,22 @@ methods: {
   font-weight: 500;
   margin-left: -185px;
 }
-.discuss-home >>> .el-input {
+.discuss-header >>> .el-input {
   position: absolute;
   width:250px;
   margin-top:9px;
   margin-left:30px;
 }
-.discuss-home >>> .el-input__inner{
+.discuss-header >>> .el-input__inner{
   background: #f6f6f6;
   height:33px;
 }
-.discuss-home >>> .el-button {
+.discuss-header >>> .el-button {
   position:absolute;
   font-size:14px;
   padding: 10px 10px;
   margin-top:8px;
   margin-left:290px;
-  line-height:13px;
-}
-.white-panel  >>> .el-button {
-  position:absolute;
-  font-size:14px;
-  padding: 10px 10px;
-  margin-top:-5px;
-  margin-left:0px;
-  line-height:13px;
-}
-.panel-tips >>> .el-button {
-  position:absolute;
-  font-size:14px;
-  padding: 10px 10px;
-  margin-top:3px;
-  margin-left:460px;
   line-height:13px;
 }
 /* change */
@@ -264,5 +289,21 @@ methods: {
 }
 .white-panel >>> .el-divider--horizontal {
     margin: 16px 0;
+}
+.white-panel >>> .el-button--text {
+    color: #409EFF;
+    background: 0 0;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 580px;
+    font-size: 17px;
+}
+.white-panel >>> .el-dialog {
+    width: 40%;
+}
+.white-panel >>>.el-dialog__body {
+    padding-right: 50px;
+    padding-top: 20px;
+    padding-bottom: 10px;
 }
 </style>

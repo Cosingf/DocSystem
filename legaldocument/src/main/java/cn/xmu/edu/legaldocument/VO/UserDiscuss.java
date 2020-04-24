@@ -1,8 +1,11 @@
 package cn.xmu.edu.legaldocument.VO;
 
+
+import cn.xmu.edu.legaldocument.entity.Discuss;
+import cn.xmu.edu.legaldocument.entity.User;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class UserDiscuss {
     private int id;
@@ -13,6 +16,25 @@ public class UserDiscuss {
     private int commentCount;
     private String account;
     private String email;
+
+    public UserDiscuss(){
+    }
+
+    public UserDiscuss(Discuss discuss, User user){
+        this.id=discuss.getId();
+        this.title=discuss.getTitle();
+        this.content=discuss.getContent();
+        this.userId=discuss.getUserId();
+        //date format
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        Date date=discuss.getCreatedDate();
+        String formatDate=df.format(date);
+        this.createdDate=formatDate;
+        this.commentCount=discuss.getCommentCount();
+        this.account=user.getAccount();
+        this.email=user.getEmail();
+    }
+
 
     public int getId() {
         return id;

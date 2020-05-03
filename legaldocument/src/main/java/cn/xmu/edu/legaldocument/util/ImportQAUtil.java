@@ -1,7 +1,6 @@
 package cn.xmu.edu.legaldocument.util;
 
 import cn.xmu.edu.legaldocument.entity.QA;
-import cn.xmu.edu.legaldocument.entity.QANew;
 import cn.xmu.edu.legaldocument.service.ReadService;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;

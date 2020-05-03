@@ -1,8 +1,8 @@
 package cn.xmu.edu.legaldocument.controller;
 
-import cn.xmu.edu.legaldocument.algorithm.GetBookTopicKeywords;
 import cn.xmu.edu.legaldocument.entity.*;
 import cn.xmu.edu.legaldocument.service.PdfService;
+import com.google.common.util.concurrent.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
 
 @RestController
 public class PdfController {
@@ -57,50 +60,48 @@ public class PdfController {
 
         personalLegaldocStack.setBookId(bookId);
         pdfService.insertPersonalLegalDoc(personalLegaldocStack);
-        GetBookTopicKeywords getBookTopicKeywords =new GetBookTopicKeywords();
-        getBookTopicKeywords.getBookTopicKeywords(path,null);
 
         //另起一个线程处理文本增强，wiki关键词匹配
-//        final long t1 = System.currentTimeMillis();
-//        final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
-//        ListenableFuture<Boolean> booleanTask = service.submit(new Callable<Boolean>() {
-//            @Override
-//            public Boolean call() throws Exception {
-//                String sysPath = System.getProperty("user.dir");
-//                String myPath = sysPath+"/file/";
-//                int[] pages=pdfService.split(myPath,page,file);
-//                logger.info(String.valueOf(pages.length));
-//
-//                for(int i=0;i<pages.length-1;i++)
-//                {
-//                    String pdfFilePath = myPath+pages[i]+".pdf";
-//                    String txtFilePath = myPath+pages[i]+".txt";
-//                    Page page=pdfService.readPdfToTxt(pdfFilePath,txtFilePath,legalDoc.getId(),i+1);
-//                    //txt分词，将关键词存入存入数据库，并和wiki_corpus进行预匹配
-//                    pdfService.mathchWikiCorpus(txtFilePath,legalDoc.getId(),page.getId());
-//                    //按照10 words切割成多个section
-//                    List<Section> sectionList=pdfService.cut(txtFilePath,page);
-////                    pdfService.enrichSection(sectionList);
-//                }
-////                pdfService.setLegalDocEnriched(bookId);
-//                pdfService.matchRemainingKeywordsByTerm(legalDoc.getId());
-////                pdfService.matchRemainingKeywordsByAlgorithm(legalDoc.getId());
-//                return true;
-//            }
-//        });
+        final long t1 = System.currentTimeMillis();
+        final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
+        ListenableFuture<Boolean> booleanTask = service.submit(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                String sysPath = System.getProperty("user.dir");
+                String myPath = sysPath+"/file/";
+                int[] pages=pdfService.split(myPath,page,file);
+                logger.info(String.valueOf(pages.length));
 
-//        Futures.addCallback(booleanTask, new FutureCallback<Boolean>() {
-//            @Override
-//            public void onSuccess(Boolean result) {
-//                System.out.println("total time："+ (System.currentTimeMillis() - t1));
-//            }
-//
-//            @Override
-//            public void onFailure(Throwable t) {
-//                t.printStackTrace();
-//            }
-//        });
-////        System.out.println("responseTime: " + (System.currentTimeMillis() - t1));
+                for(int i=0;i<pages.length-1;i++)
+                {
+                    String pdfFilePath = myPath+pages[i]+".pdf";
+                    String txtFilePath = myPath+pages[i]+".txt";
+                    Page page=pdfService.readPdfToTxt(pdfFilePath,txtFilePath,legalDoc.getId(),i+1);
+                    //txt分词，将关键词存入存入数据库，并和wiki_corpus进行预匹配
+                    pdfService.mathchWikiCorpus(txtFilePath,legalDoc.getId(),page.getId());
+                    //按照10 words切割成多个section
+                    List<Section> sectionList=pdfService.cut(txtFilePath,page);
+//                    pdfService.enrichSection(sectionList);
+                }
+//                pdfService.setLegalDocEnriched(bookId);
+                pdfService.matchRemainingKeywordsByTerm(legalDoc.getId());
+//                pdfService.matchRemainingKeywordsByAlgorithm(legalDoc.getId());
+                return true;
+            }
+        });
+
+        Futures.addCallback(booleanTask, new FutureCallback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean result) {
+                System.out.println("total time："+ (System.currentTimeMillis() - t1));
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                t.printStackTrace();
+            }
+        });
+//        System.out.println("responseTime: " + (System.currentTimeMillis() - t1));
         return legalDoc;
     }
 

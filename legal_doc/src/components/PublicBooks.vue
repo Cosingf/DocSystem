@@ -1,7 +1,7 @@
 <template>
     <body class="public-book" >
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="">
-        <a class="myicon" style="color:#007bff">Reedpeer</a>
+        <a class="myicon" style="color:#007bff">Readpeer</a>
         <el-menu-item index="1">Public library</el-menu-item>
         <el-menu-item index="2" @click="goToMyLibrary">My library</el-menu-item>
         <el-menu-item index="3" @click="goToDiscussHome">Discussion</el-menu-item>

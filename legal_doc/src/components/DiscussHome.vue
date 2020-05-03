@@ -2,7 +2,7 @@
   <div class="discuss-home">
     <div class="discuss-header">
       <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="">
-      <a class="myicon" style="color:#007bff">Reedpeer</a>
+      <a class="myicon" style="color:#007bff">Readpeer</a>
       <el-menu-item index="1" @click="goToPublicLibrary">Public library</el-menu-item>
       <el-menu-item index="2" @click="goToMyLibrary">My library</el-menu-item>
       <el-menu-item index="3">Discussion</el-menu-item>
@@ -42,7 +42,7 @@
           <Discuss   :item="item" ></Discuss>
           <el-divider></el-divider>
         </div>
-          
+
       </div>
     <!-- <div class="pagination"><el-pagination></el-pagination></div> -->
   </div>
@@ -144,18 +144,18 @@ methods: {
       }).then(({ value }) => {
         this.$message({
           type: 'success',
-          message: 'Successfully published! ' 
+          message: 'Successfully published! '
         });
       }).catch(() => {
         this.$message({
           type: 'info',
           message: 'Publish Cancelled!'
-        });       
+        });
       });
     },
   goToPublicLibrary () {
     this.$router.push({ name: 'PublicBooks' })
-  }, 
+  },
   goToMyLibrary () {
     this.$router.push({ name: 'MyBooks' })
   },

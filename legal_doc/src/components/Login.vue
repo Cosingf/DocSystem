@@ -2,7 +2,7 @@
     <body>
         <div style="height: 80px;"></div>
         <i class="el-icon-collection" style="text-align: center;"></i>
-        <a class="title">Sign in to Reedpeer</a>
+        <a class="title">Sign in to Readpeer</a>
         <div class="login">
         <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="80px" style="margin-left:-10px;margin-top:10px;" class="demo-ruleForm">
             <el-form-item label="Username" label-position="top" label-width="80px;" style="font-weight: bold;" prop="name">
@@ -17,7 +17,7 @@
         </el-form>
         </div>
         <div class="create-account">
-            <p>New to Reedpeer?<el-link type="primary" style="font-size:16px;"><router-link href='#' to="/users/register">&nbsp;Create an account.</router-link></el-link></p>
+            <p>New to Readpeer?<el-link type="primary" style="font-size:16px;"><router-link href='#' to="/users/register">&nbsp;Create an account.</router-link></el-link></p>
         </div>
     </body>
 </template>

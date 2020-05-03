@@ -3,7 +3,6 @@ package cn.xmu.edu.legaldocument.controller;
 import cn.xmu.edu.legaldocument.VO.KeywordWikiVO;
 import cn.xmu.edu.legaldocument.VO.QASectionVO;
 import cn.xmu.edu.legaldocument.entity.QA;
-import cn.xmu.edu.legaldocument.entity.QANew;
 import cn.xmu.edu.legaldocument.service.ReadService;
 import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;

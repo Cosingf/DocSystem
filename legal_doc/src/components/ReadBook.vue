@@ -2,7 +2,7 @@
   <body style="overflow:visible;">
   <div class="read-book" >
     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="">
-      <a class="myicon" style="color:#007bff">Reedpeer</a>
+      <a class="myicon" style="color:#007bff">Readpeer</a>
       <el-menu-item index="1" @click="goToPublicLibrary">Public library</el-menu-item>
       <el-menu-item index="2" @click="goToMyLibrary">My library</el-menu-item>
       <el-menu-item index="3" @click="goToDiscussHome">Discussion</el-menu-item>
@@ -260,7 +260,7 @@ export default {
       //     let replaceReg = new RegExp(key, 'g');
       //     if(!replaceReg.test(doc)){
       //       return true;//终止本次循环
-      //     } 
+      //     }
       //     // let replaceString = '<span style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;" name="test">'+key+'</span>'
       //     let replaceString=
       //       '<span style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;">'+key+'</span>'
@@ -286,7 +286,7 @@ export default {
 		  //   highlighted.parentNode.replaceChild(span, highlighted);
       // }
 
-      // function addHighlights(node){ 
+      // function addHighlights(node){
       //   var i;
 			//   keywords.forEach(function (element) {
 			// 	  var keyword=element.keyword.toLowerCase();
@@ -298,9 +298,9 @@ export default {
       //     }
       //   });
       // }
-      
+
       // addHighlights(document.body);
-      
+
       function replacePos(doc, pos, replacetext,len){
         var str = doc.substr(0, pos) + replacetext + doc.substring(pos+len, doc.length);
         return str;
@@ -369,11 +369,11 @@ export default {
             $('.my-popover-'+pos).attr("style","visibility:hidden;"+"top:"+top+"px;left:"+left+"px;")
           }else{
             $('.my-popover-'+pos).attr("style","visibility:visible;"+"top:"+top+"px;left:"+left+"px;")
-          }  
+          }
         })
-      },10000); 
+      },10000);
       })
-      
+
 
     },
     // 显示wiki Annotation
@@ -446,12 +446,12 @@ export default {
             $('.my-popover-'+pos).attr("style","visibility:hidden;"+"top:"+top+"px;left:"+left+"px;")
           }else{
             $('.my-popover-'+pos).attr("style","visibility:visible;"+"top:"+top+"px;left:"+left+"px;")
-          }  
+          }
         })
-      },10000); 
+      },10000);
       })
-      
-      
+
+
     },
 
     // 打开弹框
@@ -924,7 +924,7 @@ export default {
     border:none;
     font-size: 16px;
     padding:10px 5px;
-} 
+}
 .pdf-canvas >>> .el-popover{
   width:410px;
   max-width: 42%;
@@ -934,13 +934,13 @@ export default {
   font-size:17px;
 }
 .my-popover{
-  width: 200px; 
-  transform-origin: center top; 
-  z-index: 2027; 
-  position: absolute; 
-  top: 207px; 
+  width: 200px;
+  transform-origin: center top;
+  z-index: 2027;
+  position: absolute;
+  top: 207px;
   left: 244px;
-  
+
 }
 .white-panel >>> .el-tabs__nav{
   margin-left:690px;

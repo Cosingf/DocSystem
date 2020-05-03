@@ -1,7 +1,10 @@
 package cn.xmu.edu.legaldocument.util;
 
+import cn.xmu.edu.legaldocument.algorithm.WordListConverter;
 import cn.xmu.edu.legaldocument.mapper.QAMapper;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,17 +26,19 @@ public class WordUtil {
     public String[] getKeywords(String string,int n) throws IOException {
 
         //分词
-        IKAnalyzer ika =new IKAnalyzer();
-         ika.setUseSmart(true);
+         Analyzer ea =new EnglishAnalyzer();
          List<String> wordList= new ArrayList<>();
 
+         string = string.replaceAll("[^a-zA-Z ]", "");
+         WordListConverter wlc = new WordListConverter();
+
          Reader r = new StringReader(string);
-         TokenStream tokenStream = ika.tokenStream("text",r);
-        tokenStream.reset();
+         TokenStream tokenStream = ea.tokenStream("text",r);
+         tokenStream.reset();
          while (tokenStream.incrementToken()){
              CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
              String word =charTermAttribute.toString();
-             if (word.length()>2&&!word.equals("nbsp"))
+             if (!word.equals("nbsp"))
                  wordList.add(word);
          }
          //将list转换为map
@@ -59,8 +64,5 @@ public class WordUtil {
 
          return  keyWords;
     }
-
-
-
 
 }

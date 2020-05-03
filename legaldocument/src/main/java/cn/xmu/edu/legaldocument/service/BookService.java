@@ -35,7 +35,7 @@ public class BookService
         return legalDocs;
     }
 
-    public List<LegalDoc> getSixPublicBooksByNum(int num){
+    public List<LegalDoc> getEightPublicBooksByNum(int num){
         int n = (num-1)*8;
         int n2 = legalDocMapper.getAllNum();
         if ((n2-1-n)>=8) n2=8;

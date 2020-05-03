@@ -1,46 +1,79 @@
-package cn.xmu.edu.legaldocument;
+package cn.xmu.edu.legaldocument.util;
 
-
-import cn.xmu.edu.legaldocument.dao.QADao;
+import cn.xmu.edu.legaldocument.entity.QA;
+import cn.xmu.edu.legaldocument.entity.QANew;
+import cn.xmu.edu.legaldocument.service.ReadService;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
-import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.junit.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
-@SpringBootTest
-public class LuceneTest {
+/*
+导入txt中的qa数据进数据库，并创建索引
+ */
+@RestController
+public class ImportQAUtil {
 
-    /*
-        建立索引
-     */
+    private static String filePath = "D:/lucene/pinfo-mz-test.txt";
 
-    @Test
-    public void createIndexDB() throws Exception {
+    private static String lucenePath = "D:/lucene/index01";
 
+    @Autowired
+    private ReadService readService;
+
+    @RequestMapping("/importQA")
+    public void importTxt() throws IOException, ParseException {
+
+        String encoding = "utf-8";
+        List<QA> qaList = new ArrayList<>();
+        File file = new File(filePath);
+        InputStreamReader read = new InputStreamReader(new FileInputStream(file), "UTF-8");//考虑到编码格式
+        BufferedReader bufferedReader = new BufferedReader(read);//放在缓存流中
+        String lineTxt;
+        String allTxt = "";
+        int n = 0;
+        while ((lineTxt = bufferedReader.readLine()) != null) {
+            allTxt += lineTxt;
+        }
+        bufferedReader.close();
+        String[] qas = allTxt.split("question###");//切分数据
+
+        //把数据填充到JavaBean对象中
+        for (int i=1 ; i<qas.length-1;i++) {
+            QA qa = new QA();
+            String[] temp;
+            temp = qas[i].split("answer###");
+            qa.setQuestion(temp[0]);
+            qa.setAnswer(temp[1]);
+            qaList.add(qa);
+        }
+        createIndexes(qaList);
+    }
+
+
+    public static void createIndexes(List<QA> qaList) throws IOException {
         //创建IndexWriter对象
-        Path path = Paths.get("D:/lucene/index01");
+        Path path = Paths.get(lucenePath);
         Directory directory = FSDirectory.open(path);//索引创建在硬盘上。
 
         //使用英语分词算法对原始记录表进行拆分
         Analyzer analyzer = new EnglishAnalyzer();
-
         /**
          * IndexWriter将我们的document对象写到硬盘中
          *
@@ -59,46 +92,17 @@ public class LuceneTest {
         QAtype.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS); // 设置该字段的索引选项
         QAtype.freeze(); // 固定
 
-        File file = new File("D:/lucene/pinfo-mz-test.txt");
-        InputStreamReader read = new InputStreamReader(new FileInputStream(file), "UTF-8");//考虑到编码格式
-        BufferedReader bufferedReader = new BufferedReader(read);//放在缓存流中
-        String lineTxt;
-        String allTxt = "";
-        int n = 0;
-        while ((lineTxt = bufferedReader.readLine()) != null) {
-            allTxt += lineTxt;
-        }
-
-        String[] qas = allTxt.split("question###");//切分数据
-
-        String question = "";
-        String answer = "";
-
-        //把数据填充到JavaBean对象中
-        for (int i=1 ; i<qas.length-1;i++) {
-
-            String[] temp;
-            temp = qas[i].split("answer###");
-            question = temp[0];
-            answer = temp[1];
-
-            System.out.println(question + "\n" + answer + "\n" );
+        for (QA qa : qaList) {
             //创建Document对象【导入的是Lucene包下的Document对象】
             Document document = new Document();
             /**
              * 向Document对象加入一个字段
              * 参数一：字段的关键字
              * 参数二：字符的值
-             * 参数三：是否要存储到原始记录表中
-             *      YES表示是
-             *      NO表示否
-             * 参数四：是否需要将存储的数据拆分到词汇表中
-             *      ANALYZED表示拆分
-             *      NOT_ANALYZED表示不拆分
-             *
+             * 参数三：存储类型
              * */
-            document.add(new Field("question", question, QAtype));
-            document.add(new Field("answer", answer,QAtype));
+            document.add(new Field("question", qa.getQuestion(), QAtype));
+            document.add(new Field("answer", qa.getAnswer(),QAtype));
             //将Document对象通过IndexWriter对象写入索引库中
             indexWriter.addDocument(document);
         }
@@ -108,15 +112,4 @@ public class LuceneTest {
         indexWriter.close();
 
     }
-
-    @Test
-    public void findIndexDB() throws Exception {
-      String[] keywords={"薛之谦","堕胎"};
-      QADao qaDao = new QADao();
-      qaDao.findIndexDB(keywords,2);
-
-      System.in.read();
-    }
 }
-
-

@@ -3,6 +3,7 @@ package cn.xmu.edu.legaldocument.service;
 
 import cn.xmu.edu.legaldocument.VO.KeywordWikiVO;
 import cn.xmu.edu.legaldocument.VO.QASectionVO;
+import cn.xmu.edu.legaldocument.algorithm.GetBookTopicKeywords;
 import cn.xmu.edu.legaldocument.dao.QADao;
 import cn.xmu.edu.legaldocument.entity.*;
 import cn.xmu.edu.legaldocument.mapper.*;
@@ -10,11 +11,11 @@ import cn.xmu.edu.legaldocument.util.WordUtil;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 
 
@@ -45,6 +46,8 @@ public class ReadService {
     QADao qaDao;
 
 
+
+    //获取基于深度学习算法实现的高亮搜索结果
     public List<QA> getHighLightResult(String highLight,Long bookid,Integer pagenum) throws Exception {
         Page page =pageMapper.selectByBookIdAndPageNum(bookid,pagenum);
         List<QA> qas = new ArrayList<>();
@@ -77,11 +80,13 @@ public class ReadService {
         return qas;
     }
 
+    //获取基于Lucene技术实现的高亮结果
     public List<QA> getChromeHighLightResult(String highLight) throws Exception {
         String[] keyWords = wordUtil.getKeywords(highLight,2);
-        return qaDao.findIndexDB(keyWords,3);
+        return qaDao.findIndexDB(keyWords,5);
     }
 
+    //获取基于Lucene技术实现的分段式全文增强
     public List<QASectionVO> getChromeEnrich(String content) throws Exception {
         List<Section> sections = new ArrayList<>();
         List<QASectionVO> results = new ArrayList<>();
@@ -107,7 +112,8 @@ public class ReadService {
             return results;
     }
 
-    public List<QASectionVO> getBookEnrich(Long bookid,Integer pageNum) throws Exception {
+    //获取基于深度学习算法实现的分段式全文增强
+    public List<QASectionVO> getPageEnrich(Long bookid,Integer pageNum) throws Exception {
         Page page =pageMapper.selectByBookIdAndPageNum(bookid,pageNum);
         List<QASectionVO> qaSectionVOs = new ArrayList<>();
         if (page!=null) {
@@ -123,10 +129,13 @@ public class ReadService {
         }
         return  qaSectionVOs;
     }
+    public List<QA> getChromeAllPageResultByAlgorithm(String allContent) throws Exception {
+        GetBookTopicKeywords getBookTopicKeywords = new GetBookTopicKeywords();
+        String[] keywords = getBookTopicKeywords.getBookTopicKeywords(null,allContent);
+        return qaDao.findIndexDB(keywords,20);
+    }
 
-
-
-
+    //计算两个句子的相似度
     private static int calculateStringDistance(@NotNull String s1, String s2) {
         int Distance=0;
         int Length1 =s1.length();
@@ -181,6 +190,7 @@ public class ReadService {
     public WikiAnnotation getWikiByMatchingKeywords(String keyword) {
         return wikiMapper.getWikiByMatchingKeywords(keyword);
     }
+
 
     public void insertWikiList(List<WikiAnnotation> wikiList) {
         wikiMapper.insertWikiList(wikiList);

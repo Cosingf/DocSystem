@@ -23,7 +23,7 @@ public class BookController {
     {
         httpServletResponse.setContentType("application/json;charset=utf-8");
 
-        List<LegalDoc> legalDocList = bookService.getSixPublicBooksByNum(Integer.valueOf(num));
+        List<LegalDoc> legalDocList = bookService.getEightPublicBooksByNum(Integer.valueOf(num));
         if (legalDocList!=null||legalDocList.size()!=0) {
             httpServletResponse.setStatus(200);
             httpServletResponse.getWriter().write(JSON.toJSONString(legalDocList));
@@ -100,4 +100,6 @@ public class BookController {
             httpServletResponse.setStatus(404);
         }
     }
+
+
 }

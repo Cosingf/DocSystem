@@ -142,8 +142,7 @@ class OptimalHistogram {
     }
 
     public separatedClusters getCluster(int start, int end) {
-        ArrayList<TermFrequencyVector> arrays = new ArrayList<TermFrequencyVector>(
-                end - start + 1);
+        ArrayList<TermFrequencyVector> arrays = new ArrayList<TermFrequencyVector>(end - start + 1);
         for (int i = start; i <= end; i++) {
             arrays.add(tfvList.get(i));
         }
@@ -175,11 +174,13 @@ class OptimalHistogram {
         }
     }
 
-    public String[] constructCluster(int keywordnum)  {
+    public String[] getKeywordsByConstructCluster(int keywordnum)  {
+        //目前只是将全文的关键词，返回而已并没有构造层级结构
         String[] keyWords = this.getKeyWords(
                 this.getCluster(0, this.trace.length - 1), keywordnum);
         System.out.println("[0,end]"+ Arrays.toString(keyWords));
         return keyWords;
+        //构造层级结构
 /*        System.out.println();
 //        pw.execute("insert into words values("+bookid+","+nodeid+",-1,'"+Arrays.toString(this.getKeyWords(
 //                this.getCluster(0, this.trace.length - 1), keywordnum))+"')");
@@ -270,7 +271,7 @@ class OptimalHistogram {
                     clusterList.get(i), 35)));
         }
     }
-
+    //获取集群的关键词
     public String[] getKeyWords(separatedClusters cluster, int number) {
         cluster.findTheCenterOfThisPartUsing_TFDF();
         TermFrequencyVector center = cluster.getCenter();
@@ -278,19 +279,14 @@ class OptimalHistogram {
         ArrayList<String> wordLists = center.getNonDuplicateWordList();
         Pair[] array = new Pair[wordLists.size()];
         for (int i = 0; i < wordLists.size(); i++) {
-            // array[i] = new Pair(0.5 * vector[i] + 0.5
-            // * sumOfTFVector.getExpandedVector()[i], i);
-            // array[i] = new Pair(vector[i], i);
             array[i] = new Pair(0.2 * vector[i] + 0.8
-                    * sumOfTFVector.getExpandedVector()[i], i);
-        }
+                    * sumOfTFVector.getExpandedVector()[i], i); }
         Arrays.sort(array);
         String[] keys = new String[number];
         for (int i = 0; i < number && (wordLists.size() - i - 1) >= 0; i++) {
             keys[i] = wordLists.get(array[wordLists.size() - i - 1].position);
         }
-        return keys;
-    }
+        return keys; }
 
     private float process(int endIndex, int maxPartition) {
         if (maxPartition <= 1) {

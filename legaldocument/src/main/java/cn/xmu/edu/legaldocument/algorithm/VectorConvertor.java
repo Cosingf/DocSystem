@@ -30,7 +30,7 @@ class VectorConvertor {
         record = new ArrayList<Integer>();
     }
 
-    //构造术语频率矢量
+    //构造术语词频向量
     public ArrayList<TermFrequencyVector> constructTermFrequencyVector()
             throws IOException {
         //初始化词语列表转化器
@@ -40,6 +40,8 @@ class VectorConvertor {
         String[] wordList = bookContent.split(" ");
         //构造分段词与列表
         constructPartList(wordList);
+        //构造无重复词语
+        nonDuplicateWordList = constructOccurrenceMap(wordList);
         //创建术语词频向量
         tfvList = createTermFrequencyVector(nonDuplicateWordList);
         //让每个术语词频向量存储无重复词语
@@ -98,13 +100,11 @@ class VectorConvertor {
                     countZeroCompression++;
                 }
             }
-
             // This step is to store the last followUp 0s.
             //最后统计
             if (countZeroCompression != 0) {
                 currentTfv.add(new PairNumber(0, countZeroCompression));
             }
-
             TermFrequencyVector newTfv = new TermFrequencyVector(currentTfv,
                     list.size());
             newTfv.setTF_IDF_Vector(TF_IDF_Vector);

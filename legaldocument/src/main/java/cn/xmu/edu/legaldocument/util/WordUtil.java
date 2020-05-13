@@ -24,15 +24,14 @@ public class WordUtil {
     QAMapper qaMapper;
 
     public String[] getKeywords(String string,int n) throws IOException {
-
-        //分词
+        //初始化分词器
          Analyzer ea =new EnglishAnalyzer();
          List<String> wordList= new ArrayList<>();
-
+         //将非英文字母去掉
          string = string.replaceAll("[^a-zA-Z ]", "");
          WordListConverter wlc = new WordListConverter();
-
          Reader r = new StringReader(string);
+         //进行分词
          TokenStream tokenStream = ea.tokenStream("text",r);
          tokenStream.reset();
          while (tokenStream.incrementToken()){
@@ -41,7 +40,7 @@ public class WordUtil {
              if (!word.equals("nbsp"))
                  wordList.add(word);
          }
-         //将list转换为map
+         //将list转换为map，计算词频
         Map<String,Integer> keyMap = new HashMap<>();
          for (String key:wordList){
              keyMap.put(key,keyMap.get(key)==null?1:keyMap.get(key)+1);
@@ -54,14 +53,14 @@ public class WordUtil {
                  return (o2.getValue()-o1.getValue());
              }
          });
-
+         //判断是否大于n个词
          if(keyList.size()<n) n=keyList.size();
          String[] keyWords = new String[n];
+         //取前n个词
          for (int i=0;i<keyList.size();i++){
              if (i<n)
                  keyWords[i]=keyList.get(i).getKey();
          }
-
          return  keyWords;
     }
 

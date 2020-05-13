@@ -49,18 +49,22 @@ public class ReadService {
 
     //获取基于深度学习算法实现的高亮搜索结果
     public List<QA> getHighLightResult(String highLight,Long bookid,Integer pagenum) throws Exception {
+        //查询获取高亮内容所在页
         Page page =pageMapper.selectByBookIdAndPageNum(bookid,pagenum);
         List<QA> qas = new ArrayList<>();
         if (page!=null) {
             List<Section> sections;
+            //获取该页下的所有段
             sections = sectionMapper.selectByPageId(page.getId());
             Map<Long,Float> sectionSim = new HashMap<>();
+            //遍历所有段，调用编辑距离算法计算相似度
             for (Section section :sections)
             {
                 float a=(float) calculateStringDistance(highLight,section.getSectionContent())/Math.max(highLight.length(),section.getSectionContent().length());
                 sectionSim.put(section.getId(),1-a);
             }
             List<Map.Entry<Long ,Float>> sectionSimList = new ArrayList<Map.Entry<Long ,Float>>(sectionSim.entrySet());
+            //对相似度排序
             Collections.sort(sectionSimList,new Comparator<Map.Entry<Long ,Float>>(){
                 @Override
                 public int compare(Map.Entry<Long, Float> o1,Map.Entry<Long, Float> o2) {
@@ -75,6 +79,7 @@ public class ReadService {
                         return -1;
                 }
             });
+            //查询最相似的段关联的QA数据
             qas = qaMapper.selectQASectionBySectionId(sectionSimList.get(0).getKey());
         }
         return qas;

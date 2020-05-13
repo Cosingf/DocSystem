@@ -15,11 +15,9 @@ public class GetBookTopicKeywords {
     public String[] getBookTopicKeywords(String filePath, String allContent) throws SQLException {
         //初始化向量转化器
         VectorConvertor vc = new VectorConvertor(filePath ,allContent, numberOfParts);
-
         ArrayList<TermFrequencyVector> tfvList = new ArrayList<TermFrequencyVector>();
-
         try {
-            //构建词频向量
+            //构建段词频向量
             tfvList = vc.constructTermFrequencyVector();
         } catch (IOException e) {
             System.out.println("Unable to construct term frequency vector.");
@@ -29,6 +27,6 @@ public class GetBookTopicKeywords {
         //发现最佳直方图
         optimalHistogram.findOptimalHistogram();
         //构建集群并获取关键词
-        return optimalHistogram.constructCluster(8);
+        return optimalHistogram.getKeywordsByConstructCluster(8);
     }
 }

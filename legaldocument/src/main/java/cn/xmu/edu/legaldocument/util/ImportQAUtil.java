@@ -38,7 +38,6 @@ public class ImportQAUtil {
 
     @RequestMapping("/importQA")
     public void importTxt() throws IOException, ParseException {
-
         String encoding = "utf-8";
         List<QA> qaList = new ArrayList<>();
         File file = new File(filePath);

@@ -58,7 +58,7 @@ created () {
   let that = this
   that.$axios({
     method: 'POST',
-    url: '/apis/mybooks/sixbooks/' + this.userId + '/' + this.currentPage
+    url: '/apis/mybooks/eightbooks/' + this.userId + '/' + this.currentPage
   })
     .then(response => {
       that.books = response.data
@@ -73,7 +73,7 @@ methods: {
     let that = this
     that.$axios({
       method: 'POST',
-      url: '/apis/mybooks/sixbooks/' + this.userId + '/' + this.currentPage
+      url: '/apis/mybooks/eightbooks/' + this.userId + '/' + this.currentPage
     })
       .then(response => {
         that.books = response.data

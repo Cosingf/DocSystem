@@ -42,7 +42,7 @@
           <Discuss   :item="item" ></Discuss>
           <el-divider></el-divider>
         </div>
-          
+
       </div>
     <!-- <div class="pagination"><el-pagination></el-pagination></div> -->
   </div>
@@ -144,18 +144,18 @@ methods: {
       }).then(({ value }) => {
         this.$message({
           type: 'success',
-          message: 'Successfully published! ' 
+          message: 'Successfully published! '
         });
       }).catch(() => {
         this.$message({
           type: 'info',
           message: 'Publish Cancelled!'
-        });       
+        });
       });
     },
   goToPublicLibrary () {
     this.$router.push({ name: 'PublicBooks' })
-  }, 
+  },
   goToMyLibrary () {
     this.$router.push({ name: 'MyBooks' })
   },

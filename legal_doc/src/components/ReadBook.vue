@@ -5,7 +5,6 @@
       <a class="myicon" style="color:#007bff">Readpeer</a>
       <el-menu-item index="1" @click="goToPublicLibrary">Public library</el-menu-item>
       <el-menu-item index="2" @click="goToMyLibrary">My library</el-menu-item>
-      <el-menu-item index="3" @click="goToDiscussHome">Discussion</el-menu-item>
       <el-input placeholder="Please enter keywords" prefix-icon="el-icon-search" class="my-input" v-model="input"></el-input>
       <el-button type="primary" v-on:click="searchBooks()">Find books</el-button>
       <el-dropdown  trigger="click" >
@@ -27,13 +26,15 @@
             {{legalDoc}}
           </div>
         </el-tab-pane>
-        <el-tab-pane label="Enhance Text" name="second" @click="enhance">
+
+        <el-tab-pane label="Enhance Text" name="second" >
           <div style="height: 20px;"></div>
           <p style="font-weight:normal;font-size:24px;margin:0 70px;color:#586069;">{{this.bookname}}</p>
           <p style="color:#909399;margin:5px 72px;">{{this.author}}</p>
-          <!-- <el-button type="success" @click="showWikiPdf" style="margin-top: -45px;margin-left: 600px;" plain>Show Wiki Annotation</el-button>
-          <el-button type="success" @click="enhance" style="margin-top: -45px;margin-left: 800px;" plaindata-toggle="modal" data-target="#myModal" plain>Enhancn text</el-button> -->
+          <!--全文增强按钮，绑定enhance方法-->
+          <el-button type="success" @click="enhance" style="margin-top: -45px;margin-left: 800px;" plaindata-toggle="modal" data-target="#myModal" plain>Enhancn text</el-button>
           <el-divider></el-divider>
+          <!--pdf内容容器，分页展示-->
           <div class="drag-box" id="dragBox" >
             <el-scrollbar style="height: 200% ">
               <div class="wrapper" id="pdf-container" @mouseup="tooltip($event)" >
@@ -46,42 +47,18 @@
         </el-tab-pane>
       </el-tabs>
       <div style="height: 20px;"></div>
-      <!-- <p style="font-weight:normal;font-size:24px;margin:0 70px;color:#586069;">{{this.bookname}}</p>
-      <p style="color:#909399;margin:5px 72px;">{{this.author}}</p> -->
-      <!-- <el-button type="success" @click="showWikiPdf" style="margin-top: -45px;margin-left: 600px;" plain>Show Wiki Annotation</el-button>
-      <el-button type="success" @click="enhance" style="margin-top: -45px;margin-left: 800px;" plaindata-toggle="modal" data-target="#myModal" plain>Enhancn text</el-button> -->
-      <!-- <el-divider></el-divider>
-      <div class="drag-box" id="dragBox" >
-        <el-scrollbar style="height: 200% ">
-          <div class="wrapper" id="pdf-container" @mouseup="tooltip($event)" >
-            <div  v-for="i in totals" :id="`page-${i}`" :key="i" class="pdf-box" >
-              <canvas :id="'canvas-pdf-' + i" class="canvas-pdf" ></canvas>
-            </div>
-          </div>
-        </el-scrollbar>
-      </div> -->
-      <!--txr文本测试高亮+提示框用-->
-      <!-- <div @mouseup="tooltip($event)"  class="pdf-canvas" id="pdf-canvas" >
-          {{legalDoc}}
-      </div> -->
-      <!--划词搜索的弹出框-->
+      <!--高亮搜索按钮，绑定selectSearch()方法-->
       <div id="tooltip"  ref="tip">
         <el-button @click="selectSearch()" icon="el-icon-search" circle></el-button>
-        <!-- <el-button @click="selectSearch()" type="primary">Search</el-button> -->
       </div>
-
-      <el-drawer
-        title=""
-        :visible.sync="drawer"
-        :direction="direction"
-        :modal="modal"
-        size="30%"
-      >
+      <!--问答注解侧边栏，用抽屉实现-->
+      <el-drawer title="" :visible.sync="drawer" :direction="direction" :modal="modal" size="30%">
         <div class="sku-box store-content">
           <el-scrollbar style="height: 47% ">
             <div class="gray-box" >
               <!--Q&A折叠面板-->
               <el-collapse v-model="activeName"  :accordion="accordion" >
+                <!--高亮搜索、全文增强的结果都用该侧边栏展示-->
                 <SearchResult  v-for="item , index in results" :item="item" :index="index"  v-if="selectShown===true"></SearchResult>
                 <EnhanceResult  v-for="item , index in enhancedResults" :item="item"  :index="index" v-if="enhancedShown===true"></EnhanceResult>
               </el-collapse>
@@ -91,6 +68,7 @@
       </el-drawer>
       <div style="height: 70px;"></div>
     </div>
+    <!--页码选择器-->
     <div class="pagination"><el-pagination @current-change="currentChangeHandle" :current-page="currentPageNo" layout="prev, pager, next" :total="100"></el-pagination></div>
   </div>
 </body>
@@ -106,9 +84,9 @@ import EnhanceResult from './EnhanceResult'
 export default {
   data () {
     return {
-      show:false,
+      show: false,
       input: '',
-      selectName:'first',
+      selectName: 'first',
       activeName: '0',
       activeIndex: '0',
       accordion: true,
@@ -124,7 +102,7 @@ export default {
       bookId: localStorage.getItem('id'),
       bookname: localStorage.getItem('bookname'),
       author: localStorage.getItem('author'),
-      textContent:'',
+      textContent: '',
       drawer: false,
       direction: 'rtl',
       modal: false,
@@ -142,7 +120,7 @@ export default {
         title: '',
         url: '',
         summary: '',
-        pageNum:''
+        pageNum: ''
       }],
       enhancedResults: [
         {
@@ -175,20 +153,17 @@ export default {
     }
   },
   methods: {
-    goToDiscussHome(){
-      this.$router.push({ name: 'DiscussHome' })
-    },
-    handleClick(tab, event) {
-      if(tab.name=='second'){
-        console.log("click tab show wiki");
+    handleClick (tab, event) {
+      if (tab.name == 'second') {
+        console.log('click tab show wiki')
         // this.$options.methods.showWiki(this.wikiAnnotaion);
       }
     },
-    showPopper(){
-      this.show=true
+    showPopper () {
+      this.show = true
     },
-    closePopper(){
-      this.show=false
+    closePopper () {
+      this.show = false
     },
     handleCommand (command) {
       this.$message('click on item ' + command)
@@ -211,7 +186,7 @@ export default {
     goToPublicLibrary () {
       this.$router.push({ name: 'PublicBooks' })
     },
-    initDocument(){
+    initDocument () {
       this.$axios({
         method: 'POST',
         url: '/apis/read/doc/' + this.bookId
@@ -233,8 +208,8 @@ export default {
         .then(response => {
           {
             // this.wikiAnnotaion = response.data
-            this.$set(this,'wikiAnnotaion',response.data)
-            console.log("get wiki length 1:"+this.wikiAnnotaion.length)
+            this.$set(this, 'wikiAnnotaion', response.data)
+            console.log('get wiki length 1:' + this.wikiAnnotaion.length)
             this.$options.methods.showWiki(this.wikiAnnotaion)
             // this.$options.methods.showWikiPdf(this.wikiAnnotaion)
           }
@@ -242,8 +217,8 @@ export default {
           console.log(error)
         })
     },
-    //处理pdf canvas，显示 wiki Annotaion
-    showWikiPdf(wikiAnnotaion){
+    // 处理pdf canvas，显示 wiki Annotaion
+    showWikiPdf (wikiAnnotaion) {
       // var count=0;
       // // var keywords=[];
 	    // // this.wikiAnnotaion.forEach(function (element) {
@@ -260,7 +235,7 @@ export default {
       //     let replaceReg = new RegExp(key, 'g');
       //     if(!replaceReg.test(doc)){
       //       return true;//终止本次循环
-      //     } 
+      //     }
       //     // let replaceString = '<span style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;" name="test">'+key+'</span>'
       //     let replaceString=
       //       '<span style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;">'+key+'</span>'
@@ -268,7 +243,6 @@ export default {
       //     count=count+1
       //   }
       // });
-
 
       // function highlight(node,pos,element){
       //   var span = document.createElement("span");
@@ -286,172 +260,168 @@ export default {
 		  //   highlighted.parentNode.replaceChild(span, highlighted);
       // }
 
-      // function addHighlights(node){ 
+      // function addHighlights(node){
       //   var i;
-			//   keywords.forEach(function (element) {
-			// 	  var keyword=element.keyword.toLowerCase();
+      //   keywords.forEach(function (element) {
+      // 	  var keyword=element.keyword.toLowerCase();
       //     var pos = node.innerText.toLowerCase().indexOf(keyword);
       //     console.log("document:"+node.innerText+"\nkeyword:"+keyword+" pos:"+pos);
-			// 	  if (0 <= pos) {
-			// 		  highlight(node, pos,element);
-			// 		  count=count+1;
+      // 	  if (0 <= pos) {
+      // 		  highlight(node, pos,element);
+      // 		  count=count+1;
       //     }
       //   });
       // }
-      
+
       // addHighlights(document.body);
-      
-      function replacePos(doc, pos, replacetext,len){
-        var str = doc.substr(0, pos) + replacetext + doc.substring(pos+len, doc.length);
-        return str;
+
+      function replacePos (doc, pos, replacetext, len) {
+        var str = doc.substr(0, pos) + replacetext + doc.substring(pos + len, doc.length)
+        return str
       }
-      let that=this
-      let doc=$("#textLayer").html()
-      console.log("show wiki doc:"+doc)
+      let that = this
+      let doc = $('#textLayer').html()
+      console.log('show wiki doc:' + doc)
       // console.log("show wiki length:"+this.wikiAnnotaion.length)
-      console.log("wiki Annotation:"+wikiAnnotaion.length)
-      var position=[]
-      wikiAnnotaion.forEach(function(element) {
-        if(element.pageNum==1){
+      console.log('wiki Annotation:' + wikiAnnotaion.length)
+      var position = []
+      wikiAnnotaion.forEach(function (element) {
+        if (element.pageNum == 1) {
           // console.log("wiki:"+element.keyword+" 对应count:"+count)
-          let key=element.keyword
-          let replaceReg = new RegExp(key, 'g');
-          var start=0
-          let len=doc.length;
-          console.log("doc len:"+len)
-          var pos=0
-          while(start<len&&doc.indexOf(key,start)!=-1){
-            pos=doc.indexOf(key,start);
+          let key = element.keyword
+          let replaceReg = new RegExp(key, 'g')
+          var start = 0
+          let len = doc.length
+          console.log('doc len:' + len)
+          var pos = 0
+          while (start < len && doc.indexOf(key, start) != -1) {
+            pos = doc.indexOf(key, start)
             position.push(pos)
-            console.log("start:"+start+" keyword:"+key+" position:"+pos)
-            var textlen=element.summary.length-5;
-		        var minlen=Math.min(textlen,290);
-		        var index=element.summary.indexOf(' ',minlen);
-		        if(index!=-1) var text=element.summary.substring(0,index);
-		        else text=element.summary.substring(0,300);
-            let replaceString=
-            '<el-button  class="popover popover-'+pos+'" style=" position:relative;cursor:pointer;background-color: #e6a23c;">'+key+'</el-button>'+
-              '<div  role="tooltip" aria-hidden="false" class="my-popover my-popover-'+pos+' el-popover el-popper el-popover--plain" tabindex="0" style="visibility:hidden;" x-placement="top">'+
-              '<div class="el-popover__title">'+element.title+'</div>'+
-              text+'...</br>'+
-              'Read more: <el-link href="'+element.url+'" class="my-link-'+pos+' el-link el-link--primary is-underline">'+element.url+'</el-link>'+
-              '<div x-arrow="" class="popper__arrow" ></div>'+
+            console.log('start:' + start + ' keyword:' + key + ' position:' + pos)
+            var textlen = element.summary.length - 5
+		        var minlen = Math.min(textlen, 290)
+		        var index = element.summary.indexOf(' ', minlen)
+		        if (index != -1) var text = element.summary.substring(0, index)
+		        else text = element.summary.substring(0, 300)
+            let replaceString =
+            '<el-button  class="popover popover-' + pos + '" style=" position:relative;cursor:pointer;background-color: #e6a23c;">' + key + '</el-button>' +
+              '<div  role="tooltip" aria-hidden="false" class="my-popover my-popover-' + pos + ' el-popover el-popper el-popover--plain" tabindex="0" style="visibility:hidden;" x-placement="top">' +
+              '<div class="el-popover__title">' + element.title + '</div>' +
+              text + '...</br>' +
+              'Read more: <el-link href="' + element.url + '" class="my-link-' + pos + ' el-link el-link--primary is-underline">' + element.url + '</el-link>' +
+              '<div x-arrow="" class="popper__arrow" ></div>' +
             '</div>'
             // let replacetext = '<span style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;" name="test">'+key+'</span>'
             // console.log("replacetext len:"+replacetext.length)
-            start=start+pos+replaceString.length+1
-            doc=replacePos(doc,pos,replaceString,key.length)
-            len=doc.length
+            start = start + pos + replaceString.length + 1
+            doc = replacePos(doc, pos, replaceString, key.length)
+            len = doc.length
             // console.log("new doc:"+doc)
           }
         }
-      });
-      $("#textLayer").html(doc)
-      position.forEach(function(pos){
+      })
+      $('#textLayer').html(doc)
+      position.forEach(function (pos) {
         // console.log("iteratre position:"+pos)
         setTimeout(() => {
-        //获取位置
+        // 获取位置
         // console.log("count: "+i)
-        console.log("父元素位置："+$('.popover-'+pos).offset().left+","+$('.popover-'+pos).offset().top)
-        console.log("子元素位置："+$('.my-popover-'+pos).offset().left+","+$('.my-popover-'+pos).offset().top)
-        //设置提示框位置
-        let left=$('.popover-'+pos).offset().left-450
-        let top=$('.popover-'+pos).offset().top-320
-        $('.my-popover-'+pos).attr("style","visibility:hidden;"+"top:"+top+"px;left:"+left+"px;")
-        //使url link生效
-        let url=$('.my-link-'+pos).attr("href")
-        $('.my-link-'+pos).click(function() {
-          window.location.href=url
-        })
-        $('.popover-'+pos).click(function() {
-          let style=$('.my-popover-'+pos).attr("style")
-          if(style=="visibility:visible;"+"top:"+top+"px;left:"+left+"px;"){
-            $('.my-popover-'+pos).attr("style","visibility:hidden;"+"top:"+top+"px;left:"+left+"px;")
-          }else{
-            $('.my-popover-'+pos).attr("style","visibility:visible;"+"top:"+top+"px;left:"+left+"px;")
-          }  
-        })
-      },10000); 
+          console.log('父元素位置：' + $('.popover-' + pos).offset().left + ',' + $('.popover-' + pos).offset().top)
+          console.log('子元素位置：' + $('.my-popover-' + pos).offset().left + ',' + $('.my-popover-' + pos).offset().top)
+          // 设置提示框位置
+          let left = $('.popover-' + pos).offset().left - 450
+          let top = $('.popover-' + pos).offset().top - 320
+          $('.my-popover-' + pos).attr('style', 'visibility:hidden;' + 'top:' + top + 'px;left:' + left + 'px;')
+          // 使url link生效
+          let url = $('.my-link-' + pos).attr('href')
+          $('.my-link-' + pos).click(function () {
+            window.location.href = url
+          })
+          $('.popover-' + pos).click(function () {
+            let style = $('.my-popover-' + pos).attr('style')
+            if (style == 'visibility:visible;' + 'top:' + top + 'px;left:' + left + 'px;') {
+              $('.my-popover-' + pos).attr('style', 'visibility:hidden;' + 'top:' + top + 'px;left:' + left + 'px;')
+            } else {
+              $('.my-popover-' + pos).attr('style', 'visibility:visible;' + 'top:' + top + 'px;left:' + left + 'px;')
+            }
+          })
+        }, 10000)
       })
-      
-
     },
     // 显示wiki Annotation
     showWiki (wikiAnnotaion) {
-      function replacePos(doc, pos, replacetext,len){
-        var str = doc.substr(0, pos) + replacetext + doc.substring(pos+len, doc.length);
-        return str;
+      function replacePos (doc, pos, replacetext, len) {
+        var str = doc.substr(0, pos) + replacetext + doc.substring(pos + len, doc.length)
+        return str
       }
-      let that=this
-      let doc=$("#pdf-canvas").html()
-      console.log("show wiki doc:"+doc)
+      let that = this
+      let doc = $('#pdf-canvas').html()
+      console.log('show wiki doc:' + doc)
       // console.log("show wiki length:"+this.wikiAnnotaion.length)
-      console.log("wiki Annotation:"+wikiAnnotaion.length)
-      var position=[]
-      wikiAnnotaion.forEach(function(element) {
-        if(element.pageNum==1){
+      console.log('wiki Annotation:' + wikiAnnotaion.length)
+      var position = []
+      wikiAnnotaion.forEach(function (element) {
+        if (element.pageNum == 1) {
           // console.log("wiki:"+element.keyword+" 对应count:"+count)
-          let key=element.keyword
-          let replaceReg = new RegExp(key, 'g');
-          var start=0
-          let len=doc.length;
-          console.log("doc len:"+len)
-          var pos=0
-          while(start<len&&doc.indexOf(key,start)!=-1){
-            pos=doc.indexOf(key,start);
+          let key = element.keyword
+          let replaceReg = new RegExp(key, 'g')
+          var start = 0
+          let len = doc.length
+          console.log('doc len:' + len)
+          var pos = 0
+          while (start < len && doc.indexOf(key, start) != -1) {
+            pos = doc.indexOf(key, start)
             position.push(pos)
-            console.log("start:"+start+" keyword:"+key+" position:"+pos)
-            var textlen=element.summary.length-5;
-		        var minlen=Math.min(textlen,290);
-		        var index=element.summary.indexOf(' ',minlen);
-		        if(index!=-1) var text=element.summary.substring(0,index);
-		        else text=element.summary.substring(0,300);
-            let replaceString=
-            '<el-button  class="popover popover-'+pos+'" style=" position:relative;cursor:pointer;background-color: #fdf6ec;color: #e6a23c;">'+key+'</el-button>'+
-              '<div  role="tooltip" aria-hidden="false" class="my-popover my-popover-'+pos+' el-popover el-popper el-popover--plain" tabindex="0" style="visibility:hidden;" x-placement="top">'+
-              '<div class="el-popover__title">'+element.title+'</div>'+
-              text+'...</br>'+
-              'Read more: <el-link href="'+element.url+'" class="my-link-'+pos+' el-link el-link--primary is-underline">'+element.url+'</el-link>'+
-              '<div x-arrow="" class="popper__arrow" ></div>'+
+            console.log('start:' + start + ' keyword:' + key + ' position:' + pos)
+            var textlen = element.summary.length - 5
+		        var minlen = Math.min(textlen, 290)
+		        var index = element.summary.indexOf(' ', minlen)
+		        if (index != -1) var text = element.summary.substring(0, index)
+		        else text = element.summary.substring(0, 300)
+            let replaceString =
+            '<el-button  class="popover popover-' + pos + '" style=" position:relative;cursor:pointer;background-color: #fdf6ec;color: #e6a23c;">' + key + '</el-button>' +
+              '<div  role="tooltip" aria-hidden="false" class="my-popover my-popover-' + pos + ' el-popover el-popper el-popover--plain" tabindex="0" style="visibility:hidden;" x-placement="top">' +
+              '<div class="el-popover__title">' + element.title + '</div>' +
+              text + '...</br>' +
+              'Read more: <el-link href="' + element.url + '" class="my-link-' + pos + ' el-link el-link--primary is-underline">' + element.url + '</el-link>' +
+              '<div x-arrow="" class="popper__arrow" ></div>' +
             '</div>'
             // let replacetext = '<span style="cursor:pointer;background-color: #fdf6ec;color: #e6a23c;" name="test">'+key+'</span>'
             // console.log("replacetext len:"+replacetext.length)
-            start=start+pos+replaceString.length+1
-            doc=replacePos(doc,pos,replaceString,key.length)
-            len=doc.length
+            start = start + pos + replaceString.length + 1
+            doc = replacePos(doc, pos, replaceString, key.length)
+            len = doc.length
             // console.log("new doc:"+doc)
           }
         }
-      });
-      $("#pdf-canvas").html(doc)
-      position.forEach(function(pos){
+      })
+      $('#pdf-canvas').html(doc)
+      position.forEach(function (pos) {
         // console.log("iteratre position:"+pos)
         setTimeout(() => {
-        //获取位置
+        // 获取位置
         // console.log("count: "+i)
-        console.log("父元素位置："+$('.popover-'+pos).offset().left+","+$('.popover-'+pos).offset().top)
-        console.log("子元素位置："+$('.my-popover-'+pos).offset().left+","+$('.my-popover-'+pos).offset().top)
-        //设置提示框位置
-        let left=$('.popover-'+pos).offset().left-450
-        let top=$('.popover-'+pos).offset().top-91
-        $('.my-popover-'+pos).attr("style","visibility:hidden;"+"top:"+top+"px;left:"+left+"px;")
-        //使url link生效
-        let url=$('.my-link-'+pos).attr("href")
-        $('.my-link-'+pos).click(function() {
-          window.location.href=url
-        })
-        $('.popover-'+pos).click(function() {
-          let style=$('.my-popover-'+pos).attr("style")
-          if(style=="visibility:visible;"+"top:"+top+"px;left:"+left+"px;"){
-            $('.my-popover-'+pos).attr("style","visibility:hidden;"+"top:"+top+"px;left:"+left+"px;")
-          }else{
-            $('.my-popover-'+pos).attr("style","visibility:visible;"+"top:"+top+"px;left:"+left+"px;")
-          }  
-        })
-      },10000); 
+          console.log('父元素位置：' + $('.popover-' + pos).offset().left + ',' + $('.popover-' + pos).offset().top)
+          console.log('子元素位置：' + $('.my-popover-' + pos).offset().left + ',' + $('.my-popover-' + pos).offset().top)
+          // 设置提示框位置
+          let left = $('.popover-' + pos).offset().left - 450
+          let top = $('.popover-' + pos).offset().top - 91
+          $('.my-popover-' + pos).attr('style', 'visibility:hidden;' + 'top:' + top + 'px;left:' + left + 'px;')
+          // 使url link生效
+          let url = $('.my-link-' + pos).attr('href')
+          $('.my-link-' + pos).click(function () {
+            window.location.href = url
+          })
+          $('.popover-' + pos).click(function () {
+            let style = $('.my-popover-' + pos).attr('style')
+            if (style == 'visibility:visible;' + 'top:' + top + 'px;left:' + left + 'px;') {
+              $('.my-popover-' + pos).attr('style', 'visibility:hidden;' + 'top:' + top + 'px;left:' + left + 'px;')
+            } else {
+              $('.my-popover-' + pos).attr('style', 'visibility:visible;' + 'top:' + top + 'px;left:' + left + 'px;')
+            }
+          })
+        }, 10000)
       })
-      
-      
     },
 
     // 打开弹框
@@ -532,8 +502,8 @@ export default {
             viewport: viewport
           })
           textLayer.setTextContent(textContent)
-          //储存文本数据
-          this.textContent=textContent
+          // 储存文本数据
+          this.textContent = textContent
           textLayer.render()
         })
       })
@@ -924,7 +894,7 @@ export default {
     border:none;
     font-size: 16px;
     padding:10px 5px;
-} 
+}
 .pdf-canvas >>> .el-popover{
   width:410px;
   max-width: 42%;
@@ -934,13 +904,13 @@ export default {
   font-size:17px;
 }
 .my-popover{
-  width: 200px; 
-  transform-origin: center top; 
-  z-index: 2027; 
-  position: absolute; 
-  top: 207px; 
+  width: 200px;
+  transform-origin: center top;
+  z-index: 2027;
+  position: absolute;
+  top: 207px;
   left: 244px;
-  
+
 }
 .white-panel >>> .el-tabs__nav{
   margin-left:690px;

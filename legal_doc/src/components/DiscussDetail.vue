@@ -165,7 +165,7 @@ methods: {
   },
   goToPublicLibrary () {
     this.$router.push({ name: 'PublicBooks' })
-  }, 
+  },
   goToMyLibrary () {
     this.$router.push({ name: 'MyBooks' })
   },

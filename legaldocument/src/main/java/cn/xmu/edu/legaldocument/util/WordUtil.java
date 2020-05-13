@@ -1,7 +1,10 @@
 package cn.xmu.edu.legaldocument.util;
 
+import cn.xmu.edu.legaldocument.algorithm.WordListConverter;
 import cn.xmu.edu.legaldocument.mapper.QAMapper;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,22 +24,23 @@ public class WordUtil {
     QAMapper qaMapper;
 
     public String[] getKeywords(String string,int n) throws IOException {
-
-        //分词
-        IKAnalyzer ika =new IKAnalyzer();
-         ika.setUseSmart(true);
+        //初始化分词器
+         Analyzer ea =new EnglishAnalyzer();
          List<String> wordList= new ArrayList<>();
-
+         //将非英文字母去掉
+         string = string.replaceAll("[^a-zA-Z ]", "");
+         WordListConverter wlc = new WordListConverter();
          Reader r = new StringReader(string);
-         TokenStream tokenStream = ika.tokenStream("text",r);
-        tokenStream.reset();
+         //进行分词
+         TokenStream tokenStream = ea.tokenStream("text",r);
+         tokenStream.reset();
          while (tokenStream.incrementToken()){
              CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
              String word =charTermAttribute.toString();
-             if (word.length()>2&&!word.equals("nbsp"))
+             if (!word.equals("nbsp"))
                  wordList.add(word);
          }
-         //将list转换为map
+         //将list转换为map，计算词频
         Map<String,Integer> keyMap = new HashMap<>();
          for (String key:wordList){
              keyMap.put(key,keyMap.get(key)==null?1:keyMap.get(key)+1);
@@ -49,18 +53,15 @@ public class WordUtil {
                  return (o2.getValue()-o1.getValue());
              }
          });
-
+         //判断是否大于n个词
          if(keyList.size()<n) n=keyList.size();
          String[] keyWords = new String[n];
+         //取前n个词
          for (int i=0;i<keyList.size();i++){
              if (i<n)
                  keyWords[i]=keyList.get(i).getKey();
          }
-
          return  keyWords;
     }
-
-
-
 
 }

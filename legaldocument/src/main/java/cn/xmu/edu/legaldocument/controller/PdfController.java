@@ -39,28 +39,29 @@ public class PdfController {
                            @RequestParam("author")String author,@RequestParam("isPublic")Integer isPublic) throws Exception{
         final LegalDoc legalDoc=new LegalDoc();
         PersonalLegaldocStack personalLegaldocStack=new PersonalLegaldocStack();
+        //存储文件到服务器文件夹
         String path=pdfService.upload(file);
         final int page=pdfService.getPages(path);
-
         //更新总书库
         legalDoc.setAuthor(author);
         legalDoc.setName(file.getOriginalFilename());
         legalDoc.setPath(path);
         legalDoc.setIsEnrich(0);//0代表未增强
         legalDoc.setIsPublic(isPublic);
+<<<<<<< HEAD
         //TODO pdf首页生成封面
         String coverImg=pdfService.createCoverImg(path);
+=======
+>>>>>>> cc29c7e02b982718cd98d1530024001fedf90621
         legalDoc.setCoverImg(null);
         pdfService.insertLegalDoc(legalDoc);
-
         //更新关系书库
         personalLegaldocStack.setUserId(userId);
         Long bookId=pdfService.getLastBookId();
-
         personalLegaldocStack.setBookId(bookId);
         pdfService.insertPersonalLegalDoc(personalLegaldocStack);
 
-        //另起一个线程处理文本增强，wiki关键词匹配
+        //另起一个线程处理文本增强
         final long t1 = System.currentTimeMillis();
         final ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
         ListenableFuture<Boolean> booleanTask = service.submit(new Callable<Boolean>() {
@@ -68,6 +69,7 @@ public class PdfController {
             public Boolean call() throws Exception {
                 String sysPath = System.getProperty("user.dir");
                 String myPath = sysPath+"/file/";
+                //将文献分页
                 int[] pages=pdfService.split(myPath,page,file);
                 logger.info(String.valueOf(pages.length));
 
@@ -75,15 +77,17 @@ public class PdfController {
                 {
                     String pdfFilePath = myPath+pages[i]+".pdf";
                     String txtFilePath = myPath+pages[i]+".txt";
+                    //将pdf转化为txt，以便分段处理
                     Page page=pdfService.readPdfToTxt(pdfFilePath,txtFilePath,legalDoc.getId(),i+1);
                     //txt分词，将关键词存入存入数据库，并和wiki_corpus进行预匹配
-                    pdfService.mathchWikiCorpus(txtFilePath,legalDoc.getId(),page.getId());
+//                    pdfService.mathchWikiCorpus(txtFilePath,legalDoc.getId(),page.getId());
                     //按照10 words切割成多个section
                     List<Section> sectionList=pdfService.cut(txtFilePath,page);
-//                    pdfService.enrichSection(sectionList);
+                    //调用python编写的文本匹配算法增强段落，并存储结果
+                    pdfService.enrichSection(sectionList);
                 }
 //                pdfService.setLegalDocEnriched(bookId);
-                pdfService.matchRemainingKeywordsByTerm(legalDoc.getId());
+//                pdfService.matchRemainingKeywordsByTerm(legalDoc.getId());
 //                pdfService.matchRemainingKeywordsByAlgorithm(legalDoc.getId());
                 return true;
             }

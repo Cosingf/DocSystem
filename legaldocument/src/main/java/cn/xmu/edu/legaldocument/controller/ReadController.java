@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class ReadController {
@@ -43,6 +45,24 @@ public class ReadController {
         }
     }
 
+    @PostMapping("/read/chrome/highlight")
+    public void getChromeHighLightResult(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @RequestParam("content") String content) throws Exception
+    {
+        httpServletResponse.setContentType("application/json;charset=utf-8");
+
+        List<QA>  qas =readService.getChromeHighLightResult(content);
+        Map<String,Object> result = new HashMap<>();
+        result.put("qas",qas);
+        result.put("qaNum",qas.size());
+        if (qas!=null||qas.size()!=0) {
+            httpServletResponse.setStatus(200);
+            httpServletResponse.getWriter().write(JSON.toJSONString(result));
+        }
+        else {
+            httpServletResponse.setStatus(404);
+        }
+    }
+
     /**
      * 新增Wiki Annotation
      */
@@ -63,16 +83,48 @@ public class ReadController {
     }
 
     @PostMapping("/read/enhance")
-    public void getAllPageResult(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @RequestParam("bookId") Long bookId,@RequestParam("pageNum") Integer pageNum ) throws Exception
+    public void getPageResult(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @RequestParam("bookId") Long bookId,@RequestParam("pageNum") Integer pageNum ) throws Exception
     {
         httpServletResponse.setContentType("application/json;charset=utf-8");
 
-        List<QASectionVO> relusts =readService.getBookEnrich(bookId,pageNum);
+        List<QASectionVO> relusts =readService.getPageEnrich(bookId,pageNum);
         if (relusts==null)
             httpServletResponse.setStatus(404);
         else {
             httpServletResponse.setStatus(200);
             httpServletResponse.getWriter().write(JSON.toJSONString(relusts));
+        }
+    }
+    @PostMapping("/read/chrome/enhance")
+    public void getChromeAllPageResult(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @RequestParam("content") String content ) throws Exception
+    {
+        httpServletResponse.setContentType("application/json;charset=utf-8");
+
+        List<QASectionVO> relusts =readService.getChromeEnrich(content);
+        if (relusts==null)
+            httpServletResponse.setStatus(404);
+        else {
+            httpServletResponse.setStatus(200);
+            httpServletResponse.getWriter().write(JSON.toJSONString(relusts));
+        }
+    }
+
+    @PostMapping("/read/chrome/algorithmEnhance/")
+    public void getChromeAllPageResultByAlgorithm(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @RequestParam("content") String content ) throws Exception
+    {
+        httpServletResponse.setContentType("application/json;charset=utf-8");
+
+        List<QA> qas = readService.getChromeAllPageResultByAlgorithm(content);
+        Map<String,Object> result = new HashMap<>();
+        result.put("qas",qas);
+        result.put("qaNum",qas.size());
+        System.out.println(JSON.toJSONString(result));
+        if (qas!=null||qas.size()!=0) {
+            httpServletResponse.setStatus(200);
+            httpServletResponse.getWriter().write(JSON.toJSONString(result));
+        }
+        else {
+            httpServletResponse.setStatus(404);
         }
     }
 

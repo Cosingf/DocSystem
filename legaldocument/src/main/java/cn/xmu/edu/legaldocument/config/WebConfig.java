@@ -102,7 +102,8 @@ public  class WebConfig implements WebMvcConfigurer {
     @Override
 
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/**").addResourceLocations("file:F:/DocSystem/legaldocument/file/");
+        //前端获取服务器文件的路径
+        registry.addResourceHandler("/**").addResourceLocations("file:D:/DocSystem311/DocSystem/legaldocument/file/");
         registry.addResourceHandler("/uploadFile/**").addResourceLocations("file:F:/DocSystem/legaldocument/file/");
     }
 

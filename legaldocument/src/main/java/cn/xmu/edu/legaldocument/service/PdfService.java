@@ -61,7 +61,7 @@ public class PdfService {
     Directory directory;
 
     public PdfService() throws IOException {
-        this.directory= FSDirectory.open(FileSystems.getDefault().getPath("F:\\wikiIndex"));
+        this.directory= FSDirectory.open(FileSystems.getDefault().getPath("D:\\wikiIndex"));
     }
     /**
      * 文件存储到file_path目录
@@ -191,7 +191,7 @@ public class PdfService {
 
         List<List<Integer>> resultLists;
         resultLists = JSON.parseObject(result,new TypeReference<List<List<Integer>>>(){});
-        System.out.println(resultLists);
+//        System.out.println(resultLists);
         List<QASection> qaSectionList=new ArrayList<>();
 //        Long qaSectionId=getLastQASectionId();
 //        logger.info("last qa_section id is:"+qaSectionId);
@@ -417,7 +417,7 @@ public class PdfService {
     public void setLegalDocEnriched(Long bookId) {
         legalDocMapper.setLegalDocEnriched(bookId);
     }
-    
+
     //利用首页生成pdf封面
     public String createCoverImg(String filePath) throws IOException {
         String outputPrefix = filePath.substring( 0, filePath.lastIndexOf( '.' ));

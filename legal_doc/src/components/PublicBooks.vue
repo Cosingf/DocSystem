@@ -1,14 +1,17 @@
 <template>
     <body class="public-book" >
+        <!--导航菜单-->
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="">
         <a class="myicon" style="color:#007bff">Readpeer</a>
         <el-menu-item index="1">Public library</el-menu-item>
         <el-menu-item index="2" @click="goToMyLibrary">My library</el-menu-item>
         <el-menu-item index="3" @click="goToDiscussHome">Discussion</el-menu-item>
+          <!--搜索框-->
         <el-input placeholder="Please enter keywords" prefix-icon="el-icon-search" class="my-input" v-model="input"></el-input>
         <el-button type="primary" v-on:click="searchBooks()">Find books</el-button>
         <el-dropdown  trigger="click" >
             <el-avatar icon="el-icon-user-solid"  class="el-dropdown-link" shape="square" size="medium"></el-avatar>
+          <!--下拉菜单显示登出和用户信息管理-->
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item ><router-link  to="/users/info" class="router-link">Settings</router-link></el-dropdown-item>
               <el-dropdown-item > <a  @click="logout" class="router-link" >Sign out</a></el-dropdown-item>
@@ -21,14 +24,17 @@
         <a style="font-weight: 600;font-size:20px;margin:0 50px;color:#586069;">Public books</a>
         <el-divider></el-divider>
       </div>
+      <!--卡片容器显示文献基本信息-->
       <el-row :gutter="20" style="margin:30px;" >
         <el-col :span="6" v-for="item , index in books">
           <BookInfo :item="item" :key="index" ></BookInfo>
+          <!--收藏按钮-->
           <el-button type="primary" @click="addToMyLibrary(item.id)" plain>Add to my library</el-button>
         </el-col>
       </el-row>
       <div style="height: 50px;"></div>
     </div>
+        <!--页码选择器-->
         <div class="pagination"><el-pagination  @current-change="currentChangeHandle" :current-page="currentPage" layout="prev, pager, next" :total="100"></el-pagination></div>
     </body>
   </template>
@@ -58,7 +64,7 @@ export default {
     that.currentTotal = that.books.length
     that.$axios({
       method: 'POST',
-      url: '/apis/publicbooks/sixbooks/' + that.currentPage
+      url: '/apis/publicbooks/eightbooks/' + that.currentPage
     })
       .then(response => {
         that.books = response.data
@@ -73,7 +79,7 @@ export default {
       let that = this
       that.$axios({
         method: 'POST',
-        url: '/apis/publicbooks/sixbooks/' + that.currentPage
+        url: '/apis/publicbooks/eightbooks/' + that.currentPage
       })
         .then(response => {
           that.books = response.data
@@ -82,7 +88,7 @@ export default {
           console.log(error)
         })
     },
-    logout(){
+    logout () {
       this.$axios({
         method: 'GET',
         url: '/apis/logout'
@@ -99,7 +105,7 @@ export default {
     goToMyLibrary () {
       this.$router.push({ name: 'MyBooks' })
     },
-    goToDiscussHome(){
+    goToDiscussHome () {
       this.$router.push({ name: 'DiscussHome' })
     },
     searchBooks () {

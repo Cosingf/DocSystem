@@ -7,7 +7,7 @@
         <el-menu-item index="3" @click="goToDiscussHome">Discussion</el-menu-item>
         <el-input placeholder="Please enter keywords" prefix-icon="el-icon-search" class="my-input" v-model="input"></el-input>
         <el-button type="primary">Find books</el-button>
-        <el-dropdown  trigger="click" >
+          <el-dropdown  trigger="click" >
             <el-avatar icon="el-icon-user-solid"  class="el-dropdown-link" shape="square" size="medium"></el-avatar>
             <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item  @click="goToMyLibrary">Settings</el-dropdown-item>
@@ -15,6 +15,7 @@
             </el-dropdown-menu>
         </el-dropdown>
         </el-menu>
+      <!-- 上传组件、设置上传类型为pdf-->
         <div class="white-panel">
             <el-upload
             class="upload-demo"
@@ -85,19 +86,24 @@ export default {
         type: 'success'
       })
     },
+    // 上传文献
     uploadBook () {
       this.$refs.upload.submit()
       let formData = new FormData()
       var isPublic = 1
+        // 判断是否共享
       this.form.isPublic ? isPublic = 1 : isPublic = 0
+        //填写表单数据
       formData.append('isPublic', isPublic)
       formData.append('author', this.form.name)
       formData.append('file', this.form.file)
+        //设置传输格式为表单
       let config = {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       }
+        //请求路径
       axios.post('/apis/upload/' + localStorage.getItem('userId'), formData, config).then(response => {
         if (response.status === 200) {
           this.$notify.success({

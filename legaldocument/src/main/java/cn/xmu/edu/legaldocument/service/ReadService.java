@@ -3,16 +3,19 @@ package cn.xmu.edu.legaldocument.service;
 
 import cn.xmu.edu.legaldocument.VO.KeywordWikiVO;
 import cn.xmu.edu.legaldocument.VO.QASectionVO;
+import cn.xmu.edu.legaldocument.algorithm.GetBookTopicKeywords;
+import cn.xmu.edu.legaldocument.dao.QADao;
 import cn.xmu.edu.legaldocument.entity.*;
 import cn.xmu.edu.legaldocument.mapper.*;
+import cn.xmu.edu.legaldocument.util.WordUtil;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 
 
@@ -37,21 +40,31 @@ public class ReadService {
     KeywordMapper keywordMapper;
     @Autowired
     LegalDocMapper legalDocMapper;
+    @Autowired
+    WordUtil wordUtil;
+    @Autowired
+    QADao qaDao;
 
 
+
+    //获取基于深度学习算法实现的高亮搜索结果
     public List<QA> getHighLightResult(String highLight,Long bookid,Integer pagenum) throws Exception {
+        //查询获取高亮内容所在页
         Page page =pageMapper.selectByBookIdAndPageNum(bookid,pagenum);
         List<QA> qas = new ArrayList<>();
         if (page!=null) {
             List<Section> sections;
+            //获取该页下的所有段
             sections = sectionMapper.selectByPageId(page.getId());
             Map<Long,Float> sectionSim = new HashMap<>();
+            //遍历所有段，调用编辑距离算法计算相似度
             for (Section section :sections)
             {
                 float a=(float) calculateStringDistance(highLight,section.getSectionContent())/Math.max(highLight.length(),section.getSectionContent().length());
                 sectionSim.put(section.getId(),1-a);
             }
             List<Map.Entry<Long ,Float>> sectionSimList = new ArrayList<Map.Entry<Long ,Float>>(sectionSim.entrySet());
+            //对相似度排序
             Collections.sort(sectionSimList,new Comparator<Map.Entry<Long ,Float>>(){
                 @Override
                 public int compare(Map.Entry<Long, Float> o1,Map.Entry<Long, Float> o2) {
@@ -66,13 +79,46 @@ public class ReadService {
                         return -1;
                 }
             });
+            //查询最相似的段关联的QA数据
             qas = qaMapper.selectQASectionBySectionId(sectionSimList.get(0).getKey());
         }
         return qas;
     }
 
+    //获取基于Lucene技术实现的高亮结果
+    public List<QA> getChromeHighLightResult(String highLight) throws Exception {
+        String[] keyWords = wordUtil.getKeywords(highLight,2);
+        return qaDao.findIndexDB(keyWords,5);
+    }
 
-    public List<QASectionVO> getBookEnrich(Long bookid,Integer pageNum) throws Exception {
+    //获取基于Lucene技术实现的分段式全文增强
+    public List<QASectionVO> getChromeEnrich(String content) throws Exception {
+        List<Section> sections = new ArrayList<>();
+        List<QASectionVO> results = new ArrayList<>();
+        for (int i=0 ;i<content.length();i++)
+        {
+            Section section = new Section();
+            section.setOrderNum(i);
+            int start = i*50;
+            int end = start + 99;
+            section.setSectionContent(content.substring(start,end));
+        }
+            for (Section section:sections){
+                QASectionVO result = new QASectionVO();
+                String[] keyWords;
+                keyWords = wordUtil.getKeywords(section.getSectionContent(), 2);
+
+                List<QA> qas=qaDao.findIndexDB(keyWords,1);
+                result.setQuestion(qas.get(0).getQuestion());
+                result.setAnswer(qas.get(0).getAnswer());
+                result.setSectionContent(section.getSectionContent());
+                results.add(result);
+            }
+            return results;
+    }
+
+    //获取基于深度学习算法实现的分段式全文增强
+    public List<QASectionVO> getPageEnrich(Long bookid,Integer pageNum) throws Exception {
         Page page =pageMapper.selectByBookIdAndPageNum(bookid,pageNum);
         List<QASectionVO> qaSectionVOs = new ArrayList<>();
         if (page!=null) {
@@ -88,10 +134,13 @@ public class ReadService {
         }
         return  qaSectionVOs;
     }
+    public List<QA> getChromeAllPageResultByAlgorithm(String allContent) throws Exception {
+        GetBookTopicKeywords getBookTopicKeywords = new GetBookTopicKeywords();
+        String[] keywords = getBookTopicKeywords.getBookTopicKeywords(null,allContent);
+        return qaDao.findIndexDB(keywords,20);
+    }
 
-
-
-
+    //计算两个句子的相似度
     private static int calculateStringDistance(@NotNull String s1, String s2) {
         int Distance=0;
         int Length1 =s1.length();
@@ -146,6 +195,7 @@ public class ReadService {
     public WikiAnnotation getWikiByMatchingKeywords(String keyword) {
         return wikiMapper.getWikiByMatchingKeywords(keyword);
     }
+
 
     public void insertWikiList(List<WikiAnnotation> wikiList) {
         wikiMapper.insertWikiList(wikiList);

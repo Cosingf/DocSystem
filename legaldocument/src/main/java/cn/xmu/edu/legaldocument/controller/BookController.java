@@ -18,12 +18,11 @@ public class BookController {
     @Autowired
     BookService bookService;
 
-    @PostMapping("/publicbooks/sixbooks/{num}")
+    @PostMapping("/publicbooks/eightbooks/{num}")
     public void getPublicBooks(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest,@PathVariable("num") String num) throws Exception
     {
         httpServletResponse.setContentType("application/json;charset=utf-8");
-
-        List<LegalDoc> legalDocList = bookService.getSixPublicBooksByNum(Integer.valueOf(num));
+        List<LegalDoc> legalDocList = bookService.getEightPublicBooksByNum(Integer.valueOf(num));
         if (legalDocList!=null||legalDocList.size()!=0) {
             httpServletResponse.setStatus(200);
             httpServletResponse.getWriter().write(JSON.toJSONString(legalDocList));
@@ -33,7 +32,7 @@ public class BookController {
     }
 
 
-    @PostMapping("/mybooks/sixbooks/{userid}/{num}")
+    @PostMapping("/mybooks/eightbooks/{userid}/{num}")
     public void getPersonalBooks(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest,@PathVariable("userid") Long userid,@PathVariable("num") String num) throws Exception
     {
         httpServletResponse.setContentType("application/json;charset=utf-8");
@@ -65,7 +64,6 @@ public class BookController {
     public void searchMybooks(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @PathVariable("searchContent") String searchContent,@PathVariable("userid") Long userid) throws Exception
     {
         httpServletResponse.setContentType("application/json;charset=utf-8");
-
         List<LegalDoc> legalDocList = bookService.searchMybooksByContentAndUserId(searchContent,userid);
         if (legalDocList!=null||legalDocList.size()!=0) {
             httpServletResponse.setStatus(200);
@@ -89,15 +87,12 @@ public class BookController {
 
 
     @PutMapping("/publicbooks/toMyBook/{userId}/{bookId}")
-    public void toMyBooks(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @PathVariable("userId") Long userId,@PathVariable("bookId") Long bookId) throws Exception
+    public String toMyBooks(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest, @PathVariable("userId") Long userId,@PathVariable("bookId") Long bookId) throws Exception
     {
         httpServletResponse.setContentType("application/json;charset=utf-8");
 
-        if (bookService.addToMyBooks(bookId,userId)) {
-            httpServletResponse.setStatus(200);
-        }
-        else {
-            httpServletResponse.setStatus(404);
-        }
+         return bookService.addToMyBooks(bookId,userId);
     }
+
+
 }

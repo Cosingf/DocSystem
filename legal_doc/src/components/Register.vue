@@ -3,7 +3,7 @@
         <router-link href='#' to="/"><i class="el-icon-back">&nbsp;Back</i></router-link>
         <div style="height: 10px;"></div>
         <div class="title">
-            <a style="color: #6a737d;font-size:20px;">Join Reedpeer</a>
+            <a style="color: #6a737d;font-size:20px;">Join Readpeer</a>
             <a class="head">Create your account</a>
         </div>
         <div class="register">

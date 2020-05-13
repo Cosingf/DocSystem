@@ -2,7 +2,7 @@
   <div class="discuss-home">
     <div class="discuss-header">
       <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="">
-      <a class="myicon" style="color:#007bff">Reedpeer</a>
+      <a class="myicon" style="color:#007bff">Readpeer</a>
       <el-menu-item index="1" @click="goToPublicLibrary">Public library</el-menu-item>
       <el-menu-item index="2" @click="goToMyLibrary">My library</el-menu-item>
       <el-menu-item index="3">Discussion</el-menu-item>
@@ -22,7 +22,7 @@
         <div style="margin:0px 30px;font-size:18px;font-weight: 400;">
           <i class="el-icon-document"></i>&nbsp;Latest Discussions
           <el-button type="text" @click="dialogFormVisible = true">Add New Discussion</el-button>
-          <el-dialog title="New Comment" :visible.sync="dialogFormVisible">
+          <el-dialog title="New Discussion" :visible.sync="dialogFormVisible">
             <el-form :model="discussionForm">
               <el-form-item label="Title" :label-width="formLabelWidth">
                 <el-input v-model="discussionForm.title" autocomplete="off" placeholder="Write down your title"></el-input>

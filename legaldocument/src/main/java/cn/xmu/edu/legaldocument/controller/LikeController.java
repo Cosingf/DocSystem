@@ -38,14 +38,7 @@ public class LikeController {
         }else{
             userId=hostHolder.getUser().getId();
         }
-
         Comment comment = commentService.getCommentById(commentId);
-//
-//        eventProducer.fireEvent(new EventModel(EventType.LIKE)
-//                .setActorId(hostHolder.getUser().getId()).setEntityId(commentId)
-//                .setEntityType(EntityType.ENTITY_COMMENT).setEntityOwnerId(comment.getUserId())
-//                .setExt("questionId", String.valueOf(comment.getEntityId())));
-
         long likeCount = likeService.like(userId.intValue(), EntityType.ENTITY_COMMENT, commentId);
         httpServletResponse.setContentType("application/json;charset=utf-8");
         httpServletResponse.getWriter().write(JSON.toJSONString(likeCount));

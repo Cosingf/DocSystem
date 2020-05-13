@@ -2,7 +2,7 @@
   <div class="discuss-home">
     <div class="discuss-header">
       <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="">
-      <a class="myicon" style="color:#007bff">Reedpeer</a>
+      <a class="myicon" style="color:#007bff">Readpeer</a>
       <el-menu-item index="1" @click="goToPublicLibrary">Public library</el-menu-item>
       <el-menu-item index="2" @click="goToMyLibrary">My library</el-menu-item>
       <el-menu-item index="3" @click="goToDiscussHome">Discussion</el-menu-item>
@@ -24,7 +24,7 @@
           <el-button type="primary"  @click="dialogFormVisible = true" plain>Add new comment</el-button> &emsp;
           <span style="color: rgb(133, 144, 166);"><i class="el-icon-chat-round"></i>{{userDiscuss.commentCount}} comments</span>
         </div>
-        <el-dialog title="New Discussion" :visible.sync="dialogFormVisible">
+        <el-dialog title="New Comment" :visible.sync="dialogFormVisible">
           <el-form :model="commentForm">
             <el-form-item label="Content" :label-width="formLabelWidth">
               <el-input type="textarea" v-model="commentForm.content" autocomplete="off" placeholder="Write down your comment"></el-input>

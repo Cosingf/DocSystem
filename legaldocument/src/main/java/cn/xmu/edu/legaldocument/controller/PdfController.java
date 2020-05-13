@@ -40,7 +40,6 @@ public class PdfController {
         final LegalDoc legalDoc=new LegalDoc();
         PersonalLegaldocStack personalLegaldocStack=new PersonalLegaldocStack();
         String path=pdfService.upload(file);
-//        System.out.println("文件路径："+path);
         final int page=pdfService.getPages(path);
 
         //更新总书库
@@ -50,7 +49,7 @@ public class PdfController {
         legalDoc.setIsEnrich(0);//0代表未增强
         legalDoc.setIsPublic(isPublic);
         //TODO pdf首页生成封面
-//        String coverImg=pdfService.createCoverImg(path);
+        String coverImg=pdfService.createCoverImg(path);
         legalDoc.setCoverImg(null);
         pdfService.insertLegalDoc(legalDoc);
 
@@ -101,7 +100,6 @@ public class PdfController {
                 t.printStackTrace();
             }
         });
-//        System.out.println("responseTime: " + (System.currentTimeMillis() - t1));
         return legalDoc;
     }
 

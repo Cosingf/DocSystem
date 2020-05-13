@@ -24,9 +24,10 @@ public class UserService {
     public int  register(String name,String pass,String email) {
         User user = new User();
         user.setAccount(name);
-        user.setPassword(pass);
         user.setEmail(email);
+        //每个用户特有的salt
         user.setSalt(UUID.randomUUID().toString().substring(0, 5));
+        //为密码加密
         user.setPassword(UserUtil.MD5(pass+user.getSalt()));
         //判断用户是否存在
         if (userDao.selectByAccount(user.getAccount()) == null) {

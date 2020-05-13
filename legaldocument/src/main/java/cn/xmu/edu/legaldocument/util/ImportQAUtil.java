@@ -31,7 +31,7 @@ public class ImportQAUtil {
 
     private static String filePath = "D:/lucene/pinfo-mz-test.txt";
 
-    private static String lucenePath = "D:/lucene/index01";
+    private static String lucenePath = "D:/lucene/QAindex";
 
     @Autowired
     private ReadService readService;

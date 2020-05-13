@@ -35,7 +35,7 @@ public class LuceneTest {
     public void createIndexDB() throws Exception {
 
         //创建IndexWriter对象
-        Path path = Paths.get("D:/lucene/index01");
+        Path path = Paths.get("D:/lucene/QAindex");
         Directory directory = FSDirectory.open(path);//索引创建在硬盘上。
 
         //使用英语分词算法对原始记录表进行拆分

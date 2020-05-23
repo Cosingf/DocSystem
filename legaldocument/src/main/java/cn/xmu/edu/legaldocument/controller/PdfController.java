@@ -48,11 +48,10 @@ public class PdfController {
         legalDoc.setPath(path);
         legalDoc.setIsEnrich(0);//0代表未增强
         legalDoc.setIsPublic(isPublic);
-<<<<<<< HEAD
+
         //TODO pdf首页生成封面
-        String coverImg=pdfService.createCoverImg(path);
-=======
->>>>>>> cc29c7e02b982718cd98d1530024001fedf90621
+        //String coverImg=pdfService.createCoverImg(path);
+
         legalDoc.setCoverImg(null);
         pdfService.insertLegalDoc(legalDoc);
         //更新关系书库
@@ -84,9 +83,9 @@ public class PdfController {
                     //按照10 words切割成多个section
                     List<Section> sectionList=pdfService.cut(txtFilePath,page);
                     //调用python编写的文本匹配算法增强段落，并存储结果
-                    pdfService.enrichSection(sectionList);
+//                    pdfService.enrichSection(sectionList);
                 }
-//                pdfService.setLegalDocEnriched(bookId);
+                pdfService.setLegalDocEnriched(bookId);
 //                pdfService.matchRemainingKeywordsByTerm(legalDoc.getId());
 //                pdfService.matchRemainingKeywordsByAlgorithm(legalDoc.getId());
                 return true;

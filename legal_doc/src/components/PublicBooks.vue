@@ -35,7 +35,7 @@
       <div style="height: 50px;"></div>
     </div>
         <!--页码选择器-->
-        <div class="pagination"><el-pagination  @current-change="currentChangeHandle" :current-page="currentPage" layout="prev, pager, next" :total="100"></el-pagination></div>
+        <!-- <div class="pagination"><el-pagination  @current-change="currentChangeHandle" :current-page="currentPage" layout="prev, pager, next" :total="100"></el-pagination></div> -->
     </body>
   </template>
 <script>

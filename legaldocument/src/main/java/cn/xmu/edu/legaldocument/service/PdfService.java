@@ -61,7 +61,7 @@ public class PdfService {
     Directory directory;
 
     public PdfService() throws IOException {
-        this.directory= FSDirectory.open(FileSystems.getDefault().getPath("D:\\wikiIndex"));
+        this.directory= FSDirectory.open(FileSystems.getDefault().getPath("F:\\wikiIndex"));
     }
     /**
      * 文件存储到file_path目录

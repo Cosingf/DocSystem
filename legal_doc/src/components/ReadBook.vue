@@ -5,6 +5,7 @@
       <a class="myicon" style="color:#007bff">Readpeer</a>
       <el-menu-item index="1" @click="goToPublicLibrary">Public library</el-menu-item>
       <el-menu-item index="2" @click="goToMyLibrary">My library</el-menu-item>
+      <el-menu-item index="3" @click="goToDiscussHome">Discussion</el-menu-item>
       <el-input placeholder="Please enter keywords" prefix-icon="el-icon-search" class="my-input" v-model="input"></el-input>
       <el-button type="primary" v-on:click="searchBooks()">Find books</el-button>
       <el-dropdown  trigger="click" >
@@ -186,6 +187,9 @@ export default {
     goToPublicLibrary () {
       this.$router.push({ name: 'PublicBooks' })
     },
+    goToDiscussHome () {
+      this.$router.push({ name: 'DiscussHome' })
+    },
     initDocument () {
       this.$axios({
         method: 'POST',
@@ -361,7 +365,7 @@ export default {
       console.log('wiki Annotation:' + wikiAnnotaion.length)
       var position = []
       wikiAnnotaion.forEach(function (element) {
-        if (element.pageNum == 1) {
+        if (element.pageNum !=0) {
           // console.log("wiki:"+element.keyword+" 对应count:"+count)
           let key = element.keyword
           let replaceReg = new RegExp(key, 'g')
@@ -579,8 +583,8 @@ export default {
   .el-menu-demo {
     padding-left: 450px;;
   }
-/* change */
-.myicon{
+  /* change */
+  .myicon{
   position: absolute;
   margin-top: 6px;
   font-size: 24px;

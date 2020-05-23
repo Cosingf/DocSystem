@@ -30,7 +30,7 @@
         </el-row>
         <div style="height: 50px;"></div>
       </div>
-      <div class="pagination"><el-pagination  @current-change="currentChangeHandle" :current-page="currentPage" layout="prev, pager, next" :total="100"></el-pagination></div>
+      <!-- <div class="pagination"><el-pagination  @current-change="currentChangeHandle" :current-page="currentPage" layout="prev, pager, next" :total="100"></el-pagination></div> -->
   </div>
 </template>
 <script>
